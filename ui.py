@@ -8,7 +8,7 @@ class AX_PT_render(bpy.types.Panel):
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
     bl_context = "render"
-    #COMPAT_ENGINES = {'CYCLES'}
+    COMPAT_ENGINES = {'CYCLES'}
     bl_label = "Fulcrum"
 
     def draw (self, context):
@@ -86,22 +86,41 @@ class AX_PT_paint(bpy.types.Panel):
     bl_category = "Fulcrum"
     bl_label = "Paint"
 
+    @classmethod
+    def poll(cls, context):
+        weight = bpy.context.mode == 'PAINT_WEIGHT'
+        paint = bpy.context.mode == 'PAINT_VERTEX'
+        return weight or paint
+
     def draw (self, context):
         layout = self.layout
 
         row = layout.row(align = True)
-        # COLORSET_01_VEC COLORSET_03_VEC COLORSET_04_VEC
-        props = row.operator("ax.paint_color", text = "R", icon = 'NONE')
-        props.color = (1.0, 0.0, 0.0)
-        props = row.operator("ax.paint_color", text = "G", icon = 'NONE')
-        props.color = (0.0, 1.0, 0.0)
-        props = row.operator("ax.paint_color", text = "B", icon = 'NONE')
-        props.color = (0.0, 0.0, 1.0)
+        
+        if bpy.context.mode == 'PAINT_VERTEX':
 
-        row = layout.row(align = True)
-        props = row.operator("ax.paint_color", text = "Blegh", icon = 'NONE')
-        props.color = (0.0, 0.0, 0.0)
-        props = row.operator("ax.paint_color", text = "Grey", icon = 'NONE')
-        props.color = (0.5, 0.5, 0.5)
-        props = row.operator("ax.paint_color", text = "White", icon = 'NONE')
-        props.color = (1.0, 1.0, 1.0)
+            # COLORSET_01_VEC COLORSET_03_VEC COLORSET_04_VEC
+            props = row.operator("ax.paint_color", text = "R", icon = 'NONE')
+            props.color = (1.0, 0.0, 0.0)
+            props = row.operator("ax.paint_color", text = "G", icon = 'NONE')
+            props.color = (0.0, 1.0, 0.0)
+            props = row.operator("ax.paint_color", text = "B", icon = 'NONE')
+            props.color = (0.0, 0.0, 1.0)
+
+            row = layout.row(align = True)
+            props = row.operator("ax.paint_color", text = "Blegh", icon = 'NONE')
+            props.color = (0.0, 0.0, 0.0)
+            props = row.operator("ax.paint_color", text = "Grey", icon = 'NONE')
+            props.color = (0.5, 0.5, 0.5)
+            props = row.operator("ax.paint_color", text = "White", icon = 'NONE')
+            props.color = (1.0, 1.0, 1.0)
+
+        if bpy.context.mode == 'PAINT_WEIGHT':
+
+            row = layout.row(align = True)
+            props = row.operator("ax.paint_color", text = "0.0", icon = 'NONE')
+            props.weight = 0.0
+            props = row.operator("ax.paint_color", text = "0.5", icon = 'NONE')
+            props.weight = 0.5
+            props = row.operator("ax.paint_color", text = "1.0", icon = 'NONE')
+            props.weight = 1.0

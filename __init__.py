@@ -3,7 +3,7 @@ bl_info = {
     "author": "Aeraglyx",
     "description": "Random tools",
     "blender": (2, 93, 0),
-    "version": (0, 1, 0),
+    "version": (0, 1, 1),
     "location": "Everywhere",
     "category": 'User Interface',
     "support": 'COMMUNITY'
