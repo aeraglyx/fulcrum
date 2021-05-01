@@ -5,25 +5,28 @@ Blender addon containing various tools.
 
 ## Compare Node Speed
 
-Renders a couple of images in background to retrieve relative speed of selected nodes and therefore their efficiency. Nodes then get colored based on the results:
+Retrieves relative speed of selected nodes by rendering a couple of images in background. Nodes then get colored based on the results:
 
 - **Red** through **Cyan** based on their speed (cyan = fastest)
 - **Purple** - all render times match exactly
 
-Works best with Cycles, in Eevee the renders are a lot more similar and harder to tell which is actually faster.
-
-- Frames - larger values highly recommended
-- Resolution, samples
-- Baseline render Tries to minimize the effect of how prominent the object is in camera and what else is happening in the scene.
-
 Things to be aware of:
 - This operation freezes Blender momentarily, to see progress open Blender's `System Console` beforehand.
-- It's dependent on camera position, lighting etc, if your camera can't see the object, it's basically random.
-- Aim for 95 % `confidence`, but do not rely on it too much when using low settings (especially `frames`).
+- It's dependent on camera position, lighting etc. `Baseline Render` partially solves this (gives a more reasonable relative ratio) but if your camera can't see the object, it's basically random.
+- Aim for 95 % `Confidence`, but do not rely on it too much when using low settings.
+
+Recommended settings:
+- `Frames` - I wouldn't go under 6, if you have the time, use 30+.
+- `Resolution`, `Samples` - Both improve precision, resolution has a bigger impact on performance.
+- `Baseline Render` - On.
 
 
-## Reset Node Color
-Resets custom color of selected nodes.
+## Render in Time (WIP)
+Estimates samples so that render takes a certain time. Freezes Blender momentarily, to see progress open Blender's `System Console` beforehand.
+
+## Miscellaneous
+- Resetting custom color of selected nodes
+- Swatches for basic colours in Vertex Paint mode
 
 ---
 

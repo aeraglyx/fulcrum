@@ -1,10 +1,11 @@
 bl_info = {
     "name": "Fulcrum",
-    "author": "Aeraglyx",
+    "author": "Vladislav Macíček (Aeraglyx)",
     "description": "Random tools",
     "blender": (2, 93, 0),
     "version": (0, 1, 2),
     "location": "Everywhere",
+    "wiki_url": "https://github.com/aeraglyx/fulcrum",
     "category": 'User Interface',
     "support": 'COMMUNITY'
 }

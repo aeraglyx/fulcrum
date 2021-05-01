@@ -5,7 +5,7 @@ class AX_OT_render_in_time(bpy.types.Operator):
     
     bl_idname = "ax.render_in_time"
     bl_label = "Render in Time"
-    bl_description = "Set time in which you want the render to complete"
+    bl_description = "Estimate samples so that render takes a certain time"
     
     @classmethod
     def poll(cls, context):
@@ -90,7 +90,9 @@ class AX_OT_render_in_time(bpy.types.Operator):
         resolution_prev = bpy.context.scene.render.resolution_percentage
         samples_prev = bpy.context.scene.cycles.samples
         
-        pre_render()
+        # pre_render()
+        # bpy.context.scene.render.resolution_percentage = resolution_prev
+        bpy.ops.render.render(write_still = False)
 
         # bpy.context.scene.render.resolution_percentage = 10
         
@@ -100,30 +102,25 @@ class AX_OT_render_in_time(bpy.types.Operator):
         bpy.context.scene.cycles.samples = self.samples
         high_samples = test_render()
 
-        samples_out = predict_samples(how_much_i_want, low_samples, self.samples, high_samples)
+        elapsed = time.perf_counter() - start
+        samples_out = predict_samples(self.how_much_i_want, low_samples, self.samples, high_samples)
 
-        at_low_res = test_render(1) # todo deal with this
-        at_high_res = test_render(1)
-        min_samples = test_render(1)
-        res = 40
+        # at_low_res = test_render(1) # todo deal with this
+        # at_high_res = test_render(1)
+        # min_samples = test_render(1)
+        # res = 40
 
-        a, b = quadratic_fit_simplified(res / 2, at_low_res, res, at_high_res) # todo maybe not simplified
-        res_final = 100
-        at_final_res = a * res_final**2 + b * res_final
+        # a, b = quadratic_fit_simplified(res / 2, at_low_res, res, at_high_res) # todo maybe not simplified
+        # res_final = 100
+        # at_final_res = a * res_final**2 + b * res_final
         #res_mult = at_final_res / res  # kolikrát se čas prodlouží při 100%
 
-        # base = 2 * b - a  # todo not relevant anymore
-        # on_top = 2 * (a - b)
-
-        # elapsed = time.perf_counter() - start
         # needed = how_much_i_want - elapsed
-
-        # samples_out = self.samples * (needed - base) / on_top
 
         bpy.context.scene.cycles.samples = samples_out
         # render() # todo so it shows the image?
 
-        self.report({'INFO'}, f"Done. Optimal samples - {self.samples}")
+        self.report({'INFO'}, f"Done. Optimal samples - {samples_out}")
 
         return {'FINISHED'}
 
@@ -135,3 +132,5 @@ class AX_OT_render_in_time(bpy.types.Operator):
         layout = self.layout
         col = layout.column()
         col.prop(self, "how_much_i_want")
+        col.prop(self, "frames")
+        col.prop(self, "samples")
