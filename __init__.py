@@ -3,7 +3,7 @@ bl_info = {
     "author": "Aeraglyx",
     "description": "Random tools",
     "blender": (2, 93, 0),
-    "version": (0, 1, 1),
+    "version": (0, 1, 2),
     "location": "Everywhere",
     "category": 'User Interface',
     "support": 'COMMUNITY'
@@ -15,7 +15,7 @@ from . compare import AX_OT_compare, my_properties
 from . reset_node_color import AX_OT_reset_node_color
 from . render_in_time import AX_OT_render_in_time
 from . vert_group_2_col import AX_OT_vert_group_2_col
-from . paint import AX_OT_paint_color
+from . paint import AX_OT_set_paint_brush, AX_OT_set_weight_brush
 
 from . ui import (
     AX_PT_optimization, AX_PT_node_tools,
@@ -28,7 +28,7 @@ classes = (
     
     AX_OT_reset_node_color, AX_OT_compare,
     AX_OT_render_in_time, AX_OT_vert_group_2_col,
-    AX_OT_paint_color,
+    AX_OT_set_paint_brush, AX_OT_set_weight_brush,
     
     AX_PT_node_tools, AX_PT_optimization,
     AX_PT_render, AX_PT_data,
