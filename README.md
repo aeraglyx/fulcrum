@@ -8,7 +8,7 @@ Blender addon containing various tools.
 Retrieves relative speed of selected nodes by rendering a couple of images in background. Nodes then get colored based on the results:
 
 - **Red** through **Cyan** based on their speed (cyan = fastest)
-- **Purple** - all render times match exactly
+- **Purple** - no difference
 
 Things to be aware of:
 - This operation freezes Blender momentarily, to see progress open Blender's `System Console` beforehand.
@@ -22,12 +22,10 @@ Recommended settings:
 
 
 ## Render in Time (WIP)
-Estimates samples so that render takes a certain time. Freezes Blender momentarily, to see progress open Blender's `System Console` beforehand.
+Based on current frame estimates samples so that render takes a certain time. This freezes Blender momentarily.
 
 ## Miscellaneous
 - Resetting custom color of selected nodes
 - Swatches for basic colours in Vertex Paint mode
-
----
 
 Live long and prosper 🖖

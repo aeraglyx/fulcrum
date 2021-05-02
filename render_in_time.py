@@ -11,21 +11,21 @@ class AX_OT_render_in_time(bpy.types.Operator):
     def poll(cls, context):
         return bpy.context.scene.render.engine == 'CYCLES'
     
-    how_much_i_want: bpy.props.FloatProperty(
+    time_needed: bpy.props.FloatProperty(
         name = "Time",
-        description = "How much time you have to render",
-        subtype = 'TIME',
+        description = "How much time you have to render (in seconds)",
+        subtype = 'TIME', unit = 'TIME',
         min = 0, default = 20, soft_max = 60
     )
     frames: bpy.props.IntProperty(
         name = "Frames",
         description = "Take multiple tests and average results, improves precision",
-        min = 1, default = 2, soft_max = 8
+        min = 1, default = 1, soft_max = 8
     )
     samples: bpy.props.IntProperty(
         name = "Samples",
-        description = "Number of samples to use",
-        min = 1, default = 64, soft_max = 1024
+        description = "Number of samples to use for test render",
+        min = 2, default = 32, soft_max = 1024
     )
     quality: bpy.props.FloatProperty(
         name = "Quality",
@@ -92,18 +92,40 @@ class AX_OT_render_in_time(bpy.types.Operator):
         
         # pre_render()
         # bpy.context.scene.render.resolution_percentage = resolution_prev
+
+        # pre-render
         bpy.ops.render.render(write_still = False)
 
         # bpy.context.scene.render.resolution_percentage = 10
         
+        # get render time for 1 sample
         bpy.context.scene.cycles.samples = 1
-        low_samples = test_render()
+        at_low_samples = test_render()
 
+        if at_low_samples > self.time_needed:
+            bpy.context.scene.cycles.samples = samples_prev  # or set to 1 for fastest possible?
+            self.report({'WARNING'}, f"Can't be done in less than {at_low_samples:.2f}s")
+            return {'CANCELLED'}
+        if at_low_samples == self.time_needed:
+            bpy.context.scene.cycles.samples = 1  # warning - too low?
+            self.report({'INFO'}, f"Done. Optimal samples - 1")
+            return {'FINISHED'}
+
+        # get render time for x samples
         bpy.context.scene.cycles.samples = self.samples
-        high_samples = test_render()
+        at_high_samples = test_render()
+
+        if at_high_samples <= at_low_samples:
+            bpy.context.scene.cycles.samples = samples_prev  # or set to 1 for fastest possible?
+            self.report({'ERROR'}, f"Precision error, use higher samples and/or frames.")
+            return {'CANCELLED'}
+        if at_high_samples == self.time_needed:
+            bpy.context.scene.cycles.samples = self.samples
+            self.report({'INFO'}, f"Done. Optimal samples - {self.samples}")
+            return {'FINISHED'}
 
         elapsed = time.perf_counter() - start
-        samples_out = predict_samples(self.how_much_i_want, low_samples, self.samples, high_samples)
+        samples_out = round(predict_samples(self.time_needed, at_low_samples, self.samples, at_high_samples))
 
         # at_low_res = test_render(1) # todo deal with this
         # at_high_res = test_render(1)
@@ -115,13 +137,12 @@ class AX_OT_render_in_time(bpy.types.Operator):
         # at_final_res = a * res_final**2 + b * res_final
         #res_mult = at_final_res / res  # kolikrát se čas prodlouží při 100%
 
-        # needed = how_much_i_want - elapsed
+        # needed = time_needed - elapsed
 
         bpy.context.scene.cycles.samples = samples_out
         # render() # todo so it shows the image?
 
         self.report({'INFO'}, f"Done. Optimal samples - {samples_out}")
-
         return {'FINISHED'}
 
     def invoke(self, context, event):
@@ -130,7 +151,7 @@ class AX_OT_render_in_time(bpy.types.Operator):
     
     def draw(self, context):
         layout = self.layout
-        col = layout.column()
-        col.prop(self, "how_much_i_want")
+        col = layout.column(align = True)
+        col.prop(self, "time_needed")
         col.prop(self, "frames")
         col.prop(self, "samples")

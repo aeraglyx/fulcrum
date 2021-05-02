@@ -14,7 +14,7 @@ class AX_PT_render(bpy.types.Panel):
     def draw (self, context):
         layout = self.layout
         row = layout.row()
-        row.operator("ax.render_in_time", text = "WIP", icon = 'RENDER_STILL')
+        row.operator("ax.render_in_time", icon = 'RENDER_STILL')
 
 class AX_PT_data(bpy.types.Panel):
     
@@ -97,8 +97,8 @@ class AX_PT_paint(bpy.types.Panel):
         layout = self.layout
         
         if bpy.context.mode == 'PAINT_VERTEX':
-
-            row = row(align = True)
+            col = layout.column(align = True)
+            row = col.row(align = True)
             props = row.operator("ax.set_paint_brush", text = "R", icon = 'NONE')
             props.color = (1.0, 0.0, 0.0)
             props = row.operator("ax.set_paint_brush", text = "G", icon = 'NONE')
@@ -106,7 +106,7 @@ class AX_PT_paint(bpy.types.Panel):
             props = row.operator("ax.set_paint_brush", text = "B", icon = 'NONE')
             props.color = (0.0, 0.0, 1.0)
 
-            row = layout.row(align = True)
+            row = col.row(align = True)
             props = row.operator("ax.set_paint_brush", text = "Blegh", icon = 'NONE')
             props.color = (0.0, 0.0, 0.0)
             props = row.operator("ax.set_paint_brush", text = "Grey", icon = 'NONE')
