@@ -97,6 +97,7 @@ class AX_PT_paint(bpy.types.Panel):
         layout = self.layout
         
         if bpy.context.mode == 'PAINT_VERTEX':
+            
             col = layout.column(align = True)
             row = col.row(align = True)
             props = row.operator("ax.set_paint_brush", text = "R", icon = 'NONE')

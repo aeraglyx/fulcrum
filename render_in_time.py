@@ -13,9 +13,9 @@ class AX_OT_render_in_time(bpy.types.Operator):
     
     time_needed: bpy.props.FloatProperty(
         name = "Time",
-        description = "How much time you have to render (in seconds)",
-        subtype = 'TIME', unit = 'TIME',
-        min = 0, default = 20, soft_max = 60
+        description = "How much time you want the render to take (in minutes)",
+        subtype = 'TIME',
+        min = 0, default = 1, soft_max = 60
     )
     frames: bpy.props.IntProperty(
         name = "Frames",
@@ -24,7 +24,7 @@ class AX_OT_render_in_time(bpy.types.Operator):
     )
     samples: bpy.props.IntProperty(
         name = "Samples",
-        description = "Number of samples to use for test render",
+        description = "Number of samples to use for test renders",
         min = 2, default = 32, soft_max = 1024
     )
     quality: bpy.props.FloatProperty(
@@ -102,11 +102,15 @@ class AX_OT_render_in_time(bpy.types.Operator):
         bpy.context.scene.cycles.samples = 1
         at_low_samples = test_render()
 
-        if at_low_samples > self.time_needed:
+        # time unit conversion
+        time_needed = self.time_needed * 60
+
+        # catch wrong results
+        if at_low_samples > time_needed:
             bpy.context.scene.cycles.samples = samples_prev  # or set to 1 for fastest possible?
             self.report({'WARNING'}, f"Can't be done in less than {at_low_samples:.2f}s")
             return {'CANCELLED'}
-        if at_low_samples == self.time_needed:
+        if at_low_samples == time_needed:
             bpy.context.scene.cycles.samples = 1  # warning - too low?
             self.report({'INFO'}, f"Done. Optimal samples - 1")
             return {'FINISHED'}
@@ -115,17 +119,18 @@ class AX_OT_render_in_time(bpy.types.Operator):
         bpy.context.scene.cycles.samples = self.samples
         at_high_samples = test_render()
 
+        # catch wrong results
         if at_high_samples <= at_low_samples:
             bpy.context.scene.cycles.samples = samples_prev  # or set to 1 for fastest possible?
             self.report({'ERROR'}, f"Precision error, use higher samples and/or frames.")
             return {'CANCELLED'}
-        if at_high_samples == self.time_needed:
+        if at_high_samples == time_needed:
             bpy.context.scene.cycles.samples = self.samples
             self.report({'INFO'}, f"Done. Optimal samples - {self.samples}")
             return {'FINISHED'}
 
         elapsed = time.perf_counter() - start
-        samples_out = round(predict_samples(self.time_needed, at_low_samples, self.samples, at_high_samples))
+        samples_out = round(predict_samples(time_needed, at_low_samples, self.samples, at_high_samples))
 
         # at_low_res = test_render(1) # todo deal with this
         # at_high_res = test_render(1)

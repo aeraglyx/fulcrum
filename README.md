@@ -3,6 +3,11 @@
 Blender addon containing various tools.
 
 
+## Render in Time
+
+Based on current frame estimates samples so that render takes a certain time. This freezes Blender momentarily.
+
+
 ## Compare Node Speed
 
 Retrieves relative speed of selected nodes by rendering a couple of images in background. Nodes then get colored based on the results:
@@ -20,9 +25,6 @@ Recommended settings:
 - `Resolution`, `Samples` - Both improve precision, resolution has a bigger impact on performance.
 - `Baseline Render` - On.
 
-
-## Render in Time (WIP)
-Based on current frame estimates samples so that render takes a certain time. This freezes Blender momentarily.
 
 ## Miscellaneous
 - Resetting custom color of selected nodes
