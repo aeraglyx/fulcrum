@@ -25,7 +25,7 @@ class AX_OT_render_in_time(bpy.types.Operator):
     samples: bpy.props.IntProperty(
         name = "Samples",
         description = "Number of samples to use for test renders",
-        min = 2, default = 32, soft_max = 1024
+        min = 2, default = 16, soft_max = 1024
     )
     quality: bpy.props.FloatProperty(
         name = "Quality",
@@ -171,8 +171,12 @@ class AX_OT_render_in_time(bpy.types.Operator):
         
         row = layout.row(align = True)
         row.prop(self, "time_needed")
-        row.prop(self, "unit", text = "")
+        row_x = row.row(align = True)
+        row_x.scale_x = 0.75
+        row_x.prop(self, "unit", text = "")
         
         col = layout.column(align = True)
         col.prop(self, "samples")
         col.prop(self, "frames")
+
+        layout.label(text = "WARNING: This could take a couple of minutes.")
