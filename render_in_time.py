@@ -39,7 +39,7 @@ class AX_OT_render_in_time(bpy.types.Operator):
         default = False
     )
     unit: bpy.props.EnumProperty(
-        name = "Units",
+        name = "Unit",
         description = "Unit of time",
         items = [
             ('S', "Seconds", ""),
@@ -108,7 +108,13 @@ class AX_OT_render_in_time(bpy.types.Operator):
         at_low_samples = test_render()
 
         # time unit conversion
-        time_needed = self.time_needed * 60 # TODO unit enum
+        # REFACTOR to match-case for Python 3.10
+        if self.unit == 'S':
+            time_needed = self.time_needed
+        if self.unit == 'M':
+            time_needed = self.time_needed * 60
+        if self.unit == 'H':
+            time_needed = self.time_needed * 3600
 
         # catch wrong results
         if at_low_samples > time_needed:
@@ -160,8 +166,13 @@ class AX_OT_render_in_time(bpy.types.Operator):
         return wm.invoke_props_dialog(self)
     
     def draw(self, context):
+        
         layout = self.layout
-        col = layout.column(align = True) # TODO options for units
-        col.prop(self, "time_needed")
-        col.prop(self, "frames")
+        
+        row = layout.row(align = True)
+        row.prop(self, "time_needed")
+        row.prop(self, "unit", text = "")
+        
+        col = layout.column(align = True)
         col.prop(self, "samples")
+        col.prop(self, "frames")
