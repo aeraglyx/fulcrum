@@ -38,6 +38,16 @@ class AX_OT_render_in_time(bpy.types.Operator):
         description = "Use better algorithm",
         default = False
     )
+    unit: bpy.props.EnumProperty(
+        name = "Units",
+        description = "Unit of time",
+        items = [
+            ('S', "Seconds", ""),
+            ('M', "Minutes", ""),
+            ('H', "Hours", "")
+        ],
+        default = 'M'
+    )
 
     def execute(self, context):
 
@@ -59,12 +69,6 @@ class AX_OT_render_in_time(bpy.types.Operator):
                 data.append(render_time)
             return mean(data)
         
-        def render(samples):
-            bpy.context.scene.render.resolution_percentage = 10
-            bpy.context.scene.cycles.samples = samples
-            bpy.ops.render.render(write_still = False)
-            return 1.0
-        
         def quadratic_fit(x1, y1, x2, y2, x3, y3):
             denom = (x1 - x2) * (x1 - x3) * (x2 - x3)
             a = (x3 * (y2 - y1) + x2 * (y1 - y3) + x1 * (y3 - y2)) / denom
@@ -82,6 +86,7 @@ class AX_OT_render_in_time(bpy.types.Operator):
             return (x - 1) * (y2 - y1) / (x2 - 1) + y1
 
         def predict_samples(t, y1, x2, y2):
+            # x1 = 1, y1 = time at 1 sample
             return 1 + (t - y1) * (x2 - 1) / (y2 - y1)
 
         start = time.perf_counter()
@@ -93,21 +98,21 @@ class AX_OT_render_in_time(bpy.types.Operator):
         # pre_render()
         # bpy.context.scene.render.resolution_percentage = resolution_prev
 
-        # pre-render
-        bpy.ops.render.render(write_still = False)
+        # TODO test if after changing res, the 1st render is still slower, even after previous test render
 
         # bpy.context.scene.render.resolution_percentage = 10
         
         # get render time for 1 sample
         bpy.context.scene.cycles.samples = 1
+        bpy.ops.render.render(write_still = False)
         at_low_samples = test_render()
 
         # time unit conversion
-        time_needed = self.time_needed * 60
+        time_needed = self.time_needed * 60 # TODO unit enum
 
         # catch wrong results
         if at_low_samples > time_needed:
-            bpy.context.scene.cycles.samples = samples_prev  # or set to 1 for fastest possible?
+            bpy.context.scene.cycles.samples = 1  # samples_prev or set to 1 for fastest possible?
             self.report({'WARNING'}, f"Can't be done in less than {at_low_samples:.2f}s")
             return {'CANCELLED'}
         if at_low_samples == time_needed:
@@ -132,12 +137,12 @@ class AX_OT_render_in_time(bpy.types.Operator):
         elapsed = time.perf_counter() - start
         samples_out = round(predict_samples(time_needed, at_low_samples, self.samples, at_high_samples))
 
-        # at_low_res = test_render(1) # todo deal with this
+        # at_low_res = test_render(1) # TODO deal with this
         # at_high_res = test_render(1)
         # min_samples = test_render(1)
         # res = 40
 
-        # a, b = quadratic_fit_simplified(res / 2, at_low_res, res, at_high_res) # todo maybe not simplified
+        # a, b = quadratic_fit_simplified(res / 2, at_low_res, res, at_high_res) # TODO maybe not simplified
         # res_final = 100
         # at_final_res = a * res_final**2 + b * res_final
         #res_mult = at_final_res / res  # kolikrát se čas prodlouží při 100%
@@ -145,7 +150,7 @@ class AX_OT_render_in_time(bpy.types.Operator):
         # needed = time_needed - elapsed
 
         bpy.context.scene.cycles.samples = samples_out
-        # render() # todo so it shows the image?
+        # TODO so it renders and shows the image?
 
         self.report({'INFO'}, f"Done. Optimal samples - {samples_out}")
         return {'FINISHED'}
@@ -156,7 +161,7 @@ class AX_OT_render_in_time(bpy.types.Operator):
     
     def draw(self, context):
         layout = self.layout
-        col = layout.column(align = True)
+        col = layout.column(align = True) # TODO options for units
         col.prop(self, "time_needed")
         col.prop(self, "frames")
         col.prop(self, "samples")

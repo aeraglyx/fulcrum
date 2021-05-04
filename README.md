@@ -29,5 +29,6 @@ Recommended settings:
 ## Miscellaneous
 - Resetting custom color of selected nodes
 - Swatches for basic colours in Vertex Paint mode
+- Mass conversion of Vertex Groups to Vertex Colors
 
 Live long and prosper 🖖

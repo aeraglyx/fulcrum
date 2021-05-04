@@ -8,7 +8,7 @@ import statistics
 class my_properties(bpy.types.PropertyGroup):
 
     engine: bpy.props.EnumProperty(
-        name = "Engine",
+        name = "Engine", # XXX idk, think this through
         description = "Engine to use for rendering",
         items = [
             ('BLENDER_EEVEE', "Eevee", ""),
@@ -86,17 +86,23 @@ class AX_OT_compare(bpy.types.Operator):
         selected = bpy.context.selected_nodes
         in_shader_editor = bpy.context.space_data.tree_type == 'ShaderNodeTree'
         # ^ or context.area.spaces.active.tree_type
-        return len(selected) > 1 and in_shader_editor # todo what if i select output
+        return len(selected) > 1 and in_shader_editor # FIXME what if i select output
+    
+    # TODO works for reroutes, but maybe check if something is connected
+    # and if so maybe draw frame around it to use for colouring?
+    # track backwards and use that node if there is some
+
+    # len(C.active_object.data.materials['Material'].node_tree.nodes.active.outputs)
 
     def execute(self, context):
         
         props = context.scene.ax_compare
 
         def prepare_nodes():
-            if node.outputs[0].type == 'SHADER': # todo fix when i select output (or any other nodes without out?)
+            if node.outputs[0].type == 'SHADER': # TODO fix when i select output (or any other nodes without out?)
                 links.new(node.outputs[0], output_node.inputs[0])
                 if "ax_viewer" in nodes:
-                    nodes.remove(nodes.get("ax_viewer"))  # or? remove on last - todo
+                    nodes.remove(nodes.get("ax_viewer"))  # XXX or? remove on last
             else:
                 if "ax_viewer" not in nodes:
                     viewer = nodes.new(type = "ShaderNodeEmission")
@@ -127,11 +133,14 @@ class AX_OT_compare(bpy.types.Operator):
 
         def student(mean_a, mean_b, var_a, var_b, n):
 
+            # janky af
+
             # mean_a = statistics.mean(a)
             # mean_b = statistics.mean(b)
             # var_a = statistics.variance(a, mean_a)
             # var_b = statistics.variance(b, mean_b)
 
+            # degrees of freedom
             # dof = 2 * n - 2  # assumes same variance
             dof = (n - 1) * (var_a + var_b)**2 / (var_a**2 + var_b**2)
 
@@ -140,16 +149,17 @@ class AX_OT_compare(bpy.types.Operator):
             if mean_a == mean_b:
                 return 0.5
             elif var_a != 0 or var_b != 0:
-                t = (mean_a - mean_b) / math.sqrt((var_a + var_b)/n)  # todo - stdev or variance, wtf?
+                t = (mean_a - mean_b) / math.sqrt((var_a + var_b)/n)  # TODO - stdev or variance, wtf?
 
             if var_a == 0 and var_b == 0:
                 return 1.0
             else:
                 # approximation of student's t distribution
+                # http://www.m-hikari.com/ams/ams-2015/ams-49-52-2015/zogheibAMS49-52-2015.pdf
                 z = t * (1 - 1/(4*dof)) / math.sqrt(1 + (t**2)/(2*dof))
-                zzz = 1 - 1 / (1 + math.e**(0.000345*z**5 - 0.069547*z**3 - 1.604326*z))
+                out = 1 - 1 / (1 + math.e**(0.000345*z**5 - 0.069547*z**3 - 1.604326*z))
 
-            return max(0.5, zzz) # todo rename zzz
+            return max(0.5, out)
         
         
         print("Starting - 0%\n")
@@ -157,7 +167,7 @@ class AX_OT_compare(bpy.types.Operator):
         # store render values
         engine_prev = bpy.context.scene.render.engine
         resolution_prev = bpy.context.scene.render.resolution_percentage
-        samples_prev = bpy.context.scene.cycles.samples  # todo samples prob only work in cycles now
+        samples_prev = bpy.context.scene.cycles.samples  # TODO samples prob only work in cycles now
 
         # set render values
         bpy.context.scene.render.engine = props.engine
@@ -176,7 +186,7 @@ class AX_OT_compare(bpy.types.Operator):
             link_from_node = output_node.inputs[0].links[0].from_node
             link_from_socket = output_node.inputs[0].links[0].from_socket
         
-        # links.remove(link_from_node)  # todo everywhere?
+        # links.remove(link_from_node)  # TODO everywhere?
         
         render_times = []
         render_deviations = []
@@ -250,12 +260,12 @@ class AX_OT_compare(bpy.types.Operator):
         # stdev needs at least 2
         if props.frames > 1 and min_time != max_time:
             mean = max_time - min_time
-            max_dev = render_deviations[render_times.index(max_time)]
+            max_dev = render_deviations[render_times.index(max_time)] # HACK idk, zip?
             min_dev = render_deviations[render_times.index(min_time)]
-            dev = math.sqrt(max_dev**2 + min_dev**2)
+            # dev = math.sqrt(max_dev**2 + min_dev**2)
             # plus or minus mean, it's (0 - mean) v
             # props.confidence = 0.5 + 0.5 * math.erf(mean / (dev * math.sqrt(2)))
-            props.confidence = student(min_time, max_time, min_dev, max_dev, props.frames)
+            props.confidence = student(min_time, max_time, min_dev, max_dev, props.frames)  # takes variance
         else:
             props.confidence = 0
         
@@ -283,6 +293,6 @@ class AX_OT_compare(bpy.types.Operator):
         bpy.context.scene.render.resolution_percentage = resolution_prev
         bpy.context.scene.cycles.samples = samples_prev
 
-        self.report({'INFO'}, "Done!")  # todo done how quickly
+        self.report({'INFO'}, "Done!")  # TODO done how quickly
         
         return {'FINISHED'}
