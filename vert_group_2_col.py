@@ -21,6 +21,8 @@ class AX_OT_vert_group_2_col(bpy.types.Operator):
             need_to_switch_back = True
 
         for group in groups:
+
+            # FIXME max 8 vert. colours
             
             col = colors.new()
             col.name = group.name

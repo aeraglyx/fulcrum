@@ -18,7 +18,7 @@ class AX_OT_render_in_time(bpy.types.Operator):
         min = 0, default = 1, soft_max = 60
     )
     frames: bpy.props.IntProperty(
-        name = "Frames",
+        name = "Tests",
         description = "Take multiple tests and average results, improves precision",
         min = 1, default = 1, soft_max = 8
     )
@@ -27,16 +27,16 @@ class AX_OT_render_in_time(bpy.types.Operator):
         description = "Number of samples to use for test renders",
         min = 2, default = 16, soft_max = 1024
     )
+    fast_mode: bpy.props.BoolProperty(
+        name = "Fast Mode",
+        description = "Use quicker prediction algorithm at the cost of lower precision",
+        default = True
+    )
     quality: bpy.props.FloatProperty(
         name = "Quality",
         description = "Low - faster estimation; High - better precision",
         subtype = "PERCENTAGE",
-        min = 1, default = 40, max = 100
-    )
-    hq: bpy.props.BoolProperty(
-        name = "High Quality",
-        description = "Use better algorithm",
-        default = False
+        min = 3, soft_min = 10, default = 40, soft_max = 70, max = 100
     )
     unit: bpy.props.EnumProperty(
         name = "Unit",
@@ -48,6 +48,17 @@ class AX_OT_render_in_time(bpy.types.Operator):
         ],
         default = 'M'
     )
+    # what: bpy.props.EnumProperty(
+    #     name = "What",
+    #     description = "Whether you specify time per frame or for full animation",
+    #     items = [
+    #         ('FRAME', "Per Frame", ""),
+    #         ('ANIMATION', "Animation", "")
+    #     ],
+    #     default = 'FRAME'
+    # )
+
+    # 70 - 99% range is inefficient
 
     def execute(self, context):
 
@@ -60,12 +71,12 @@ class AX_OT_render_in_time(bpy.types.Operator):
             bpy.ops.render.render(write_still = False)
             print("Pre-render done")
         
-        def test_render():
+        def get_render_time():
             data = []
             for _ in range(self.frames):
-                tic = time.perf_counter()
+                time_start = time.perf_counter()
                 bpy.ops.render.render(write_still = False)
-                render_time = time.perf_counter() - tic
+                render_time = time.perf_counter() - time_start
                 data.append(render_time)
             return mean(data)
         
@@ -94,26 +105,21 @@ class AX_OT_render_in_time(bpy.types.Operator):
         # store render values
         resolution_prev = bpy.context.scene.render.resolution_percentage
         samples_prev = bpy.context.scene.cycles.samples
-        
-        # pre_render()
-        # bpy.context.scene.render.resolution_percentage = resolution_prev
 
-        # TODO test if after changing res, the 1st render is still slower, even after previous test render
-
-        # bpy.context.scene.render.resolution_percentage = 10
+        res = self.quality
+        bpy.context.scene.render.resolution_percentage = res
         
         # get render time for 1 sample
         bpy.context.scene.cycles.samples = 1
-        bpy.ops.render.render(write_still = False)
-        at_low_samples = test_render()
+        bpy.ops.render.render(write_still = False)  # pre-render
+        at_low_samples = get_render_time()
 
-        # time unit conversion
-        # REFACTOR to match-case for Python 3.10
+        # time unit conversion - REFACTOR to match-case for Python 3.10
         if self.unit == 'S':
             time_needed = self.time_needed
-        if self.unit == 'M':
+        elif self.unit == 'M':
             time_needed = self.time_needed * 60
-        if self.unit == 'H':
+        elif self.unit == 'H':
             time_needed = self.time_needed * 3600
 
         # catch wrong results
@@ -128,7 +134,7 @@ class AX_OT_render_in_time(bpy.types.Operator):
 
         # get render time for x samples
         bpy.context.scene.cycles.samples = self.samples
-        at_high_samples = test_render()
+        at_high_samples = get_render_time()
 
         # catch wrong results
         if at_high_samples <= at_low_samples:
@@ -142,10 +148,18 @@ class AX_OT_render_in_time(bpy.types.Operator):
 
         elapsed = time.perf_counter() - start
         samples_out = round(predict_samples(time_needed, at_low_samples, self.samples, at_high_samples))
+        
+        bpy.context.scene.render.resolution_percentage = resolution_prev
+        bpy.context.scene.cycles.samples = samples_out
+        # TODO so it renders and shows the image?
 
-        # at_low_res = test_render(1) # TODO deal with this
-        # at_high_res = test_render(1)
-        # min_samples = test_render(1)
+        
+        
+        
+        
+        # at_low_res = get_render_time(1) # TODO deal with this
+        # at_high_res = get_render_time(1)
+        # min_samples = get_render_time(1)
         # res = 40
 
         # a, b = quadratic_fit_simplified(res / 2, at_low_res, res, at_high_res) # TODO maybe not simplified
@@ -155,8 +169,6 @@ class AX_OT_render_in_time(bpy.types.Operator):
 
         # needed = time_needed - elapsed
 
-        bpy.context.scene.cycles.samples = samples_out
-        # TODO so it renders and shows the image?
 
         self.report({'INFO'}, f"Done. Optimal samples - {samples_out}")
         return {'FINISHED'}
@@ -168,6 +180,8 @@ class AX_OT_render_in_time(bpy.types.Operator):
     def draw(self, context):
         
         layout = self.layout
+
+        #layout.prop(self, "what", expand = True)
         
         row = layout.row(align = True)
         row.prop(self, "time_needed")
@@ -178,5 +192,9 @@ class AX_OT_render_in_time(bpy.types.Operator):
         col = layout.column(align = True)
         col.prop(self, "samples")
         col.prop(self, "frames")
+
+        layout.prop(self, "fast_mode")
+        if self.fast_mode:
+            layout.prop(self, "quality")
 
         layout.label(text = "WARNING: This could take a couple of minutes.")

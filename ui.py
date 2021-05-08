@@ -40,7 +40,12 @@ class AX_PT_node_tools(bpy.types.Panel):
 
     def draw (self, context):
         layout = self.layout
-        layout.operator("ax.reset_node_color", icon = 'FILE_REFRESH')
+        col = layout.column(align = True)
+        selected = col.operator("ax.reset_node_color", text = "Reset Selected")  # FILE_REFRESH
+        selected.all = False
+        all = col.operator("ax.reset_node_color", text = "Reset All")
+        all.all = True
+        layout.operator("ax.node_flow")
 
 class AX_PT_optimization(bpy.types.Panel):
     

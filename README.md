@@ -21,14 +21,15 @@ Things to be aware of:
 - Aim for 95 % `Confidence`, but do not rely on it too much when using low settings.
 
 Recommended settings:
-- `Frames` - I wouldn't go under 6, if you have the time, use 30+.
+- `Frames` - I wouldn't go under 6, if you care about the results, use 30+.
 - `Resolution`, `Samples` - Both improve precision, resolution has a bigger impact on performance.
-- `Baseline Render` - On.
+- `Baseline Render` - On. Takes up to `(n+1)/n` times longer, where `n` is number of nodes.
 
 
 ## Miscellaneous
-- Resetting custom color of selected nodes
-- Swatches for basic colours in Vertex Paint mode
+- Resetting custom color of selected or all nodes
+- Show all nodes used by the selected node(s)
 - Mass conversion of Vertex Groups to Vertex Colors
+- Swatches for main colours in Vertex Paint mode
 
 Live long and prosper 🖖

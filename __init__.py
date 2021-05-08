@@ -1,9 +1,9 @@
 bl_info = {
     "name": "Fulcrum",
     "author": "Vladislav Macíček (Aeraglyx)",
-    "description": "Random tools",
+    "description": "All kinds of tools",
     "blender": (2, 93, 0),
-    "version": (0, 1, 3),
+    "version": (0, 1, 4),
     "location": "Everywhere",
     "wiki_url": "https://github.com/aeraglyx/fulcrum",
     "category": 'User Interface',
@@ -17,6 +17,7 @@ from . reset_node_color import AX_OT_reset_node_color
 from . render_in_time import AX_OT_render_in_time
 from . vert_group_2_col import AX_OT_vert_group_2_col
 from . paint import AX_OT_set_paint_brush, AX_OT_set_weight_brush
+from . node_flow import AX_OT_node_flow
 
 from . ui import (
     AX_PT_optimization, AX_PT_node_tools,
@@ -33,7 +34,8 @@ classes = (
     
     AX_PT_node_tools, AX_PT_optimization,
     AX_PT_render, AX_PT_data,
-    AX_PT_paint
+    AX_PT_paint,
+    AX_OT_node_flow
 )
 
 def register():
