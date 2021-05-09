@@ -9,7 +9,7 @@ class AX_OT_set_paint_brush(bpy.types.Operator):
     
     @classmethod
     def poll(cls, context):
-        return bpy.context.mode == 'PAINT_VERTEX'
+        return context.mode == 'PAINT_VERTEX'
 
     color: bpy.props.FloatVectorProperty(
         name = "Color", subtype = 'COLOR',
@@ -18,8 +18,8 @@ class AX_OT_set_paint_brush(bpy.types.Operator):
 
     def execute(self, context):
 
-        bpy.context.scene.tool_settings.unified_paint_settings.use_unified_color = True
-        bpy.context.scene.tool_settings.unified_paint_settings.color = self.color
+        context.scene.tool_settings.unified_paint_settings.use_unified_color = True
+        context.scene.tool_settings.unified_paint_settings.color = self.color
 
         return {'FINISHED'}
 
@@ -32,7 +32,7 @@ class AX_OT_set_weight_brush(bpy.types.Operator):
     
     @classmethod
     def poll(cls, context):
-        return bpy.context.mode == 'PAINT_WEIGHT'
+        return context.mode == 'PAINT_WEIGHT'
 
     weight: bpy.props.FloatProperty(
         name = "Weight", subtype = 'FACTOR',
@@ -41,7 +41,7 @@ class AX_OT_set_weight_brush(bpy.types.Operator):
 
     def execute(self, context):
 
-        bpy.context.scene.tool_settings.unified_paint_settings.use_unified_weight = True
-        bpy.context.scene.tool_settings.unified_paint_settings.weight = self.weight
+        context.scene.tool_settings.unified_paint_settings.use_unified_weight = True
+        context.scene.tool_settings.unified_paint_settings.weight = self.weight
 
         return {'FINISHED'}

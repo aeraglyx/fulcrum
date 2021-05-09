@@ -19,7 +19,7 @@ class my_properties(bpy.types.PropertyGroup):
     frames: bpy.props.IntProperty(
         name = "Frames",
         description = "Number of frames to render per dataset",
-        min = 2, default = 12, soft_max = 256
+        min = 2, default = 8, soft_max = 256
     )
     resolution: bpy.props.IntProperty(
         name = "Resolution",
@@ -83,16 +83,16 @@ class AX_OT_compare(bpy.types.Operator):
     
     @classmethod
     def poll(cls, context):
-        selected = bpy.context.selected_nodes
-        in_shader_editor = bpy.context.space_data.tree_type == 'ShaderNodeTree'
+        selected = bool(context.selected_nodes)
+        in_shader_editor = context.space_data.tree_type == 'ShaderNodeTree'
         # ^ or context.area.spaces.active.tree_type
-        return len(selected) > 1 and in_shader_editor # FIXME what if i select output
+        return selected and in_shader_editor # FIXME what if i select output
     
     # TODO works for reroutes, but maybe check if something is connected
     # and if so maybe draw frame around it to use for colouring?
     # track backwards and use that node if there is some
 
-    # len(C.active_object.data.materials['Material'].node_tree.nodes.active.outputs)
+    # len(context.active_object.data.materials['Material'].node_tree.nodes.active.outputs)
 
     def execute(self, context):
         
@@ -117,14 +117,14 @@ class AX_OT_compare(bpy.types.Operator):
                 links.new(viewer.outputs[0], output_node.inputs[0])
         
         def pre_render():
-            bpy.context.scene.render.resolution_percentage = 1
-            bpy.context.scene.cycles.samples = 1
+            context.scene.render.resolution_percentage = 1
+            context.scene.cycles.samples = 1
 
             bpy.ops.render.render(write_still = False)
             print("Pre-render done")
 
-            bpy.context.scene.render.resolution_percentage = props.resolution
-            bpy.context.scene.cycles.samples = props.samples
+            context.scene.render.resolution_percentage = props.resolution
+            context.scene.cycles.samples = props.samples
         
         def get_render():
             start_time = time.perf_counter()
@@ -165,19 +165,19 @@ class AX_OT_compare(bpy.types.Operator):
         print("Starting - 0%\n")
 
         # store render values
-        engine_prev = bpy.context.scene.render.engine
-        resolution_prev = bpy.context.scene.render.resolution_percentage
-        samples_prev = bpy.context.scene.cycles.samples  # TODO samples prob only work in cycles now
+        engine_prev = context.scene.render.engine
+        resolution_prev = context.scene.render.resolution_percentage
+        samples_prev = context.scene.cycles.samples  # TODO samples prob only work in cycles now
 
         # set render values
-        bpy.context.scene.render.engine = props.engine
-        bpy.context.scene.render.resolution_percentage = props.resolution
-        bpy.context.scene.cycles.samples = props.samples
+        context.scene.render.engine = props.engine
+        context.scene.render.resolution_percentage = props.resolution
+        context.scene.cycles.samples = props.samples
 
-        nodes = bpy.context.material.node_tree.nodes
-        links = bpy.context.material.node_tree.links
-        selected = bpy.context.selected_nodes
-        active = bpy.context.active_node
+        nodes = context.material.node_tree.nodes
+        links = context.material.node_tree.links
+        selected = context.selected_nodes
+        active = context.active_node
         output_node = nodes.get("Material Output")
 
         was_linked = output_node.inputs[0].is_linked
@@ -289,9 +289,9 @@ class AX_OT_compare(bpy.types.Operator):
 
 
         # restore render values
-        bpy.context.scene.render.engine = engine_prev
-        bpy.context.scene.render.resolution_percentage = resolution_prev
-        bpy.context.scene.cycles.samples = samples_prev
+        context.scene.render.engine = engine_prev
+        context.scene.render.resolution_percentage = resolution_prev
+        context.scene.cycles.samples = samples_prev
 
         self.report({'INFO'}, "Done!")  # TODO done how quickly
         

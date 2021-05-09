@@ -17,7 +17,7 @@ from . reset_node_color import AX_OT_reset_node_color
 from . render_in_time import AX_OT_render_in_time
 from . vert_group_2_col import AX_OT_vert_group_2_col
 from . paint import AX_OT_set_paint_brush, AX_OT_set_weight_brush
-from . node_flow import AX_OT_node_flow
+from . node_flow import AX_OT_node_flow, AX_OT_unused_nodes
 
 from . ui import (
     AX_PT_optimization, AX_PT_node_tools,
@@ -35,7 +35,7 @@ classes = (
     AX_PT_node_tools, AX_PT_optimization,
     AX_PT_render, AX_PT_data,
     AX_PT_paint,
-    AX_OT_node_flow
+    AX_OT_node_flow, AX_OT_unused_nodes
 )
 
 def register():

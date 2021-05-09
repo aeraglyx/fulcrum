@@ -40,12 +40,15 @@ class AX_PT_node_tools(bpy.types.Panel):
 
     def draw (self, context):
         layout = self.layout
+
         col = layout.column(align = True)
         selected = col.operator("ax.reset_node_color", text = "Reset Selected")  # FILE_REFRESH
         selected.all = False
         all = col.operator("ax.reset_node_color", text = "Reset All")
         all.all = True
+
         layout.operator("ax.node_flow")
+        layout.operator("ax.unused_nodes")
 
 class AX_PT_optimization(bpy.types.Panel):
     
@@ -56,7 +59,7 @@ class AX_PT_optimization(bpy.types.Panel):
     
     @classmethod
     def poll(cls, context):
-        in_shader_editor = bpy.context.space_data.tree_type == 'ShaderNodeTree'
+        in_shader_editor = context.space_data.tree_type == 'ShaderNodeTree'
         return in_shader_editor
 
     def draw (self, context):
@@ -93,8 +96,8 @@ class AX_PT_paint(bpy.types.Panel):
 
     @classmethod
     def poll(cls, context):
-        weight = bpy.context.mode == 'PAINT_WEIGHT'
-        paint = bpy.context.mode == 'PAINT_VERTEX'
+        weight = context.mode == 'PAINT_WEIGHT'
+        paint = context.mode == 'PAINT_VERTEX'
         return weight or paint
 
     def draw (self, context):

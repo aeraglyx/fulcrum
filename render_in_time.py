@@ -6,10 +6,12 @@ class AX_OT_render_in_time(bpy.types.Operator):
     bl_idname = "ax.render_in_time"
     bl_label = "Render in Time"
     bl_description = "Estimate samples so that render takes a certain time"
+    COMPAT_ENGINES = {'CYCLES', 'BLENDER_EEVEE'}  # TODO idk, only Cycles?
     
     @classmethod
     def poll(cls, context):
-        return bpy.context.scene.render.engine == 'CYCLES'
+        engine = context.scene.render.engine
+        return engine in cls.COMPAT_ENGINES
     
     time_needed: bpy.props.FloatProperty(
         name = "Time",
@@ -25,22 +27,22 @@ class AX_OT_render_in_time(bpy.types.Operator):
     samples: bpy.props.IntProperty(
         name = "Samples",
         description = "Number of samples to use for test renders",
-        min = 2, default = 16, soft_max = 1024
+        min = 2, default = 32, soft_max = 1024
     )
     fast_mode: bpy.props.BoolProperty(
         name = "Fast Mode",
         description = "Use quicker prediction algorithm at the cost of lower precision",
-        default = True
+        default = False
     )
-    quality: bpy.props.FloatProperty(
+    quality: bpy.props.IntProperty(
         name = "Quality",
         description = "Low - faster estimation; High - better precision",
         subtype = "PERCENTAGE",
-        min = 3, soft_min = 10, default = 40, soft_max = 70, max = 100
+        min = 3, soft_min = 10, default = 30, soft_max = 50, max = 100
     )
-    unit: bpy.props.EnumProperty(
+    time_unit: bpy.props.EnumProperty(
         name = "Unit",
-        description = "Unit of time",
+        description = "Unit of time for render",
         items = [
             ('S', "Seconds", ""),
             ('M', "Minutes", ""),
@@ -66,8 +68,8 @@ class AX_OT_render_in_time(bpy.types.Operator):
             return sum(a) / len(a)
 
         def pre_render():
-            bpy.context.scene.render.resolution_percentage = 1
-            bpy.context.scene.cycles.samples = 1
+            context.scene.render.resolution_percentage = 1
+            context.scene.cycles.samples = 1
             bpy.ops.render.render(write_still = False)
             print("Pre-render done")
         
@@ -102,57 +104,61 @@ class AX_OT_render_in_time(bpy.types.Operator):
 
         start = time.perf_counter()
 
+        # context.scene.eevee.taa_render_samples
+
         # store render values
-        resolution_prev = bpy.context.scene.render.resolution_percentage
-        samples_prev = bpy.context.scene.cycles.samples
+        resolution_prev = context.scene.render.resolution_percentage
+        samples_prev = context.scene.cycles.samples
 
         res = self.quality
-        bpy.context.scene.render.resolution_percentage = res
+        context.scene.render.resolution_percentage = res
         
         # get render time for 1 sample
-        bpy.context.scene.cycles.samples = 1
+        context.scene.cycles.samples = 1
         bpy.ops.render.render(write_still = False)  # pre-render
         at_low_samples = get_render_time()
 
-        # time unit conversion - REFACTOR to match-case for Python 3.10
-        if self.unit == 'S':
+        # time time_unit conversion - REFACTOR to match-case for Python 3.10
+        if self.time_unit == 'S':
             time_needed = self.time_needed
-        elif self.unit == 'M':
+        elif self.time_unit == 'M':
             time_needed = self.time_needed * 60
-        elif self.unit == 'H':
+        elif self.time_unit == 'H':
             time_needed = self.time_needed * 3600
 
         # catch wrong results
         if at_low_samples > time_needed:
-            bpy.context.scene.cycles.samples = 1  # samples_prev or set to 1 for fastest possible?
+            context.scene.cycles.samples = 1  # samples_prev or set to 1 for fastest possible?
             self.report({'WARNING'}, f"Can't be done in less than {at_low_samples:.2f}s")
             return {'CANCELLED'}
         if at_low_samples == time_needed:
-            bpy.context.scene.cycles.samples = 1  # warning - too low?
+            context.scene.cycles.samples = 1  # warning - too low?
             self.report({'INFO'}, f"Done. Optimal samples - 1")
             return {'FINISHED'}
 
         # get render time for x samples
-        bpy.context.scene.cycles.samples = self.samples
+        context.scene.cycles.samples = self.samples
         at_high_samples = get_render_time()
 
         # catch wrong results
         if at_high_samples <= at_low_samples:
-            bpy.context.scene.cycles.samples = samples_prev  # or set to 1 for fastest possible?
+            context.scene.cycles.samples = samples_prev  # or set to 1 for fastest possible?
             self.report({'ERROR'}, f"Precision error, use higher samples and/or frames.")
             return {'CANCELLED'}
         if at_high_samples == time_needed:
-            bpy.context.scene.cycles.samples = self.samples
+            context.scene.cycles.samples = self.samples
             self.report({'INFO'}, f"Done. Optimal samples - {self.samples}")
             return {'FINISHED'}
 
         elapsed = time.perf_counter() - start
         samples_out = round(predict_samples(time_needed, at_low_samples, self.samples, at_high_samples))
         
-        bpy.context.scene.render.resolution_percentage = resolution_prev
-        bpy.context.scene.cycles.samples = samples_out
+        context.scene.render.resolution_percentage = resolution_prev
+        context.scene.cycles.samples = samples_out
         # TODO so it renders and shows the image?
 
+        self.report({'INFO'}, f"Done. Optimal samples - {samples_out}")
+        return {'FINISHED'}
         
         
         
@@ -170,9 +176,6 @@ class AX_OT_render_in_time(bpy.types.Operator):
         # needed = time_needed - elapsed
 
 
-        self.report({'INFO'}, f"Done. Optimal samples - {samples_out}")
-        return {'FINISHED'}
-
     def invoke(self, context, event):
         wm = context.window_manager
         return wm.invoke_props_dialog(self)
@@ -187,7 +190,7 @@ class AX_OT_render_in_time(bpy.types.Operator):
         row.prop(self, "time_needed")
         row_x = row.row(align = True)
         row_x.scale_x = 0.75
-        row_x.prop(self, "unit", text = "")
+        row_x.prop(self, "time_unit", text = "")
         
         col = layout.column(align = True)
         col.prop(self, "samples")

@@ -14,9 +14,9 @@ class AX_OT_reset_node_color(bpy.types.Operator):
         default = False
     )
     
-    # @classmethod # FIXME
+    # @classmethod # FIXME - maybe separate into 2 ops
     # def poll(cls, context):
-    #     selected = bpy.context.selected_nodes
+    #     selected = context.selected_nodes
     #     if self.all:
     #         return True
     #     else:
@@ -25,11 +25,11 @@ class AX_OT_reset_node_color(bpy.types.Operator):
     def execute(self, context):
         
         if self.all == True:
-            nodes = bpy.context.material.node_tree.nodes
+            nodes = context.material.node_tree.nodes
             for node in nodes:
                 node.use_custom_color = False
         else:
-            selected = bpy.context.selected_nodes
+            selected = context.selected_nodes
             for node in selected:
                 node.use_custom_color = False
         
