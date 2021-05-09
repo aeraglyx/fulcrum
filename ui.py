@@ -47,8 +47,10 @@ class AX_PT_node_tools(bpy.types.Panel):
         all = col.operator("ax.reset_node_color", text = "Reset All")
         all.all = True
 
-        layout.operator("ax.node_flow")
-        layout.operator("ax.unused_nodes")
+        col = layout.column(align = True)
+        col.operator("ax.node_flow")
+        col.operator("ax.unused_nodes")
+        col.operator("ax.find_inputs")
 
 class AX_PT_optimization(bpy.types.Panel):
     
