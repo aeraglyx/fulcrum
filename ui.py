@@ -69,18 +69,19 @@ class AX_PT_optimization(bpy.types.Panel):
         layout = self.layout
         props = context.scene.ax_compare
 
-        layout.prop(props, "engine")
+        # layout.prop(props, "engine")
         
-        col = layout.column(align = True)
-        col.prop(props, "frames")
-        col.prop(props, "resolution")
-        col.prop(props, "samples")
+        # col = layout.column(align = True)
+        # col.prop(props, "frames")
+        # col.prop(props, "resolution")
+        # col.prop(props, "samples")
         
-        layout.prop(props, "use_base")
+        # layout.prop(props, "use_base")
         
-        row_thicc = layout.row()
-        row_thicc.scale_y = 1.4
-        row_thicc.operator("ax.compare", icon = 'NONE')  # SORTTIME TIME TEMP
+        # row_thicc = layout.row()
+        # row_thicc.scale_y = 1.4
+        row = layout.row()
+        row.operator("ax.compare", icon = 'NONE')  # SORTTIME TIME TEMP
         
         col = layout.column(align = True)
         col.label(text = f"Ratio: {props.result:.3f}", icon = 'SETTINGS')  # UV_SYNC_SELECT CONSTRAINT SETTINGS

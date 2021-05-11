@@ -7,36 +7,6 @@ import statistics
 
 class my_properties(bpy.types.PropertyGroup):
 
-    engine: bpy.props.EnumProperty(
-        name = "Engine", # XXX idk, think this through
-        description = "Engine to use for rendering",
-        items = [
-            ('BLENDER_EEVEE', "Eevee", ""),
-            ('CYCLES', "Cycles", "")
-        ],
-        default = 'CYCLES'
-    )
-    frames: bpy.props.IntProperty(
-        name = "Frames",
-        description = "Number of frames to render per dataset",
-        min = 2, default = 8, soft_max = 256
-    )
-    resolution: bpy.props.IntProperty(
-        name = "Resolution",
-        description = "Resolution percentage",
-        subtype = "PERCENTAGE",
-        min = 1, default = 20, max = 100
-    )
-    samples: bpy.props.IntProperty(
-        name = "Samples",
-        description = "Number of samples for each render",
-        min = 1, default = 16, soft_max = 1024
-    )
-    use_base: bpy.props.BoolProperty(
-        name = "Baseline Render",
-        description = "Whether to render a shaderless image and use it as baseline for ratio",
-        default = True
-    )
     result: bpy.props.FloatProperty(
         default = 1.0
     )
@@ -94,6 +64,37 @@ class AX_OT_compare(bpy.types.Operator):
 
     # len(context.active_object.data.materials['Material'].node_tree.nodes.active.outputs)
 
+    engine: bpy.props.EnumProperty(
+        name = "Engine", # XXX idk, think this through
+        description = "Engine to use for rendering",
+        items = [
+            ('BLENDER_EEVEE', "Eevee", ""),
+            ('CYCLES', "Cycles", "")
+        ],
+        default = 'CYCLES'
+    )
+    frames: bpy.props.IntProperty(
+        name = "Frames",
+        description = "Number of frames to render per dataset",
+        min = 2, default = 8, soft_max = 256
+    )
+    resolution: bpy.props.IntProperty(
+        name = "Resolution",
+        description = "Resolution percentage",
+        subtype = "PERCENTAGE",
+        min = 1, default = 20, max = 100
+    )
+    samples: bpy.props.IntProperty(
+        name = "Samples",
+        description = "Number of samples for each render",
+        min = 1, default = 16, soft_max = 1024
+    )
+    use_base: bpy.props.BoolProperty(
+        name = "Baseline Render",
+        description = "Whether to render a shaderless image and use it as baseline for ratio",
+        default = True
+    )
+
     def execute(self, context):
         
         props = context.scene.ax_compare
@@ -123,8 +124,8 @@ class AX_OT_compare(bpy.types.Operator):
             bpy.ops.render.render(write_still = False)
             print("Pre-render done")
 
-            context.scene.render.resolution_percentage = props.resolution
-            context.scene.cycles.samples = props.samples
+            context.scene.render.resolution_percentage = self.resolution
+            context.scene.cycles.samples = self.samples
         
         def get_render():
             start_time = time.perf_counter()
@@ -170,9 +171,9 @@ class AX_OT_compare(bpy.types.Operator):
         samples_prev = context.scene.cycles.samples  # TODO samples prob only work in cycles now
 
         # set render values
-        context.scene.render.engine = props.engine
-        context.scene.render.resolution_percentage = props.resolution
-        context.scene.cycles.samples = props.samples
+        context.scene.render.engine = self.engine
+        context.scene.render.resolution_percentage = self.resolution
+        context.scene.cycles.samples = self.samples
 
         nodes = context.material.node_tree.nodes
         links = context.material.node_tree.links
@@ -199,22 +200,22 @@ class AX_OT_compare(bpy.types.Operator):
  
             data = []
             # inside loop, renders per node
-            for j in range(props.frames):
+            for j in range(self.frames):
                 
-                count = i * props.frames + j + 1
-                if props.use_base == True: 
-                    progress = count / ((len(selected) + 1) * props.frames)
+                count = i * self.frames + j + 1
+                if self.use_base == True: 
+                    progress = count / ((len(selected) + 1) * self.frames)
                 else:
-                    progress = count / (len(selected) * props.frames)
+                    progress = count / (len(selected) * self.frames)
 
                 render = get_render()
                 print(f"{render:.3f}s - {100*progress:.1f}%")
                 data.append(render)
 
-            render_time = statistics.mean(data)
+            render_time = statistics.mean(data) # TODO make it work for just 1 frame per node
             render_times.append(render_time)
             
-            if props.frames > 1:
+            if self.frames > 1:
                 deviation = statistics.stdev(data)
                 render_deviations.append(deviation)
             
@@ -225,14 +226,14 @@ class AX_OT_compare(bpy.types.Operator):
         
 
         # base render
-        if props.use_base == True:
+        if self.use_base == True:
             pre_render()
             data_base = []
-            for j in range(props.frames):
+            for j in range(self.frames):
                 render = get_render()
                 
-                count = len(selected) * props.frames + j + 1
-                progress = count / ((len(selected) + 1) * props.frames)
+                count = len(selected) * self.frames + j + 1
+                progress = count / ((len(selected) + 1) * self.frames)
                 
                 print(f"{render:.3f}s - {100*progress:.1f}%")
                 data_base.append(render)
@@ -249,7 +250,7 @@ class AX_OT_compare(bpy.types.Operator):
         min_time = min(render_times)
         max_time = max(render_times)
         
-        if props.use_base == True:
+        if self.use_base == True:
             smooth = 0.125
             props.result = falloff(max_time/base_time, smooth) / falloff(min_time/base_time, smooth)
         else:
@@ -258,14 +259,14 @@ class AX_OT_compare(bpy.types.Operator):
         
 
         # stdev needs at least 2
-        if props.frames > 1 and min_time != max_time:
+        if self.frames > 1 and min_time != max_time:
             mean = max_time - min_time
             max_dev = render_deviations[render_times.index(max_time)] # HACK idk, zip?
             min_dev = render_deviations[render_times.index(min_time)]
             # dev = math.sqrt(max_dev**2 + min_dev**2)
             # plus or minus mean, it's (0 - mean) v
             # props.confidence = 0.5 + 0.5 * math.erf(mean / (dev * math.sqrt(2)))
-            props.confidence = student(min_time, max_time, min_dev, max_dev, props.frames)  # takes variance
+            props.confidence = student(min_time, max_time, min_dev, max_dev, self.frames)  # takes variance
         else:
             props.confidence = 0
         
@@ -296,3 +297,20 @@ class AX_OT_compare(bpy.types.Operator):
         self.report({'INFO'}, "Done!")  # TODO done how quickly
         
         return {'FINISHED'}
+    
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)
+    
+    def draw(self, context):
+
+        layout = self.layout
+
+        layout.prop(self, "engine")
+        
+        col = layout.column(align = True)
+        col.prop(self, "frames")
+        col.prop(self, "resolution")
+        col.prop(self, "samples")
+        
+        layout.prop(self, "use_base")
