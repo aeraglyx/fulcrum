@@ -145,7 +145,7 @@ class AX_OT_compare(bpy.types.Operator):
             # dof = 2 * n - 2  # assumes same variance
             dof = (n - 1) * (var_a + var_b)**2 / (var_a**2 + var_b**2)
 
-            threshold = 0.00005
+            threshold = 0.00005 # XXX not used
 
             if mean_a == mean_b:
                 return 0.5
@@ -252,7 +252,7 @@ class AX_OT_compare(bpy.types.Operator):
         
         if self.use_base == True:
             smooth = 0.125
-            props.result = falloff(max_time/base_time, smooth) / falloff(min_time/base_time, smooth)
+            props.result = falloff(max_time / base_time, smooth) / falloff(min_time / base_time, smooth)
         else:
             props.result = max_time / min_time
             
@@ -282,9 +282,9 @@ class AX_OT_compare(bpy.types.Operator):
             if min_time == max_time :
                 h = 0.8  # purple
             else:
-                x = render_times[selected.index(node)]
+                x = render_times[selected.index(node)] # HACK idk
                 h = lerp(x, min_time, max_time, 0.6, 0)
-            node.color = [x**0.45 for x in oklab_hsl_2_srgb(h, 0.06, 0.45)]
+            node.color = [x**0.45 for x in oklab_hsl_2_srgb(h, 0.06, 0.45)] # gamma
         if "ax_viewer" in nodes:
             nodes.remove(nodes.get("ax_viewer"))
 
@@ -294,14 +294,15 @@ class AX_OT_compare(bpy.types.Operator):
         context.scene.render.resolution_percentage = resolution_prev
         context.scene.cycles.samples = samples_prev
 
-        self.report({'INFO'}, "Done!")  # TODO done how quickly
-        
+        self.report({'INFO'}, f"Done! Ratio: {props.result:.3f}, Confidence: {100*props.confidence:.0f}%")
         return {'FINISHED'}
     
+
     def invoke(self, context, event):
         wm = context.window_manager
         return wm.invoke_props_dialog(self)
     
+
     def draw(self, context):
 
         layout = self.layout
@@ -314,3 +315,58 @@ class AX_OT_compare(bpy.types.Operator):
         col.prop(self, "samples")
         
         layout.prop(self, "use_base")
+
+
+class AX_OT_benchmark(bpy.types.Operator):
+    
+    bl_idname = "ax.benchmark"
+    bl_label = "Benchmark"
+    bl_description = "Get average render time"
+    
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    frames: bpy.props.IntProperty(
+        name = "Frames",
+        description = "Number of frames to render",
+        min = 1, default = 3, soft_max = 16
+    )
+
+    def execute(self, context):
+
+        def get_render():
+            start_time = time.perf_counter()
+            bpy.ops.render.render(write_still = False)
+            return time.perf_counter() - start_time
+        def pre_render():
+            resolution_prev = context.scene.render.resolution_percentage
+            samples_prev = context.scene.cycles.samples  # TODO samples prob only work in cycles now
+
+            context.scene.render.resolution_percentage = 1
+            context.scene.cycles.samples = 1
+
+            bpy.ops.render.render(write_still = False)
+            print("Pre-render done")
+
+            context.scene.render.resolution_percentage = resolution_prev
+            context.scene.cycles.samples = samples_prev
+        
+        pre_render()
+
+        data = []
+        for _ in range(self.frames):
+            data.append(get_render())
+        
+        result = statistics.mean(data)
+
+        self.report({'INFO'}, f"Render time: {result:.2f}s")
+        return {'FINISHED'}
+    
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)
+    
+    def draw(self, context):
+        layout = self.layout
+        layout.prop(self, "frames")

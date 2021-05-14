@@ -3,16 +3,16 @@ bl_info = {
     "author": "Vladislav Macíček (Aeraglyx)",
     "description": "All kinds of tools",
     "blender": (2, 93, 0),
-    "version": (0, 1, 4),
+    "version": (0, 1, 5),
     "location": "Everywhere",
-    "wiki_url": "https://github.com/aeraglyx/fulcrum",
+    "doc_url": "https://github.com/aeraglyx/fulcrum",
     "category": 'User Interface',
     "support": 'COMMUNITY'
 }
 
 import bpy
 
-from . compare import AX_OT_compare, my_properties
+from . compare import AX_OT_compare, my_properties, AX_OT_benchmark
 from . reset_node_color import AX_OT_reset_node_color
 from . render_in_time import AX_OT_render_in_time
 from . vert_group_2_col import AX_OT_vert_group_2_col
@@ -28,7 +28,7 @@ from . ui import (
 classes = (
     my_properties,
     
-    AX_OT_reset_node_color, AX_OT_compare,
+    AX_OT_reset_node_color, AX_OT_compare, AX_OT_benchmark,
     AX_OT_render_in_time, AX_OT_vert_group_2_col,
     AX_OT_set_paint_brush, AX_OT_set_weight_brush,
     
