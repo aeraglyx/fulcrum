@@ -1,6 +1,26 @@
 import bpy
 import re
 
+def color_nodes(nodes, color):
+    for node in nodes:
+        node.use_custom_color = True
+        node.color = color
+
+def clear_node_color(nodes):
+    for node in nodes:
+        node.use_custom_color = False
+
+def get_node_name(node):
+    """Get node name that is visible to user"""
+    # label > prop. name > name
+    if bool(node.label):
+        return node.label
+    elif hasattr(node, "node_tree"):
+        return node.node_tree.name
+    else:
+        name = node.name
+        return re.sub(".[0-9]{3,}$", "", name) # XXX {3} or {3,}
+
 class AX_OT_node_flow(bpy.types.Operator):
     
     bl_idname = "ax.node_flow"
@@ -15,11 +35,8 @@ class AX_OT_node_flow(bpy.types.Operator):
 
         nodes = context.material.node_tree.nodes
         selected = context.selected_nodes
-        #active = context.active_node
-        #output_node = nodes.get("Material Output")
-
-        for node in nodes:
-            node.use_custom_color = False
+        
+        clear_node_color(nodes)
 
         nodes_out = []
         def func(node_current):
@@ -29,13 +46,11 @@ class AX_OT_node_flow(bpy.types.Operator):
                     if node not in nodes_out:
                         nodes_out.append(node)
                         func(node)
+        
         for node in selected:
             func(node)
         
-        for node in nodes_out:
-            node.use_custom_color = True
-            node.color = [0.2,0.45,0.6]
-            # node.color = [0.65,0.29,0.32]
+        color_nodes(nodes_out, [0.2,0.45,0.6])
 
         return {'FINISHED'}
 
@@ -46,20 +61,18 @@ class AX_OT_unused_nodes(bpy.types.Operator):
     bl_label = "Unused Nodes"
     bl_description = "Show all nodes used by the selected nodes"
     
-    @classmethod
-    def poll(cls, context):
-        return bool(context.selected_nodes)
+    # @classmethod
+    # def poll(cls, context):
+    #     return bool(context.selected_nodes)
+
+    # TODO make it work for inside of node groups
 
     def execute(self, context):
 
         nodes = context.material.node_tree.nodes
-        links = context.material.node_tree.links
-        selected = context.selected_nodes
-        #active = context.active_node
         output_node = nodes.get("Material Output")
 
-        for node in nodes:
-            node.use_custom_color = False
+        clear_node_color(nodes)
 
         used = []
         def func(node_current):
@@ -73,10 +86,7 @@ class AX_OT_unused_nodes(bpy.types.Operator):
         
         unused = [node for node in nodes if node not in used]
 
-        for node in unused:
-            node.use_custom_color = True
-            # node.color = [0.2,0.45,0.6]
-            node.color = [0.65,0.29,0.32]
+        color_nodes(unused, [0.65,0.29,0.32])
 
         return {'FINISHED'}
 
@@ -98,27 +108,12 @@ class AX_OT_find_inputs(bpy.types.Operator):
         selected = context.selected_nodes
         active = context.active_node
 
-        for node in nodes:
-            node.use_custom_color = False
+        clear_node_color(nodes)
         
         # TODO make func that finds socket locations
 
         # NOTE bpy.ops.node.delete_reconnect()
         # BUG links are still there in bg, also inputs of left kinda
-        
-
-
-        # label > prop. name > name
-        # TODO regex .001
-        def get_node_name(node):
-            """Get node name that is visible to user"""
-            if bool(node.label):
-                return node.label
-            elif hasattr(node, "node_tree"):
-                return node.node_tree.name
-            else:
-                name = node.name
-                return re.sub(".[0-9]{3}$", "", name) # {3,} if it can go beyond 999
 
         offset_bottom_left = 16
         offset_top_right = 34
@@ -199,16 +194,13 @@ class AX_OT_find_inputs(bpy.types.Operator):
                         reroute_right.location.x = right_x
                         reroute_right.location.y = right_y
 
-                        links.remove()
+                        # links.remove()
                         links.new(link.from_socket, reroute_left.inputs[0])
                     
                     nodes_out.append(node)
             deselect_later.append(node_orig)
 
-        # set custom node color
-        for node in nodes_out:
-            node.use_custom_color = True
-            node.color = [0.3,0.6,0.3]
+        color_nodes(nodes_out, [0.3,0.6,0.3])
         
         # select reroutes
         for node in select_later:
