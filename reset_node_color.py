@@ -25,7 +25,7 @@ class AX_OT_reset_node_color(bpy.types.Operator):
     def execute(self, context):
         
         if self.all == True:
-            nodes = context.material.node_tree.nodes
+            nodes = context.active_node.id_data.nodes
             for node in nodes:
                 node.use_custom_color = False
         else:

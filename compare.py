@@ -76,7 +76,7 @@ class AX_OT_compare(bpy.types.Operator):
     frames: bpy.props.IntProperty(
         name = "Frames",
         description = "Number of frames to render per dataset",
-        min = 2, default = 8, soft_max = 256
+        min = 2, default = 6, soft_max = 256
     )
     resolution: bpy.props.IntProperty(
         name = "Resolution",
@@ -92,7 +92,7 @@ class AX_OT_compare(bpy.types.Operator):
     use_base: bpy.props.BoolProperty(
         name = "Baseline Render",
         description = "Whether to render a shaderless image and use it as baseline for ratio",
-        default = True
+        default = False
     )
 
     def execute(self, context):
@@ -175,11 +175,15 @@ class AX_OT_compare(bpy.types.Operator):
         context.scene.render.resolution_percentage = self.resolution
         context.scene.cycles.samples = self.samples
 
-        nodes = context.material.node_tree.nodes
-        links = context.material.node_tree.links
-        selected = context.selected_nodes
+        # nodes = context.node_tree.nodes #context.material.node_tree.nodes
+        # links = context.node_tree.links #context.material.node_tree.links
         active = context.active_node
-        output_node = nodes.get("Material Output")
+        selected = context.selected_nodes
+
+        node_tree = active.id_data
+        nodes = node_tree.nodes
+        links = node_tree.links
+        output_node = node_tree.get_output_node(target = 'ALL')
 
         was_linked = output_node.inputs[0].is_linked
 

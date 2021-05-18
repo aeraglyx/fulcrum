@@ -38,7 +38,7 @@ class AX_OT_render_in_time(bpy.types.Operator):
         name = "Quality",
         description = "Low - faster estimation; High - better precision",
         subtype = "PERCENTAGE",
-        min = 3, soft_min = 10, default = 30, soft_max = 50, max = 100
+        min = 3, soft_min = 10, default = 25, soft_max = 50, max = 100
     )
     time_unit: bpy.props.EnumProperty(
         name = "Unit",
@@ -54,13 +54,13 @@ class AX_OT_render_in_time(bpy.types.Operator):
     #     name = "What",
     #     description = "Whether you specify time per frame or for full animation",
     #     items = [
-    #         ('FRAME', "Per Frame", ""),
-    #         ('ANIMATION', "Animation", "")
+    #         ('F', "Per Frame", ""),
+    #         ('A', "Animation", "")
     #     ],
-    #     default = 'FRAME'
+    #     default = 'F'
     # )
 
-    # 70 - 99% range is inefficient
+    # 50 - 99% range is inefficient
 
     def execute(self, context):
 
@@ -118,7 +118,7 @@ class AX_OT_render_in_time(bpy.types.Operator):
         bpy.ops.render.render(write_still = False)  # pre-render
         at_low_samples = get_render_time()
 
-        # time time_unit conversion - REFACTOR to match-case for Python 3.10
+        # time time_unit conversion - REFACTOR to match-case for Python 3.10 ?
         if self.time_unit == 'S':
             time_needed = self.time_needed
         elif self.time_unit == 'M':
@@ -151,7 +151,8 @@ class AX_OT_render_in_time(bpy.types.Operator):
             return {'FINISHED'}
 
         elapsed = time.perf_counter() - start
-        samples_out = round(predict_samples(time_needed, at_low_samples, self.samples, at_high_samples))
+        samples_out = predict_samples(time_needed, at_low_samples, self.samples, at_high_samples)
+        samples_out = round(samples_out)
         
         context.scene.render.resolution_percentage = resolution_prev
         context.scene.cycles.samples = samples_out
@@ -159,7 +160,6 @@ class AX_OT_render_in_time(bpy.types.Operator):
 
         self.report({'INFO'}, f"Done. Optimal samples - {samples_out}")
         return {'FINISHED'}
-        
         
         
         
@@ -172,8 +172,6 @@ class AX_OT_render_in_time(bpy.types.Operator):
         # res_final = 100
         # at_final_res = a * res_final**2 + b * res_final
         #res_mult = at_final_res / res  # kolikrát se čas prodlouží při 100%
-
-        # needed = time_needed - elapsed
 
 
     def invoke(self, context, event):

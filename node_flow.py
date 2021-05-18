@@ -33,7 +33,7 @@ class AX_OT_node_flow(bpy.types.Operator):
 
     def execute(self, context):
 
-        nodes = context.material.node_tree.nodes
+        nodes = context.active_node.id_data.nodes
         selected = context.selected_nodes
         
         clear_node_color(nodes)
@@ -69,7 +69,7 @@ class AX_OT_unused_nodes(bpy.types.Operator):
 
     def execute(self, context):
 
-        nodes = context.material.node_tree.nodes
+        nodes = context.active_node.id_data.nodes
         output_node = nodes.get("Material Output")
 
         clear_node_color(nodes)
@@ -103,8 +103,8 @@ class AX_OT_find_inputs(bpy.types.Operator):
 
     def execute(self, context):
 
-        nodes = context.material.node_tree.nodes
-        links = context.material.node_tree.links
+        nodes = context.active_node.id_data.nodes
+        links = context.active_node.id_data.links
         selected = context.selected_nodes
         active = context.active_node
 
