@@ -188,6 +188,9 @@ class AX_PT_utility_3d(bpy.types.Panel):
 	def draw (self, context):
 		
 		layout = self.layout
-			
-		layout.operator("ax.locate_vertex", icon = 'VERTEXSEL')
+		
+		col = layout.column(align = True)
+		col.operator("ax.locate_vertex", icon = 'VERTEXSEL')
+		col.operator("ax.locate_vertices", icon = 'SNAP_VERTEX')
+		
 		layout.operator("wm.console_toggle", icon = 'CONSOLE')
