@@ -93,7 +93,7 @@ class AX_PT_optimization(bpy.types.Panel):
 		col.label(text = f"Ratio: {props.result:.3f}", icon = 'SETTINGS')  # UV_SYNC_SELECT CONSTRAINT SETTINGS
 		col.label(text = f"Confidence: {props.confidence*100:.0f}%", icon = 'RNDCURVE')  # INDIRECT_ONLY_ON RNDCURVE
 
-class AX_PT_utility(bpy.types.Panel):
+class AX_PT_utility_node(bpy.types.Panel):
 	
 	bl_space_type = "NODE_EDITOR"
 	bl_region_type = "UI"
@@ -173,3 +173,21 @@ class AX_PT_paint(bpy.types.Panel):
 			props.weight = 0.5
 			props = row.operator("ax.set_weight_brush", text = "1.0", icon = 'NONE')
 			props.weight = 1.0
+
+class AX_PT_utility_3d(bpy.types.Panel):
+	
+	bl_space_type = "VIEW_3D"
+	bl_region_type = "UI"
+	bl_category = "Fulcrum"
+	bl_label = "Utility"
+
+	@classmethod
+	def poll(cls, context):
+		return True
+
+	def draw (self, context):
+		
+		layout = self.layout
+			
+		layout.operator("ax.locate_vertex", icon = 'VERTEXSEL')
+		layout.operator("wm.console_toggle", icon = 'CONSOLE')
