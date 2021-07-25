@@ -5,7 +5,7 @@ import datetime
 
 
 def to62(x):
-	letters = string.digits + string.ascii_uppercase + string.ascii_lowercase
+	letters = string.digits + string.ascii_lowercase + string.ascii_uppercase
 	# letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 	out = ""
 	while x:
@@ -15,7 +15,7 @@ def to62(x):
 	return out
 
 def from62(x):
-	letters = string.digits + string.ascii_uppercase + string.ascii_lowercase
+	letters = string.digits + string.ascii_lowercase + string.ascii_uppercase
 	x = str(x)
 	out = 0
 	for i, char in enumerate(x):
@@ -51,7 +51,12 @@ class AX_OT_version_encode(bpy.types.Operator):
 	
 	@classmethod
 	def poll(cls, context):
-		is_group = hasattr(context.active_node, "node_tree")
+		if hasattr(context, "active_node"):
+			node = context.active_node
+			if node:
+				return hasattr(node, "node_tree")
+		return False
+
 		# is_selected = context.active_node.select
 		# return is_group and is_selected
 		return is_group
@@ -76,12 +81,11 @@ class AX_OT_version_decode(bpy.types.Operator):
 	
 	@classmethod
 	def poll(cls, context):
-		is_group = hasattr(context.active_node, "node_tree")
-		if is_group:
-			name = context.active_node.node_tree.name
-			return has_version(name)
-		else:
-			return False
+		if hasattr(context, "active_node"):
+			node = context.active_node
+			if node:
+				return hasattr(node, "node_tree")
+		return False
 
 	def execute(self, context):
 		active = context.active_node

@@ -53,10 +53,12 @@ class AX_OT_compare(bpy.types.Operator):
 	
 	@classmethod
 	def poll(cls, context):
-		selected = bool(context.selected_nodes)
-		in_shader_editor = context.space_data.tree_type == 'ShaderNodeTree'
-		# ^ or context.area.spaces.active.tree_type
-		return selected and in_shader_editor # FIXME what if i select output
+		# in_shader_editor = context.space_data.tree_type == 'ShaderNodeTree'
+		# # ^ or context.area.spaces.active.tree_type
+		if hasattr(context, "selected_nodes"):
+			return bool(context.selected_nodes)
+		# return selected and in_shader_editor # FIXME what if i select output
+		return False
 	
 	# TODO works for reroutes, but maybe check if something is connected
 	# and if so maybe draw frame around it to use for colouring?

@@ -29,7 +29,7 @@ class AX_OT_node_flow(bpy.types.Operator):
 	
 	@classmethod
 	def poll(cls, context):
-		return bool(context.selected_nodes)
+		return hasattr(context, "selected_nodes")
 
 	def execute(self, context):
 
@@ -99,7 +99,7 @@ class AX_OT_find_inputs(bpy.types.Operator):
 	
 	@classmethod
 	def poll(cls, context):
-		return bool(context.selected_nodes)
+		return hasattr(context, "selected_nodes")
 
 	def execute(self, context):
 

@@ -85,7 +85,7 @@ class AX_OT_locate_vertices(bpy.types.Operator):
 				vert.select = True
 				found += 1
 			else:
-				vert.select = False
+				vert.select = False  # BUG when at least one face is selected, prev. sel. remains selected
 		
 		bpy.ops.object.mode_set(mode = mode_prev)
 
