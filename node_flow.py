@@ -1,5 +1,6 @@
 import bpy
 import re
+import mathutils
 
 def color_nodes(nodes, color):
 	for node in nodes:
@@ -208,5 +209,69 @@ class AX_OT_find_inputs(bpy.types.Operator):
 		
 		for node in deselect_later:
 			node.select = False
+
+		return {'FINISHED'}
+
+
+class AX_OT_align_nodes(bpy.types.Operator):  # TODO
+
+	# layered graph drawing
+	
+	bl_idname = "ax.align_nodes"
+	bl_label = "Align Nodes"
+	bl_description = ""
+	
+	@classmethod
+	def poll(cls, context):
+		return hasattr(context, "selected_nodes")
+
+	def execute(self, context):
+
+		nodes = context.active_node.id_data.nodes
+		selected = context.selected_nodes
+		
+		node.dimensions.y
+
+		for input in (input for input in node_current.inputs if input.enabled):
+			pass
+
+		return {'FINISHED'}
+
+
+class AX_OT_center_nodes(bpy.types.Operator):
+	
+	bl_idname = "ax.center_nodes"
+	bl_label = "Center Nodes"
+	bl_description = ""
+	
+	@classmethod
+	def poll(cls, context):
+		return hasattr(context, "selected_nodes")
+
+	def execute(self, context):
+
+		nodes = context.active_node.id_data.nodes
+		# nodes = [node for node in nodes if node.type not in ]
+		# selected = context.selected_nodes
+
+		# FIXME takes nodes inside groups as well (does it?)
+
+		node_center = mathutils.Vector((0, 0))
+		n = 0
+		for node in nodes:
+			if node.type == 'FRAME' or node.type == 'REROUTE':
+				continue
+			# node_center += node.location + node.dimensions * mathutils.Vector((0.5, -0.5))
+			node_center += node.location + mathutils.Vector((0.5 * node.dimensions.x, - 0.5 * node.dimensions.y))
+			n += 1
+		
+		node_center /= n
+
+		for node in nodes:
+			if node.type == 'FRAME':  # TODO move frames, not their children
+				continue
+			node.location -= node_center
+		
+		# node.dimensions.y
 
 		return {'FINISHED'}

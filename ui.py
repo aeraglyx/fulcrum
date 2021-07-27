@@ -43,15 +43,17 @@ class AX_PT_node_tools(bpy.types.Panel):
 		layout = self.layout
 
 		col = layout.column(align = True)
-		selected = col.operator("ax.reset_node_color", text = "Reset Selected")  # FILE_REFRESH
+		selected = col.operator("ax.reset_node_color", text = "Reset Selected", icon = 'COLOR')  # FILE_REFRESH  COLOR  RESTRICT_COLOR_OFF
 		selected.all = False
-		all = col.operator("ax.reset_node_color", text = "Reset All")
+		all = col.operator("ax.reset_node_color", text = "Reset All", icon = 'GROUP_VCOL')
 		all.all = True
 
 		col = layout.column(align = True)
-		col.operator("ax.node_flow")
-		col.operator("ax.unused_nodes")
-		col.operator("ax.find_inputs")
+		col.operator("ax.node_flow", icon = 'NODETREE')  # STROKE  ANIM_DATA  TRACKING
+		col.operator("ax.unused_nodes", icon = 'PLUGIN')
+		col.operator("ax.find_inputs", icon = 'NODE')
+		
+		layout.operator("ax.center_nodes", icon = 'ANCHOR_CENTER')
 
 		col = layout.column(align = True)
 		row = col.row(align = True)
@@ -102,29 +104,10 @@ class AX_PT_utility_node(bpy.types.Panel):
 
 	def draw (self, context):
 		layout = self.layout
-		col = layout.column(align = True)
-		col.operator("wm.console_toggle", icon = 'CONSOLE')
 
-# class AX_PT_node_tools(bpy.types.Panel):
-	
-# 	bl_space_type = "NODE_EDITOR"
-# 	bl_region_type = "UI"
-# 	bl_category = "Fulcrum"
-# 	bl_label = "Node Tools"
+		layout.operator("wm.console_toggle", icon = 'CONSOLE')
+		layout.prop(context.preferences.themes['Default'].node_editor, "grid_levels")
 
-# 	def draw (self, context):
-# 		layout = self.layout
-
-# 		col = layout.column(align = True)
-# 		selected = col.operator("ax.reset_node_color", text = "Reset Selected")  # FILE_REFRESH
-# 		selected.all = False
-# 		all = col.operator("ax.reset_node_color", text = "Reset All")
-# 		all.all = True
-
-# 		col = layout.column(align = True)
-# 		col.operator("ax.node_flow")
-# 		col.operator("ax.unused_nodes")
-# 		col.operator("ax.find_inputs")
 
 # VIEW 3D
 

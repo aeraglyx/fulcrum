@@ -91,5 +91,5 @@ class AX_OT_version_decode(bpy.types.Operator):
 		active = context.active_node
 		name = active.node_tree.name
 		date = decode(name[-5:])
-		self.report({'INFO'}, f"{date}")
+		self.report({'INFO'}, f"{name[:-7]} | {name[-5:]} | {date}")
 		return {'FINISHED'}
