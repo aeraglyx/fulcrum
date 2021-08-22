@@ -22,6 +22,42 @@ def get_node_name(node):
 		name = node.name
 		return re.sub(".[0-9]{3,}$", "", name) # XXX {3} or {3,}
 
+
+class AX_OT_find_inputs(bpy.types.Operator):
+	
+	bl_idname = "ax.find_inputs"
+	bl_label = "Find Inputs"
+	bl_description = "Show all nodes used by the selected nodes"
+	
+	@classmethod
+	def poll(cls, context):
+		return hasattr(context, "selected_nodes")
+
+	def execute(self, context):
+
+		nodes = context.active_node.id_data.nodes
+		selected = context.selected_nodes
+
+		clear_node_color(nodes)
+		
+		nodes_out = []
+		def get_input_node(input):
+			for link in input.links:
+				node = link.from_node
+				if node.type == 'REROUTE':
+					get_input_node(node.inputs[0])
+				elif not node.mute:
+					nodes_out.append(node)
+		
+		for node_orig in selected:
+			for input in (x for x in node_orig.inputs if x.enabled):
+				get_input_node(input)
+
+		color_nodes(nodes_out, [0.3, 0.6, 0.3])
+		
+		return {'FINISHED'}
+
+
 class AX_OT_node_flow(bpy.types.Operator):
 	
 	bl_idname = "ax.node_flow"
@@ -51,7 +87,7 @@ class AX_OT_node_flow(bpy.types.Operator):
 		for node in selected:
 			func(node)
 		
-		color_nodes(nodes_out, [0.2,0.45,0.6])
+		color_nodes(nodes_out, [0.2, 0.45, 0.6])
 
 		return {'FINISHED'}
 
@@ -70,145 +106,43 @@ class AX_OT_unused_nodes(bpy.types.Operator):
 
 	def execute(self, context):
 
-		nodes = context.active_node.id_data.nodes
-		output_node = nodes.get("Material Output")
+		tree = bpy.context.space_data.edit_tree  # context.active_node.id_data
+		nodes = tree.nodes
+		# output_node = nodes.get("Material Output")
+		def is_original_tree(tree):
+			return context.material.node_tree == tree
 
+		def get_output_nodes(tree):
+			if is_original_tree(tree):
+				if tree.type == 'GEOMETRY':
+					return (node for node in nodes if node.bl_idname == 'GeometryNodeTree')  # bl_idname = 'GeometryNodeTree'
+				if tree.type == 'SHADER':
+					return (node for node in nodes if node.bl_idname == 'ShaderNodeTree' and node.is_active_output == True)  # 'ShaderNodeTree'
+				if tree.type == 'TEXTURE':
+					return (node for node in nodes if node.bl_idname == 'TextureNodeTree')  # doesn't have active outputs  # 'TextureNodeTree'
+				if tree.type == 'COMPOSITE':
+					return (node for node in nodes if node.bl_idname == 'CompositorNodeTree')  # well yes but actually no ^  # 'CompositorNodeTree'
+			else:
+				return (node for node in nodes if node.bl_idname == 'NodeGroupOutput')
+		
 		clear_node_color(nodes)
 
-		used = []
+		used = set()
 		def func(node_current):
-			for input in (x for x in node_current.inputs if x.enabled):
+			used.add(node_current)
+			used.add(node_current.parent)
+			for input in (x for x in node_current.inputs if x.enabled):  # TODO muted nodes
 				for link in input.links:
-					node = link.from_node
-					if node not in used:
-						used.append(node)
-						func(node)
-		func(output_node)
+					func(link.from_node)
 		
+		output_nodes = get_output_nodes(tree)
+		for output_node in output_nodes:
+			func(output_node)
+		
+		# TODO don't delete viewer (geo, shader, ...) - check if connected to used node, otherwise yeet
 		unused = [node for node in nodes if node not in used]
 
-		color_nodes(unused, [0.65,0.29,0.32])
-
-		return {'FINISHED'}
-
-
-class AX_OT_find_inputs(bpy.types.Operator):
-	
-	bl_idname = "ax.find_inputs"
-	bl_label = "Find Inputs"
-	bl_description = "Show all nodes used by the selected nodes"
-	
-	@classmethod
-	def poll(cls, context):
-		return hasattr(context, "selected_nodes")
-
-	def execute(self, context):
-
-		nodes = context.active_node.id_data.nodes
-		links = context.active_node.id_data.links
-		selected = context.selected_nodes
-		active = context.active_node
-
-		clear_node_color(nodes)
-		
-		# TODO make func that finds socket locations
-
-		# NOTE bpy.ops.node.delete_reconnect()
-		# BUG links are still there in bg, also inputs of left kinda
-
-		offset_bottom_left = 16
-		offset_top_right = 34
-		gap = 22
-		reroute_offset_y = 19
-		char_mult = 6
-		offset_left = 32
-		offset_right = 8
-
-		nodes_out = []
-		select_later = []
-		deselect_later = []
-
-		def get_input_node(node_current):
-			for input in node_current.inputs:
-				for link in input.links:
-					node = link.from_node
-					if node.type == 'REROUTE':
-						select_later.append(node)
-						get_input_node(node)
-					else:
-						last_node = node_current # TODO
-						left_node_name = get_node_name(node)
-						nodes_out.append(node)
-						# last_last_node = node
-		
-		for node_orig in selected: # TODO maybe just active
-			for i, input in enumerate((x for x in node_orig.inputs if x.enabled)):
-				right_socket_name = input.name # TODO only if used # or identifier?
-				for link in input.links:
-					node = link.from_node
-					if node.type == 'REROUTE':
-						select_later.append(node)
-						get_input_node(node) # TODO maybe try while
-					# node = last_last_node
-					left_socket_name = link.from_socket.name  # node.outputs[i].name
-					# last_node = node_current # TODO
-					left_loc_x = node.location.x
-					left_loc_y = node.location.y
-					right_loc_x = node_orig.location.x
-					right_loc_y = node_orig.location.y
-
-					dist_sq = (right_loc_x - left_loc_x)**2 + (right_loc_y - left_loc_y)**2
-					if dist_sq > 1_000_000:  # if distance is more than 1000
-						
-						# if contender_exists:
-						# else:
-						reroute_left = nodes.new(type = 'NodeReroute')
-						reroute_right = nodes.new(type = 'NodeReroute')
-
-						left_node_name = get_node_name(node)
-						right_node_name = get_node_name(node_orig)
-						label_left = f"> {right_node_name} > {right_socket_name}"
-						label_right = f"{left_node_name} > {left_socket_name} >"
-						reroute_left.label = label_left
-						reroute_right.label = label_right
-						reroute_left.mute = True
-						reroute_right.mute = True
-						select_later.extend([reroute_left, reroute_right])
-
-						left_width = node.dimensions.x
-						right_height = node_orig.dimensions.y
-
-						# left - outputs
-						i_left = int(link.from_socket.path_from_id().split("[")[-1][:-1])
-						left_x = left_loc_x + left_width + offset_left
-						left_y = left_loc_y - offset_top_right - i_left*gap - reroute_offset_y
-						
-						# right - inputs
-						n_in = len([x for x in node_orig.inputs if x.enabled])
-						right_chars = len(label_right)
-						right_x = right_loc_x - right_chars*char_mult - offset_right
-						right_y = right_loc_y - right_height + offset_bottom_left + (n_in - i - 1)*gap - reroute_offset_y
-						# TODO precompute what can be reused ^
-
-						reroute_left.location.x = left_x
-						reroute_left.location.y = left_y
-						reroute_right.location.x = right_x
-						reroute_right.location.y = right_y
-
-						# links.remove()
-						links.new(link.from_socket, reroute_left.inputs[0])
-					
-					nodes_out.append(node)
-			deselect_later.append(node_orig)
-
-		color_nodes(nodes_out, [0.3,0.6,0.3])
-		
-		# select reroutes
-		for node in select_later:
-			node.select = True
-		
-		for node in deselect_later:
-			node.select = False
+		color_nodes(unused, [0.65, 0.29, 0.32])
 
 		return {'FINISHED'}
 
@@ -273,5 +207,6 @@ class AX_OT_center_nodes(bpy.types.Operator):
 			node.location -= node_center
 		
 		# node.dimensions.y
+		# bpy.ops.node.view_all()
 
 		return {'FINISHED'}

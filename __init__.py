@@ -2,8 +2,8 @@ bl_info = {
 	"name": "Fulcrum",
 	"author": "Vladislav Macíček (Aeraglyx)",
 	"description": "All kinds of tools",
-	"blender": (2, 93, 0),
-	"version": (0, 1, 5),
+	"blender": (3, 0, 0),
+	"version": (0, 1, 6),
 	"location": "Everywhere",
 	"doc_url": "https://github.com/aeraglyx/fulcrum",
 	"category": 'User Interface',
@@ -20,6 +20,7 @@ from . paint import AX_OT_set_paint_brush, AX_OT_set_weight_brush
 from . node_flow import AX_OT_node_flow, AX_OT_unused_nodes, AX_OT_find_inputs, AX_OT_center_nodes
 from . versioning import AX_OT_version_encode, AX_OT_version_decode
 from . utility import AX_OT_locate_vertex, AX_OT_locate_vertices
+from . copy_pasta import AX_OT_copy_nodes, AX_OT_paste_nodes
 
 from . ui import (
 	AX_PT_optimization, AX_PT_node_tools, AX_PT_utility_node,
@@ -39,7 +40,8 @@ classes = (
 	AX_PT_render, AX_PT_data,
 	AX_PT_paint, AX_PT_utility_3d,
 	AX_OT_node_flow, AX_OT_unused_nodes, AX_OT_find_inputs, AX_OT_center_nodes,
-	AX_OT_version_encode, AX_OT_version_decode
+	AX_OT_version_encode, AX_OT_version_decode,
+	AX_OT_copy_nodes, AX_OT_paste_nodes
 )
 
 def register():

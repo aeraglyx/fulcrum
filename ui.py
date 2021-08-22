@@ -49,9 +49,9 @@ class AX_PT_node_tools(bpy.types.Panel):
 		all.all = True
 
 		col = layout.column(align = True)
-		col.operator("ax.node_flow", icon = 'NODETREE')  # STROKE  ANIM_DATA  TRACKING
-		col.operator("ax.unused_nodes", icon = 'PLUGIN')
-		col.operator("ax.find_inputs", icon = 'NODE')
+		col.operator("ax.find_inputs", icon = 'COLLECTION_COLOR_04')  # icon = 'NODE'
+		col.operator("ax.node_flow", icon = 'COLLECTION_COLOR_05')  # icon = 'NODETREE'  # STROKE  ANIM_DATA  TRACKING
+		col.operator("ax.unused_nodes", icon = 'COLLECTION_COLOR_01')  # icon = 'PLUGIN'
 		
 		layout.operator("ax.center_nodes", icon = 'ANCHOR_CENTER')
 
@@ -59,6 +59,11 @@ class AX_PT_node_tools(bpy.types.Panel):
 		row = col.row(align = True)
 		row.operator("ax.version_encode", text = "Encode", icon = 'SYSTEM')
 		row.operator("ax.version_decode", text = "Decode", icon = 'ZOOM_ALL')
+		
+		col = layout.column(align = True)
+		row = col.row(align = True)
+		row.operator("ax.copy_nodes", text = "Copy", icon = 'COPYDOWN')
+		row.operator("ax.paste_nodes", text = "Pasta", icon = 'PASTEDOWN')
 
 class AX_PT_optimization(bpy.types.Panel):
 	
