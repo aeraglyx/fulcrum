@@ -27,7 +27,7 @@ Recommended settings:
 
 
 ## Miscellaneous
-- Locate vertex by its index
+- Locate vertex by its index (or indices)
 - Resetting custom color of selected or all nodes
 - Show all nodes used by the selected node(s)
 - Mass conversion of Vertex Groups to Vertex Colors

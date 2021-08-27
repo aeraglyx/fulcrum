@@ -14,18 +14,14 @@ class AX_OT_reset_node_color(bpy.types.Operator):
 		default = False
 	)
 	
-	# @classmethod # FIXME - maybe separate into 2 ops
-	# def poll(cls, context):
-	#     selected = context.selected_nodes
-	#     if self.all:
-	#         return True
-	#     else:
-	#         return selected
+	@classmethod
+	def poll(cls, context):
+		return context.area.type == 'NODE_EDITOR'
 
 	def execute(self, context):
 		
 		if self.all == True:
-			nodes = context.active_node.id_data.nodes
+			nodes = context.space_data.edit_tree.nodes  # context.active_node.id_data.nodes
 			for node in nodes:
 				node.use_custom_color = False
 		else:
