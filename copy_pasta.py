@@ -1,4 +1,5 @@
 import bpy
+import mathutils
 # from Tkinter import Tk
 
 def to_clipboard(txt):
@@ -75,26 +76,33 @@ class AX_OT_copy_nodes(bpy.types.Operator):
 		]
 		
 		tree = context.space_data.edit_tree
-		# nodes = context.active_node.id_data.nodes
-		nodes = context.selected_nodes
-		links = [link for link in tree.links if link.from_node in nodes and link.to_node in nodes]
+		nodes = tree.nodes
+		links = tree.links
+		nodes_sel = context.selected_nodes
+		links_sel = [link for link in links if link.from_node in nodes_sel and link.to_node in nodes_sel]
 
-		centroid = node_centroid(nodes)
+		tree_type = tree.bl_idname
+		centroid = node_centroid(nodes_sel)
 
-		for n, node in enumerate(nodes):
+		for n, node in enumerate(nodes_sel):
 			
 			node_type = node.bl_idname
 			print(f"{node_type}\n")
 
-			temp_node = tree.nodes.new(node_type)  # XXX ENDED HERE
+			temp_node = nodes.new(node_type)  # XXX ENDED HERE, ... what about groups?
 			
 			loc_x = int((node.location.x - centroid.x) / 10)
 			loc_y = int((node.location.y - centroid.y) / 10)
+			# print(f"{loc_x = }")
+			# print(f"{loc_y = }")
 			
 			props = node.bl_rna.properties
 			props = [prop for prop in props if not prop.is_readonly]
-			print(f"ignored - {[prop.identifier for prop in props if prop.identifier in props_to_be_ignored]}\n")
-			props = [prop for prop in props if prop.identifier not in props_to_be_ignored]
+			props = [prop for prop in props if not prop.identifier.startswith("bl_")]
+			# print(f"ignored - {[prop.identifier for prop in props if prop.identifier in props_to_be_ignored]}\n")
+			# props = [prop for prop in props if prop.identifier not in props_to_be_ignored]
+
+			# TODO filter "bl_"
 			
 			for prop in props:
 				print(f"{prop.identifier} = {getattr(node, prop.identifier)}")
@@ -115,18 +123,20 @@ class AX_OT_copy_nodes(bpy.types.Operator):
 
 			for output in node.outputs:
 				if output.enabled:
-					if not output.is_linked:
+					if not output.is_linked and hasattr(output, "default_value"):
 						print(f"{output.name} = {output.default_value}")
-						for channel in output.default_value:
-							print(channel)
+						# for channel in output.default_value:
+						# 	print(channel)
 					else:
 						print(f"{output.name} - ignored (is linked)")
 				else:
 					print(f"{output.name} - ignored (not enabled)")
 			print("\n")
+
+			nodes.remove(temp_node)
 		
 
-		for link in links:
+		for link in links_sel:
 			from_socket = link.from_socket
 			to_socket = link.to_socket
 			if from_socket.enabled and to_socket.enabled:
@@ -135,7 +145,8 @@ class AX_OT_copy_nodes(bpy.types.Operator):
 				print(f"{from_socket = }")
 				print(f"{to_socket = }")
 		
-		to_clipboard()
+		txt = ""
+		to_clipboard(txt)
 
 		return {'FINISHED'}
 

@@ -106,11 +106,11 @@ class AX_OT_unused_nodes(bpy.types.Operator):
 
 	def execute(self, context):
 
-		tree = bpy.context.space_data.edit_tree  # context.active_node.id_data
+		tree = context.space_data.edit_tree  # context.active_node.id_data
 		nodes = tree.nodes
 		# output_node = nodes.get("Material Output")
 		def is_original_tree(tree):
-			return context.material.node_tree == tree
+			return context.material.node_tree == tree  # XXX bruh
 
 		def get_output_nodes(tree):
 			if is_original_tree(tree):
@@ -161,13 +161,34 @@ class AX_OT_align_nodes(bpy.types.Operator):  # TODO
 
 	def execute(self, context):
 
-		nodes = context.active_node.id_data.nodes
+		nodes = context.space_data.edit_tree.nodes
 		selected = context.selected_nodes
 		
 		node.dimensions.y
 
 		for input in (input for input in node_current.inputs if input.enabled):
 			pass
+
+		return {'FINISHED'}
+
+
+class AX_OT_nodes_to_grid(bpy.types.Operator):
+	
+	bl_idname = "ax.nodes_to_grid"
+	bl_label = "Nodes to Grid"
+	bl_description = ""
+	
+	@classmethod
+	def poll(cls, context):
+		return hasattr(context, "selected_nodes")
+
+	def execute(self, context):
+
+		selected = context.selected_nodes
+
+		for node in selected:
+			node.location.x = int(node.location.x / 10) * 10
+			node.location.y = int(node.location.y / 10) * 10
 
 		return {'FINISHED'}
 
@@ -184,9 +205,7 @@ class AX_OT_center_nodes(bpy.types.Operator):
 
 	def execute(self, context):
 
-		nodes = context.active_node.id_data.nodes
-		# nodes = [node for node in nodes if node.type not in ]
-		# selected = context.selected_nodes
+		nodes = context.space_data.edit_tree.nodes
 
 		# FIXME takes nodes inside groups as well (does it?)
 
@@ -195,8 +214,7 @@ class AX_OT_center_nodes(bpy.types.Operator):
 		for node in nodes:
 			if node.type == 'FRAME' or node.type == 'REROUTE':
 				continue
-			# node_center += node.location + node.dimensions * mathutils.Vector((0.5, -0.5))
-			node_center += node.location + mathutils.Vector((0.5 * node.dimensions.x, - 0.5 * node.dimensions.y))
+			node_center += node.location + node.dimensions * mathutils.Vector((0.5, -0.5))
 			n += 1
 		
 		node_center /= n
@@ -206,7 +224,6 @@ class AX_OT_center_nodes(bpy.types.Operator):
 				continue
 			node.location -= node_center
 		
-		# node.dimensions.y
 		# bpy.ops.node.view_all()
 
 		return {'FINISHED'}

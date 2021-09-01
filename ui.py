@@ -53,7 +53,9 @@ class AX_PT_node_tools(bpy.types.Panel):
 		col.operator("ax.node_flow", icon = 'COLLECTION_COLOR_05')  # icon = 'NODETREE'  # STROKE  ANIM_DATA  TRACKING
 		col.operator("ax.unused_nodes", icon = 'COLLECTION_COLOR_01')  # icon = 'PLUGIN'
 		
-		layout.operator("ax.center_nodes", icon = 'ANCHOR_CENTER')
+		col = layout.column(align = True)
+		col.operator("ax.center_nodes", icon = 'ANCHOR_CENTER')
+		col.operator("ax.nodes_to_grid", icon = 'SNAP_GRID')
 
 		col = layout.column(align = True)
 		row = col.row(align = True)

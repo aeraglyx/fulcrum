@@ -56,7 +56,7 @@ class AX_OT_compare(bpy.types.Operator):
 		# in_shader_editor = context.space_data.tree_type == 'ShaderNodeTree'
 		# # ^ or context.area.spaces.active.tree_type
 		if hasattr(context, "selected_nodes"):
-			return bool(context.selected_nodes)
+			return len(context.selected_nodes) > 1
 		# return selected and in_shader_editor # FIXME what if i select output
 		return False
 	
