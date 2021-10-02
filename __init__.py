@@ -21,6 +21,7 @@ from . node_flow import AX_OT_node_flow, AX_OT_unused_nodes, AX_OT_find_inputs, 
 from . versioning import AX_OT_version_encode, AX_OT_version_decode
 from . utility import AX_OT_locate_vertex, AX_OT_locate_vertices
 from . copy_pasta import AX_OT_copy_nodes, AX_OT_paste_nodes
+from . render_slots import AX_OT_render_to_next_slot
 
 from . ui import (
 	AX_PT_optimization, AX_PT_node_tools, AX_PT_utility_node,
@@ -41,7 +42,9 @@ classes = (
 	AX_PT_paint, AX_PT_utility_3d,
 	AX_OT_node_flow, AX_OT_unused_nodes, AX_OT_find_inputs, AX_OT_center_nodes, AX_OT_nodes_to_grid,
 	AX_OT_version_encode, AX_OT_version_decode,
-	AX_OT_copy_nodes, AX_OT_paste_nodes
+	AX_OT_copy_nodes, AX_OT_paste_nodes,
+
+	AX_OT_render_to_next_slot
 )
 
 def register():
