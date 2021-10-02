@@ -17,17 +17,13 @@ def check_if_render_slot_is_used(slot):
 	# TODO delete test image ?
 	os.remove(tmp_path)  # TODO delete only once at the end ?
 
-class AX_OT_render_to_next_slot(bpy.types.Operator):
+class AX_OT_render_to_new_slot(bpy.types.Operator):
 
-	bl_idname = "ax.render_to_next_slot"
-	bl_label = "Render to Next Slot"
+	bl_idname = "ax.render_to_new_slot"
+	bl_label = "Render to New Slot"
 	bl_description = "Render to Next Available Render Slot"
 	bl_options = {'REGISTER', 'UNDO'}
-	
-	@classmethod
-	def poll(cls, context):
-		# return context.active_object
-		return True
+
 	
 	# index: bpy.props.IntProperty(
 	# 	name = "Index",
@@ -36,12 +32,6 @@ class AX_OT_render_to_next_slot(bpy.types.Operator):
 
 	def execute(self, context):
 
-		# bpy.data.images["Render Result"].(null) = 0
-
-
-		# TODO set active slot
-
-		# render_result = 
 		render_result = bpy.data.images['Render Result']
 		slots = render_result.render_slots
 
@@ -53,7 +43,7 @@ class AX_OT_render_to_next_slot(bpy.types.Operator):
 			slots.active_index = i
 			slot = slots.active
 			slot_used = check_if_render_slot_is_used(slot)
-			print(f"Slot \"{slot.name}\" is {'used' if slot_used else 'unused'}.")
+			# print(f"Slot \"{slot.name}\" is {'used' if slot_used else 'unused'}.")
 			
 			if not slot_used:
 				unused_slot_indices.append(i)
@@ -66,19 +56,11 @@ class AX_OT_render_to_next_slot(bpy.types.Operator):
 			slots.active_index = i
 			bpy.ops.image.remove_render_slot()
 			# print(f"jakoze mazu slot #{i}")
+		
+		bpy.ops.image.add_render_slot()
+		# slots.active.name = "kldsf"
 		bpy.context.area.ui_type = prev_editor_type
 
-
-
-		
-
+		# bpy.ops.render.render()
 
 		return {'FINISHED'}
-	
-	# def invoke(self, context, event):
-	# 	wm = context.window_manager
-	# 	return wm.invoke_props_dialog(self)
-
-	def draw(self, context):
-		layout = self.layout
-		layout.prop(self, "index")

@@ -16,7 +16,7 @@ class AX_PT_render(bpy.types.Panel):
 		row = layout.row()
 		row.operator("ax.render_in_time", icon = 'RENDER_STILL')
 		layout.operator("ax.benchmark", icon = 'NONE')
-		layout.operator("ax.render_to_next_slot", icon = 'RENDER_RESULT')
+		layout.operator("ax.render_to_new_slot", icon = 'RENDER_RESULT')
 
 class AX_PT_data(bpy.types.Panel):
 	
