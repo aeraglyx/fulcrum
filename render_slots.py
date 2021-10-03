@@ -24,59 +24,12 @@ class AX_OT_render_to_new_slot(bpy.types.Operator):
 	bl_description = "Render to Next Available Render Slot"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	
-	# index: bpy.props.IntProperty(
-	# 	name = "Index",
-	# 	min = 0, default = 0
-	# )
-
 	def execute(self, context):
 
 		render_result = bpy.data.images['Render Result']
-		slots = render_result.render_slots
+		render_slots = render_result.render_slots
 
-		number_of_slots = len(slots)
-		unused_slot_indices = []
-
-		for i in range(number_of_slots):
-			
-			slots.active_index = i
-			slot = slots.active
-			slot_used = check_if_render_slot_is_used(slot)
-			# print(f"Slot \"{slot.name}\" is {'used' if slot_used else 'unused'}.")
-			
-			if not slot_used:
-				unused_slot_indices.append(i)
-		
-		unused_slot_indices.reverse()
-
-
-
-
-		prev_editor_type = bpy.context.area.type
-		bpy.context.area.ui_type = 'IMAGE_EDITOR'
-		bpy.context.area.spaces.active.image = render_result
-
-
-
-		# override = bpy.context.copy()
-		# override['area']['ui_type'] = 'IMAGE_EDITOR'
-		# override['area']['spaces']['active']['image'] = render_result
-
-
-
-
-
-		for i in unused_slot_indices:
-			slots.active_index = i
-			bpy.ops.image.remove_render_slot()
-			# bpy.ops.image.remove_render_slot(override)
-		
-		bpy.ops.image.add_render_slot()
-		# bpy.ops.image.add_render_slot(override)
-		# slots.active.name = "kldsf"
-		bpy.context.area.ui_type = prev_editor_type
-
-		# bpy.ops.render.render()
+		render_slots.active = render_slots.new()
+		render_slots.update()
 
 		return {'FINISHED'}

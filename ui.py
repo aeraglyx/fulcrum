@@ -165,16 +165,12 @@ class AX_PT_paint(bpy.types.Panel):
 			props = row.operator("ax.set_weight_brush", text = "1.0", icon = 'NONE')
 			props.weight = 1.0
 
-class AX_PT_utility_3d(bpy.types.Panel):
+class AX_PT_3d_stuff(bpy.types.Panel):
 	
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"
 	bl_category = "Fulcrum"
-	bl_label = "Utility"
-
-	@classmethod
-	def poll(cls, context):
-		return True
+	bl_label = "3D Stuff"
 
 	def draw (self, context):
 		
@@ -184,6 +180,17 @@ class AX_PT_utility_3d(bpy.types.Panel):
 		col.operator("ax.locate_vertex", icon = 'VERTEXSEL')
 		col.operator("ax.locate_vertices", icon = 'SNAP_VERTEX')
 		
+		# maybe 2 buttons, one with "alignment" 0.0, one with 1.0
 		layout.operator("ax.dof_setup", icon = 'CAMERA_DATA')
 
+class AX_PT_utility_3d(bpy.types.Panel):
+	
+	bl_space_type = "VIEW_3D"
+	bl_region_type = "UI"
+	bl_category = "Fulcrum"
+	bl_label = "Utility"
+
+	def draw (self, context):
+		
+		layout = self.layout
 		layout.operator("wm.console_toggle", icon = 'CONSOLE')

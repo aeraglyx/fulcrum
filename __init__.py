@@ -28,7 +28,7 @@ from . camera_stuff import AX_OT_dof_setup
 from . ui import (
 	AX_PT_optimization, AX_PT_node_tools, AX_PT_utility_node,
 	AX_PT_render, AX_PT_data,
-	AX_PT_paint, AX_PT_utility_3d
+	AX_PT_paint, AX_PT_utility_3d, AX_PT_3d_stuff
 )
 
 classes = (
@@ -41,7 +41,7 @@ classes = (
 	
 	AX_PT_node_tools, AX_PT_optimization, AX_PT_utility_node,
 	AX_PT_render, AX_PT_data,
-	AX_PT_paint, AX_PT_utility_3d,
+	AX_PT_3d_stuff, AX_PT_paint, AX_PT_utility_3d,
 	AX_OT_node_flow, AX_OT_unused_nodes, AX_OT_find_inputs, AX_OT_center_nodes, AX_OT_nodes_to_grid,
 	AX_OT_version_encode, AX_OT_version_decode,
 	AX_OT_copy_nodes, AX_OT_paste_nodes,
@@ -59,6 +59,7 @@ def register():
 	def setup_render_slots(scene):
 		# print("blegh")
 		bpy.ops.ax.render_to_new_slot()
+		
 
 	bpy.app.handlers.render_pre.append(setup_render_slots)
 	
@@ -69,7 +70,7 @@ def unregister():
 	# bpy.app.handlers.render_pre.remove(setup_render_slots)  # XXX check this !
 
 	for handler in bpy.app.handlers.render_pre:
-		if handler.__name__ == "render_to_new_slot":
+		if handler.__name__ == "setup_render_slots":
 			bpy.app.handlers.render_pre.remove(handler)
 
 	for cls in classes:
