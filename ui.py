@@ -184,4 +184,6 @@ class AX_PT_utility_3d(bpy.types.Panel):
 		col.operator("ax.locate_vertex", icon = 'VERTEXSEL')
 		col.operator("ax.locate_vertices", icon = 'SNAP_VERTEX')
 		
+		layout.operator("ax.dof_setup", icon = 'CAMERA_DATA')
+
 		layout.operator("wm.console_toggle", icon = 'CONSOLE')

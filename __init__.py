@@ -23,6 +23,7 @@ from . versioning import AX_OT_version_encode, AX_OT_version_decode
 from . utility import AX_OT_locate_vertex, AX_OT_locate_vertices
 from . copy_pasta import AX_OT_copy_nodes, AX_OT_paste_nodes
 from . render_slots import AX_OT_render_to_new_slot
+from . camera_stuff import AX_OT_dof_setup
 
 from . ui import (
 	AX_PT_optimization, AX_PT_node_tools, AX_PT_utility_node,
@@ -45,7 +46,8 @@ classes = (
 	AX_OT_version_encode, AX_OT_version_decode,
 	AX_OT_copy_nodes, AX_OT_paste_nodes,
 
-	AX_OT_render_to_new_slot
+	AX_OT_render_to_new_slot,
+	AX_OT_dof_setup
 )
 
 def register():

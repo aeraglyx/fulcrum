@@ -49,15 +49,31 @@ class AX_OT_render_to_new_slot(bpy.types.Operator):
 				unused_slot_indices.append(i)
 		
 		unused_slot_indices.reverse()
+
+
+
+
 		prev_editor_type = bpy.context.area.type
 		bpy.context.area.ui_type = 'IMAGE_EDITOR'
 		bpy.context.area.spaces.active.image = render_result
+
+
+
+		# override = bpy.context.copy()
+		# override['area']['ui_type'] = 'IMAGE_EDITOR'
+		# override['area']['spaces']['active']['image'] = render_result
+
+
+
+
+
 		for i in unused_slot_indices:
 			slots.active_index = i
 			bpy.ops.image.remove_render_slot()
-			# print(f"jakoze mazu slot #{i}")
+			# bpy.ops.image.remove_render_slot(override)
 		
 		bpy.ops.image.add_render_slot()
+		# bpy.ops.image.add_render_slot(override)
 		# slots.active.name = "kldsf"
 		bpy.context.area.ui_type = prev_editor_type
 
