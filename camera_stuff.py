@@ -61,11 +61,11 @@ class AX_OT_dof_setup(bpy.types.Operator):
 
 
 
-class AX_OT_ortho_setup(bpy.types.Operator):
+class AX_OT_isometric_setup(bpy.types.Operator):
 
-	bl_idname = "ax.ortho_setup"
-	bl_label = "Orthographic Setup"
-	bl_description = "Add an empty and make it the active camera's Focus Object"
+	bl_idname = "ax.isometric_setup"
+	bl_label = "Isometric Setup"
+	bl_description = "Set up an orthographic camera for isometric view"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -148,5 +148,5 @@ class AX_OT_ortho_setup(bpy.types.Operator):
 		layout.prop(self, "from_below")
 
 		col = layout.column(align = True)
-		col.prop(self, "distance")
 		col.prop(self, "scale")
+		col.prop(self, "distance")

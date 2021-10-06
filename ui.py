@@ -177,7 +177,7 @@ class AX_PT_3d_stuff(bpy.types.Panel):
 		layout = self.layout
 		
 		col = layout.column(align = True)
-		col.operator("ax.ortho_setup", icon = 'FILE_3D')  # VIEW_ORTHO  FILE_3D
+		col.operator("ax.isometric_setup", icon = 'FILE_3D')  # VIEW_ORTHO  FILE_3D
 		# maybe 2 buttons, one with "alignment" 0.0, one with 1.0
 		col.operator("ax.dof_setup", icon = 'CAMERA_DATA')
 		
