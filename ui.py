@@ -177,13 +177,13 @@ class AX_PT_3d_stuff(bpy.types.Panel):
 		layout = self.layout
 		
 		col = layout.column(align = True)
-		col.operator("ax.locate_vertex", icon = 'VERTEXSEL')
-		col.operator("ax.locate_vertices", icon = 'SNAP_VERTEX')
-		
-		col = layout.column(align = True)
 		col.operator("ax.ortho_setup", icon = 'FILE_3D')  # VIEW_ORTHO  FILE_3D
 		# maybe 2 buttons, one with "alignment" 0.0, one with 1.0
 		col.operator("ax.dof_setup", icon = 'CAMERA_DATA')
+		
+		col = layout.column(align = True)
+		col.operator("ax.locate_vertex", icon = 'VERTEXSEL')
+		col.operator("ax.locate_vertices", icon = 'SNAP_VERTEX')
 
 class AX_PT_utility_3d(bpy.types.Panel):
 	

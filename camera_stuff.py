@@ -17,7 +17,7 @@ class AX_OT_dof_setup(bpy.types.Operator):
 		name = "Center / Cursor",
 		description = "Center empty in camera's view or not",
 		subtype = 'FACTOR',
-		soft_min = 0.0, default = 1.0, soft_max = 1.0
+		soft_min = 0.0, default = 0.0, soft_max = 1.0  # TODO maybe default to center ?
 	)
 
 	def execute(self, context):
@@ -81,7 +81,7 @@ class AX_OT_ortho_setup(bpy.types.Operator):
 			('2', "-X -Y", ""),
 			('3', "+X -Y", "")
 		],
-		default = '0'
+		default = '3'
 	)
 	from_below: bpy.props.BoolProperty(
 		name = "From Below",
@@ -101,7 +101,7 @@ class AX_OT_ortho_setup(bpy.types.Operator):
 
 	def execute(self, context):
 
-		cam_obj = context.scene.camera
+		cam_obj = context.scene.camera  # TODO new camera ?
 
 		magic_angle = math.atan(math.sqrt(2))
 
@@ -113,20 +113,20 @@ class AX_OT_ortho_setup(bpy.types.Operator):
 
 		cam_obj.rotation_euler[0] = math.tau / 2 - magic_angle if self.from_below else magic_angle
 		cam_obj.rotation_euler[1] = 0.0
-		cam_obj.rotation_euler[2] = (2 * dir_idx - 1) * math.tau * 0.125
+		cam_obj.rotation_euler[2] = (2 * dir_idx + 3) * math.tau * 0.125
 
 		if dir_idx == 0:
-			x = -1.0
-			y = -1.0
+			y = 1.0
+			x = 1.0
 		elif dir_idx == 1:
-			x = 1.0
-			y = -1.0
-		elif dir_idx == 2:
-			x = 1.0
-			y = 1.0
-		elif dir_idx == 3:
 			x = -1.0
 			y = 1.0
+		elif dir_idx == 2:
+			x = -1.0
+			y = -1.0
+		elif dir_idx == 3:
+			x = 1.0
+			y = -1.0
 		
 		z = -1.0 if self.from_below else 1.0
 
@@ -136,14 +136,17 @@ class AX_OT_ortho_setup(bpy.types.Operator):
 		cam_obj.data.type = 'ORTHO'
 		cam_obj.data.ortho_scale = self.scale
 
-		
 		return {'FINISHED'}
 
 	def draw(self, context):
 
 		layout = self.layout
+
 		row = layout.row()
 		row.prop(self, "direction", expand = True)
+
 		layout.prop(self, "from_below")
-		layout.prop(self, "distance")
-		layout.prop(self, "scale")
+
+		col = layout.column(align = True)
+		col.prop(self, "distance")
+		col.prop(self, "scale")
