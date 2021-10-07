@@ -52,6 +52,7 @@ class AX_OT_locate_vertex(bpy.types.Operator):
 		layout = self.layout
 		layout.prop(self, "index")
 
+
 class AX_OT_locate_vertices(bpy.types.Operator):
 
 	bl_idname = "ax.locate_vertices"
@@ -70,24 +71,27 @@ class AX_OT_locate_vertices(bpy.types.Operator):
 
 	def execute(self, context):
 
+		mode_prev = context.object.mode
+		bpy.ops.object.mode_set(mode = 'EDIT')
+
 		obj = context.active_object
-		verts = obj.data.vertices
+		bm = bmesh.from_edit_mesh(obj.data)
+		verts = bm.verts
 
 		indices = re.findall(r"\d+", self.indices_str)
 		indices = [int(i) for i in indices]
-
-		mode_prev = context.object.mode
-		bpy.ops.object.mode_set(mode = 'OBJECT')
+		indices = list(set(indices))
 
 		found = 0
 		for vert in verts:
 			if vert.index in indices:
-				vert.select = True
+				vert.select_set(True)
 				found += 1
 			else:
-				vert.select = False  # BUG when at least one face is selected, prev. sel. remains selected
+				vert.select_set(False)
 		
-		bpy.ops.object.mode_set(mode = mode_prev)
+		bm.select_flush_mode()
+		bmesh.update_edit_mesh(obj.data)
 
 		self.report({'INFO'}, f"Found {found} out of {len(indices)} vertices.")
 		return {'FINISHED'}
