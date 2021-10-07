@@ -14,7 +14,9 @@ class AX_PT_render(bpy.types.Panel):
 	def draw (self, context):
 		layout = self.layout
 		row = layout.row()
+		row.operator("ax.anim_time_limit", icon = 'RENDER_ANIMATION')
 		row.operator("ax.render_in_time", icon = 'RENDER_STILL')
+
 		layout.operator("ax.benchmark", icon = 'NONE')
 		layout.operator("ax.render_to_new_slot", icon = 'RENDER_RESULT')
 
