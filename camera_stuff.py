@@ -68,13 +68,13 @@ class AX_OT_isometric_setup(bpy.types.Operator):
 	bl_description = "Set up an orthographic camera for isometric view"
 	bl_options = {'REGISTER', 'UNDO'}
 
-	@classmethod
-	def poll(cls, context):
-		return bool(context.scene.camera)
+	# @classmethod
+	# def poll(cls, context):
+	# 	return bool(context.scene.camera)
 
 	direction: bpy.props.EnumProperty(
 		name = "Direction",
-		description = "Which quadrant should the camera point to",
+		description = "From which quadrant should the camera point to center",
 		items = [
 			('0', "+X +Y", ""),
 			('1', "-X +Y", ""),
@@ -101,7 +101,16 @@ class AX_OT_isometric_setup(bpy.types.Operator):
 
 	def execute(self, context):
 
-		cam_obj = context.scene.camera  # TODO new camera ?
+		if context.scene.camera:
+			cam_obj = context.scene.camera
+		else:
+			cam_data = bpy.data.cameras.new(name = "camera_isometric")
+			cam_obj = bpy.data.objects.new("camera_isometric", cam_data)
+			context.scene.collection.objects.link(cam_obj)
+			context.scene.camera = cam_obj
+		
+		# bpy.ops.view3d.view_camera()
+		context.space_data.region_3d.view_perspective = 'CAMERA'
 
 		magic_angle = math.atan(math.sqrt(2))
 
