@@ -20,28 +20,39 @@ class AX_OT_locate_vertex(bpy.types.Operator):
 
 	def execute(self, context):
 
-		obj = context.active_object
-		bm = bmesh.new()
-		bm.from_mesh(obj.data)
-		bm.transform(obj.matrix_world)
-		verts = bm.verts  # TODO select just like AX_OT_locate_vertices ?
+		mode_prev = context.object.mode
+		bpy.ops.object.mode_set(mode = 'EDIT')
 
-		vert_found = None
-		if self.index < len(verts):
+		statistics_str = context.scene.statistics(context.view_layer)
+		total_verts = int(re.search("Verts:\d+/(\d+)", statistics_str).groups()[0])
+		
+		if self.index < total_verts:  # len(verts)
+			
+			obj = context.active_object
+			bm = bmesh.from_edit_mesh(obj.data)
 
-			for vert in verts:
+			for vert in bm.verts:
 				if vert.index == self.index:
 					vert_found = vert
-					break
-		
-		if not vert_found:
+					vert_found.select_set(True)
+				else:
+					vert.select_set(False)
+			
+			bm.select_flush_mode()
+			bmesh.update_edit_mesh(obj.data)
+			
+			location = obj.matrix_world @ vert_found.co
+			context.scene.cursor.location = location
+
+			pos = [round(x, 2) for x in list(location)]
+			self.report({'INFO'}, f"Found vertex {self.index} at {pos}.")
+			
+		else:
 			self.report({'WARNING'}, f"Index out of range.")
 			return {'CANCELLED'}
 		
-		context.scene.cursor.location = vert_found.co
+		bpy.ops.object.mode_set(mode = mode_prev)
 
-		pos = [round(x, 2) for x in list(vert_found.co)]
-		self.report({'INFO'}, f"Found vertex {self.index} at {pos}.")
 		return {'FINISHED'}
 	
 	def invoke(self, context, event):

@@ -3,7 +3,7 @@ bl_info = {
 	"author": "Vladislav Macíček (Aeraglyx)",
 	"description": "All kinds of tools",
 	"blender": (3, 0, 0),
-	"version": (0, 1, 6),
+	"version": (0, 1, 8),
 	"location": "Everywhere",
 	"doc_url": "https://github.com/aeraglyx/fulcrum",
 	"category": 'User Interface',
@@ -15,7 +15,7 @@ from bpy.app.handlers import persistent
 
 from . compare import AX_OT_compare, my_properties, AX_OT_benchmark
 from . reset_node_color import AX_OT_reset_node_color
-from . render_in_time import AX_OT_render_in_time, AX_OT_anim_time_limit
+from . render_in_time import AX_OT_anim_time_limit
 from . vert_group_2_col import AX_OT_vert_group_2_col
 from . paint import AX_OT_set_paint_brush, AX_OT_set_weight_brush
 from . node_flow import AX_OT_node_flow, AX_OT_unused_nodes, AX_OT_find_inputs, AX_OT_center_nodes, AX_OT_nodes_to_grid
@@ -35,7 +35,7 @@ classes = (
 	my_properties,
 	
 	AX_OT_reset_node_color, AX_OT_compare, AX_OT_benchmark,
-	AX_OT_render_in_time, AX_OT_anim_time_limit,
+	AX_OT_anim_time_limit,
 	AX_OT_vert_group_2_col,
 	AX_OT_set_paint_brush, AX_OT_set_weight_brush,
 	AX_OT_locate_vertex, AX_OT_locate_vertices,
@@ -67,8 +67,6 @@ def register():
 	print("FULCRUM registered")
 
 def unregister():
-
-	# bpy.app.handlers.render_pre.remove(setup_render_slots)  # XXX check this !
 
 	for handler in bpy.app.handlers.render_pre:
 		if handler.__name__ == "setup_render_slots":
