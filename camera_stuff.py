@@ -1,6 +1,12 @@
 import bpy
 import math
 import mathutils
+import os
+
+def get_output_node(nodes):
+	for node in nodes:
+		if node.bl_idname == 'ShaderNodeOutputMaterial' and node.is_active_output == True:
+			return node
 
 class AX_OT_dof_setup(bpy.types.Operator):
 
@@ -58,7 +64,6 @@ class AX_OT_dof_setup(bpy.types.Operator):
 		layout = self.layout
 		col = layout.column(align = True)
 		col.prop(self, "alignment")
-
 
 
 class AX_OT_isometric_setup(bpy.types.Operator):
@@ -159,3 +164,195 @@ class AX_OT_isometric_setup(bpy.types.Operator):
 		col = layout.column(align = True)
 		col.prop(self, "scale")
 		col.prop(self, "distance")
+
+
+from bpy_extras.io_utils import ImportHelper
+from bpy.types import Operator
+
+class AX_OT_projection_setup(bpy.types.Operator, ImportHelper):
+
+	bl_idname = "ax.projection_setup"
+	bl_label = "Projection Setup"
+	bl_description = "Set up camera projection"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	# @classmethod
+	# def poll(cls, context):
+	# 	return bool(context.scene.camera)
+
+	filter_glob: bpy.props.StringProperty(
+		default = "*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.bmp",
+		options = {'HIDDEN'}
+	)
+
+	subdivision: bpy.props.IntProperty(
+		name = "Subdivision",
+		description = "Number of total subdivisions",
+		min = 0, default = 4, soft_max = 6
+	)
+	sharp_or_smooth: bpy.props.FloatProperty(
+		name = "Sharp / Smooth",
+		description = "Number of total subdivisions",
+		min = 0.0, default = 0.5, max = 1.0,
+		subtype = 'FACTOR'
+	)
+	shade_smooth: bpy.props.BoolProperty(
+		name = "Shade Smooth",
+		description = "Turn on shade smoothing",
+		default = True
+	)
+
+	def execute(self, context):
+
+		obj = context.object
+		cam_obj = context.scene.camera  # TODO selected cam ?
+
+		if self.subdivision:
+
+			smooth_subdiv = round(self.subdivision * self.sharp_or_smooth)
+			sharp_subdiv = self.subdivision - smooth_subdiv
+
+			if sharp_subdiv:
+				subsurf_modif = obj.modifiers.get("Subdivision Sharp") or obj.modifiers.new("Subdivision Sharp", 'SUBSURF')
+				subsurf_modif.subdivision_type = 'SIMPLE'
+				subsurf_modif.levels = sharp_subdiv
+				subsurf_modif.render_levels = sharp_subdiv
+			
+			if smooth_subdiv:
+				subsurf_modif = obj.modifiers.get("Subdivision Smooth") or obj.modifiers.new("Subdivision Smooth", 'SUBSURF')
+				subsurf_modif.subdivision_type = 'CATMULL_CLARK'
+				subsurf_modif.levels = smooth_subdiv
+				subsurf_modif.render_levels = smooth_subdiv
+
+		uv_proj_modif = obj.modifiers.get("UVProject") or obj.modifiers.new("UVProject", 'UV_PROJECT')
+		uv_proj_modif.uv_layer = "UVMap"
+		uv_proj_modif.projectors[0].object = cam_obj
+		uv_proj_modif.aspect_x = context.scene.render.resolution_x
+		uv_proj_modif.aspect_y = context.scene.render.resolution_y
+
+		if self.shade_smooth:
+			bpy.ops.object.shade_smooth()
+		else:
+			bpy.ops.object.shade_flat()
+		
+
+
+
+		# ---- IMAGE & MATERIAL ----
+
+		img_filepath = self.filepath
+		img = bpy.data.images.load(img_filepath)
+		filename = os.path.splitext(bpy.path.basename(img_filepath))[0]
+
+		mat = bpy.data.materials.new(filename)
+		mat.use_nodes = True
+
+		nodes = mat.node_tree.nodes
+		links = mat.node_tree.links
+
+		obj.data.materials.append(mat)
+		obj.active_material_index = len(obj.data.materials) - 1
+		
+		nodes.remove(nodes.get("Principled BSDF"))
+
+		coords_node = nodes.new(type = 'ShaderNodeTexCoord')
+		img_node = nodes.new(type = 'ShaderNodeTexImage')
+		output_node = get_output_node(nodes)
+
+		img_node.image = img
+
+		links.new(coords_node.outputs['UV'], img_node.inputs['Vector'])
+		links.new(img_node.outputs['Color'], output_node.inputs['Surface'])
+
+
+		# FIXME redo panel gone when using the import helper
+
+		# TODO UVProject aspect from image resolution
+		# TODO align nodes
+		# TODO enter edit mode
+
+
+		return {'FINISHED'}
+
+	def draw(self, context):
+
+		layout = self.layout
+
+		layout.use_property_split = True
+		layout.use_property_decorate = False
+
+		col = layout.column(align = True)
+		col.prop(self, "subdivision")
+		col.prop(self, "sharp_or_smooth")
+		
+		layout.prop(self, "shade_smooth")
+
+
+class AX_OT_hybrid_subdiv(bpy.types.Operator):
+
+	bl_idname = "ax.hybrid_subdiv"
+	bl_label = "Hybrid Subdivision"
+	bl_description = "..."
+	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(cls, context):
+		return bool(context.object)
+
+	subdivision: bpy.props.IntProperty(
+		name = "Subdivision",
+		description = "Number of total subdivisions",
+		min = 0, default = 4, soft_max = 6
+	)
+	sharp_or_smooth: bpy.props.FloatProperty(
+		name = "Sharp / Smooth",
+		description = "Number of total subdivisions",
+		min = 0.0, default = 0.5, max = 1.0,
+		subtype = 'FACTOR'
+	)
+	shade_smooth: bpy.props.BoolProperty(
+		name = "Shade Smooth",
+		description = "Turn on shade smoothing",
+		default = True
+	)
+
+	def execute(self, context):
+
+		obj = context.object
+
+		if self.subdivision:
+
+			smooth_subdiv = round(self.subdivision * self.sharp_or_smooth)
+			sharp_subdiv = self.subdivision - smooth_subdiv
+
+			if sharp_subdiv:
+				subsurf_modif = obj.modifiers.get("Subdivision Sharp") or obj.modifiers.new("Subdivision Sharp", 'SUBSURF')
+				subsurf_modif.subdivision_type = 'SIMPLE'
+				subsurf_modif.levels = sharp_subdiv
+				subsurf_modif.render_levels = sharp_subdiv
+			
+			if smooth_subdiv:
+				subsurf_modif = obj.modifiers.get("Subdivision Smooth") or obj.modifiers.new("Subdivision Smooth", 'SUBSURF')
+				subsurf_modif.subdivision_type = 'CATMULL_CLARK'
+				subsurf_modif.levels = smooth_subdiv
+				subsurf_modif.render_levels = smooth_subdiv
+		
+		if self.shade_smooth:
+			bpy.ops.object.shade_smooth()
+		else:
+			bpy.ops.object.shade_flat()
+
+		return {'FINISHED'}
+
+	def draw(self, context):
+
+		layout = self.layout
+
+		layout.use_property_split = True
+		layout.use_property_decorate = False
+
+		col = layout.column(align = True)
+		col.prop(self, "subdivision")
+		col.prop(self, "sharp_or_smooth")
+		
+		layout.prop(self, "shade_smooth")
