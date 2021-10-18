@@ -1,7 +1,7 @@
 import bpy
 
 
-# PROPERTIES
+# --- PROPERTIES ---
 
 class AX_PT_render(bpy.types.Panel):
 	
@@ -32,8 +32,20 @@ class AX_PT_data(bpy.types.Panel):
 		row = layout.row()
 		row.operator("ax.vert_group_2_col", icon = 'COLOR')
 
+class AX_PT_physics(bpy.types.Panel):
+	
+	bl_space_type = "PROPERTIES"
+	bl_region_type = "WINDOW"
+	bl_context = "physics"
+	bl_label = "Fulcrum"
 
-# NODE EDITOR
+	def draw (self, context):
+		layout = self.layout
+		row = layout.row()
+		row.operator("ax.cloth_vert_mass", icon = 'MOD_VERTEX_WEIGHT')
+
+
+# --- NODE EDITOR ---
 		
 class AX_PT_node_tools(bpy.types.Panel):
 	
@@ -119,7 +131,7 @@ class AX_PT_utility_node(bpy.types.Panel):
 		layout.prop(context.preferences.themes['Default'].node_editor, "grid_levels")
 
 
-# VIEW 3D
+# --- VIEW 3D ---
 
 class AX_PT_paint(bpy.types.Panel):
 	

@@ -20,6 +20,7 @@ Blender addon containing random tools.
 ## Miscellaneous
 - Automatically set *Time Limit* based on target render time of full animation
 - Mass conversion of Vertex Groups to Vertex Colors
+- Set mass of the whole object (instead of per vertex mass) in Cloth modifier
 - Swatches for main colours in Vertex Paint mode
 - Faster access to *Toggle System Console*
 

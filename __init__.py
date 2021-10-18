@@ -20,14 +20,14 @@ from . vert_group_2_col import AX_OT_vert_group_2_col
 from . paint import AX_OT_set_paint_brush, AX_OT_set_weight_brush
 from . node_flow import AX_OT_node_flow, AX_OT_unused_nodes, AX_OT_find_inputs, AX_OT_center_nodes, AX_OT_nodes_to_grid
 from . versioning import AX_OT_version_encode, AX_OT_version_decode
-from . utility import AX_OT_locate_vertex, AX_OT_locate_vertices
+from . utility import AX_OT_locate_vertex, AX_OT_locate_vertices, AX_OT_cloth_vert_mass
 from . copy_pasta import AX_OT_copy_nodes, AX_OT_paste_nodes
 from . render_slots import AX_OT_render_to_new_slot
 from . camera_stuff import AX_OT_dof_setup, AX_OT_isometric_setup, AX_OT_projection_setup, AX_OT_hybrid_subdiv
 
 from . ui import (
 	AX_PT_optimization, AX_PT_node_tools, AX_PT_utility_node,
-	AX_PT_render, AX_PT_data,
+	AX_PT_render, AX_PT_data, AX_PT_physics,
 	AX_PT_paint, AX_PT_utility_3d, AX_PT_3d_stuff
 )
 
@@ -38,17 +38,18 @@ classes = (
 	AX_OT_anim_time_limit,
 	AX_OT_vert_group_2_col,
 	AX_OT_set_paint_brush, AX_OT_set_weight_brush,
-	AX_OT_locate_vertex, AX_OT_locate_vertices,
+	AX_OT_locate_vertex, AX_OT_locate_vertices, AX_OT_cloth_vert_mass,
 	
-	AX_PT_node_tools, AX_PT_optimization, AX_PT_utility_node,
-	AX_PT_render, AX_PT_data,
-	AX_PT_3d_stuff, AX_PT_paint, AX_PT_utility_3d,
 	AX_OT_node_flow, AX_OT_unused_nodes, AX_OT_find_inputs, AX_OT_center_nodes, AX_OT_nodes_to_grid,
 	AX_OT_version_encode, AX_OT_version_decode,
 	AX_OT_copy_nodes, AX_OT_paste_nodes,
 
 	AX_OT_render_to_new_slot,
-	AX_OT_dof_setup, AX_OT_isometric_setup, AX_OT_projection_setup, AX_OT_hybrid_subdiv
+	AX_OT_dof_setup, AX_OT_isometric_setup, AX_OT_projection_setup, AX_OT_hybrid_subdiv,
+	
+	AX_PT_node_tools, AX_PT_optimization, AX_PT_utility_node,
+	AX_PT_render, AX_PT_data, AX_PT_physics,
+	AX_PT_3d_stuff, AX_PT_paint, AX_PT_utility_3d
 )
 
 def register():

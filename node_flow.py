@@ -131,7 +131,7 @@ class AX_OT_unused_nodes(bpy.types.Operator):
 		def func(node_current):
 			used.add(node_current)
 			used.add(node_current.parent)
-			for input in (x for x in node_current.inputs if x.enabled):  # TODO muted nodes
+			for input in (x for x in node_current.inputs if x.enabled):  # TODO muted nodes and muted links
 				for link in input.links:
 					func(link.from_node)
 		
