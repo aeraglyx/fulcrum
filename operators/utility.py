@@ -1,6 +1,7 @@
 import bpy
 import bmesh
 import re
+import os
 
 class AX_OT_locate_vertex(bpy.types.Operator):
 
@@ -192,62 +193,35 @@ class AX_OT_cloth_vert_mass(bpy.types.Operator):
 		layout.prop(self, "obj_mass")
 
 
+class AX_OT_open_script_dir(bpy.types.Operator):
+	
+	bl_idname = "ax.open_script_dir"
+	bl_label = "Open Script Directory"
+	bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
+
+	def execute(self, context):
+
+		path = bpy.utils.script_path_user()
+		os.startfile(path)
+		
+		return {'FINISHED'}
 
 
+class AX_OT_open_blend_dir(bpy.types.Operator):
+	
+	bl_idname = "ax.open_blend_dir"
+	bl_label = "Open BLEND Directory"
+	bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
 
-# class PhysicButtonsPanel:
-#     bl_space_type = 'PROPERTIES'
-#     bl_region_type = 'WINDOW'
-#     bl_context = "physics"
+	@classmethod
+	def poll(cls, context):
+		return bpy.data.is_saved
 
-#     @classmethod
-#     def poll(cls, context):
-#         ob = context.object
-#         return (ob and ob.type == 'MESH') and (context.engine in cls.COMPAT_ENGINES) and (context.cloth)
+	def execute(self, context):
 
-# class PHYSICS_PT_cloth(PhysicButtonsPanel, Panel):
-#     bl_label = "Cloth"
-#     COMPAT_ENGINES = {'BLENDER_RENDER', 'BLENDER_EEVEE', 'BLENDER_WORKBENCH'}
-
-#     def draw_header_preset(self, _context):
-#         CLOTH_PT_presets.draw_panel_header(self.layout)
-
-#     def draw(self, context):
-#         layout = self.layout
-#         layout.use_property_split = True
-
-#         md = context.cloth
-#         cloth = md.settings
-
-#         layout.active = cloth_panel_enabled(md)
-
-#         flow = layout.grid_flow(row_major=False, columns=0, even_columns=True, even_rows=False, align=True)
-
-#         col = flow.column()
-#         col.prop(cloth, "quality", text="Quality Steps")
-#         col = flow.column()
-#         col.prop(cloth, "time_scale", text="Speed Multiplier")
-
-
-# class PHYSICS_PT_cloth_physical_properties(PhysicButtonsPanel, Panel):
-#     bl_label = "Physical Properties"
-#     bl_parent_id = 'PHYSICS_PT_cloth'
-#     COMPAT_ENGINES = {'BLENDER_RENDER', 'BLENDER_EEVEE', 'BLENDER_WORKBENCH'}
-
-#     def draw(self, context):
-#         layout = self.layout
-#         layout.use_property_split = True
-
-#         md = context.cloth
-#         cloth = md.settings
-
-#         layout.active = cloth_panel_enabled(md)
-
-#         flow = layout.grid_flow(row_major=False, columns=0, even_columns=True, even_rows=False, align=True)
-
-#         col = flow.column()
-#         col.prop(cloth, "mass", text="Vertex Mass")
-#         col = flow.column()
-#         col.prop(cloth, "air_damping", text="Air Viscosity")
-#         col = flow.column()
-#         col.prop(cloth, "bending_model")
+		path = os.path.realpath(bpy.path.abspath("//"))  # XXX points to AHK dir when not saved
+		os.startfile(path)  # TODO select the blend?
+		
+		return {'FINISHED'}

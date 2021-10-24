@@ -227,3 +227,46 @@ class AX_OT_center_nodes(bpy.types.Operator):
 		# bpy.ops.node.view_all()
 
 		return {'FINISHED'}
+
+
+class AX_OT_add_todo_note(bpy.types.Operator):
+	
+	bl_idname = "ax.add_todo_note"
+	bl_label = "Add TODO Note"
+	bl_description = ""
+	
+	@classmethod
+	def poll(cls, context):
+		return hasattr(context, "selected_nodes")
+	
+	note: bpy.props.StringProperty(
+		name = "Note",
+		default = "",
+	)
+
+	def execute(self, context):
+
+		nodes = context.space_data.edit_tree.nodes
+
+		todo_node = nodes.new(type = 'NodeFrame')
+		todo_node.label = self.note
+		todo_node.width = 400
+		todo_node.height = 100
+		# bpy.ops.node.add_search(use_transform=True, node_item='92')
+
+		# TODO WIP
+		
+		return {'FINISHED'}
+	
+	def invoke(self, context, event):
+		wm = context.window_manager
+		return wm.invoke_props_dialog(self)
+	
+	def draw(self, context):
+		
+		layout = self.layout
+		# layout.use_property_split = True
+		# layout.use_property_decorate = False
+
+		col = layout.column(align = True)
+		col.prop(self, "note")

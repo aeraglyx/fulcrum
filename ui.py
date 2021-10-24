@@ -214,3 +214,7 @@ class AX_PT_utility_3d(bpy.types.Panel):
 		
 		layout = self.layout
 		layout.operator("wm.console_toggle", icon = 'CONSOLE')
+		
+		col = layout.column(align = True)
+		col.operator("ax.open_script_dir", icon = 'SCRIPT')  # FOLDER_REDIRECT  SCRIPT
+		col.operator("ax.open_blend_dir", icon = 'FILE_BLEND')  # FILE_BLEND  BLENDER
