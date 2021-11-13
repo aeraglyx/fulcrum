@@ -11,7 +11,7 @@ class AX_PT_render(bpy.types.Panel):
 	COMPAT_ENGINES = {'CYCLES'}
 	bl_label = "Fulcrum"
 
-	def draw (self, context):
+	def draw(self, context):
 		layout = self.layout
 		
 		row = layout.row()
@@ -27,7 +27,7 @@ class AX_PT_data(bpy.types.Panel):
 	bl_context = "data"
 	bl_label = "Fulcrum"
 
-	def draw (self, context):
+	def draw(self, context):
 		layout = self.layout
 		row = layout.row()
 		row.operator("ax.vert_group_2_col", icon = 'COLOR')
@@ -39,7 +39,7 @@ class AX_PT_physics(bpy.types.Panel):
 	bl_context = "physics"
 	bl_label = "Fulcrum"
 
-	def draw (self, context):
+	def draw(self, context):
 		layout = self.layout
 		row = layout.row()
 		row.operator("ax.cloth_vert_mass", icon = 'MOD_VERTEX_WEIGHT')
@@ -54,7 +54,7 @@ class AX_PT_node_tools(bpy.types.Panel):
 	bl_category = "Fulcrum"
 	bl_label = "Node Tools"
 
-	def draw (self, context):
+	def draw(self, context):
 		layout = self.layout
 
 		col = layout.column(align = True)
@@ -94,7 +94,7 @@ class AX_PT_optimization(bpy.types.Panel):
 		in_shader_editor = context.space_data.tree_type == 'ShaderNodeTree'
 		return in_shader_editor
 
-	def draw (self, context):
+	def draw(self, context):
 		
 		layout = self.layout
 		props = context.scene.ax_compare
@@ -124,7 +124,7 @@ class AX_PT_utility_node(bpy.types.Panel):
 	bl_category = "Fulcrum"
 	bl_label = "Utility"
 
-	def draw (self, context):
+	def draw(self, context):
 		layout = self.layout
 
 		layout.operator("wm.console_toggle", icon = 'CONSOLE')
@@ -132,6 +132,21 @@ class AX_PT_utility_node(bpy.types.Panel):
 
 
 # --- VIEW 3D ---
+
+class AX_PT_ease_of_access(bpy.types.Panel):
+	
+	bl_space_type = "VIEW_3D"
+	bl_region_type = "UI"
+	bl_category = "Fulcrum"
+	bl_label = "Ease of Access"
+
+	def draw(self, context):
+		
+		layout = self.layout
+		col = layout.column(align = True)
+		col.prop(context.scene.render, "use_motion_blur")
+		col.prop(context.scene.render, "film_transparent")
+		col.prop(context.area.spaces.active, "lock_camera")
 
 class AX_PT_paint(bpy.types.Panel):
 	
@@ -146,7 +161,7 @@ class AX_PT_paint(bpy.types.Panel):
 		paint = context.mode == 'PAINT_VERTEX'
 		return weight or paint
 
-	def draw (self, context):
+	def draw(self, context):
 		
 		layout = self.layout
 		
@@ -186,7 +201,7 @@ class AX_PT_3d_stuff(bpy.types.Panel):
 	bl_category = "Fulcrum"
 	bl_label = "3D Stuff"
 
-	def draw (self, context):
+	def draw(self, context):
 		
 		layout = self.layout
 		

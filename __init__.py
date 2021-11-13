@@ -28,7 +28,7 @@ from .operators.camera_stuff import AX_OT_dof_setup, AX_OT_isometric_setup, AX_O
 from . ui import (
 	AX_PT_optimization, AX_PT_node_tools, AX_PT_utility_node,
 	AX_PT_render, AX_PT_data, AX_PT_physics,
-	AX_PT_paint, AX_PT_utility_3d, AX_PT_3d_stuff
+	AX_PT_ease_of_access, AX_PT_paint, AX_PT_utility_3d, AX_PT_3d_stuff
 )
 
 classes = (
@@ -49,7 +49,7 @@ classes = (
 	
 	AX_PT_node_tools, AX_PT_optimization, AX_PT_utility_node,
 	AX_PT_render, AX_PT_data, AX_PT_physics,
-	AX_PT_3d_stuff, AX_PT_paint, AX_PT_utility_3d
+	AX_PT_ease_of_access, AX_PT_3d_stuff, AX_PT_paint, AX_PT_utility_3d
 )
 
 def register():
