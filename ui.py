@@ -82,6 +82,8 @@ class AX_PT_node_tools(bpy.types.Panel):
 		row.operator("ax.copy_nodes", text = "Copy", icon = 'COPYDOWN')
 		row.operator("ax.paste_nodes", text = "Pasta", icon = 'PASTEDOWN')
 
+		layout.operator("ax.set_render_passes", icon = 'NODE_COMPOSITING')  # XXX
+		
 class AX_PT_optimization(bpy.types.Panel):
 	
 	bl_space_type = "NODE_EDITOR"
@@ -194,6 +196,25 @@ class AX_PT_paint(bpy.types.Panel):
 			props = row.operator("ax.set_weight_brush", text = "1.0", icon = 'NONE')
 			props.weight = 1.0
 
+class AX_PT_3d_stuff(bpy.types.Panel):
+	
+	bl_space_type = "VIEW_3D"
+	bl_region_type = "UI"
+	bl_category = "Fulcrum"
+	bl_label = "3D Stuff"
+
+	def draw(self, context):
+		
+		layout = self.layout
+		
+		col = layout.column(align = True)
+		col.operator("ax.hybrid_subdiv", icon = 'MOD_SUBSURF')
+		col.operator("ax.set_auto_smooth", icon = 'MATSHADERBALL')
+		
+		col = layout.column(align = True)
+		col.operator("ax.locate_vertex", icon = 'VERTEXSEL')
+		col.operator("ax.locate_vertices", icon = 'SNAP_VERTEX')
+
 class AX_PT_camera_stuff(bpy.types.Panel):
 	
 	bl_space_type = "VIEW_3D"
@@ -225,25 +246,6 @@ class AX_PT_camera_stuff(bpy.types.Panel):
 		layout.prop(context.area.spaces.active, "lock_camera")
 
 		layout.operator("ax.frame_range_from_cam", icon = 'ARROW_LEFTRIGHT')
-
-class AX_PT_3d_stuff(bpy.types.Panel):
-	
-	bl_space_type = "VIEW_3D"
-	bl_region_type = "UI"
-	bl_category = "Fulcrum"
-	bl_label = "3D Stuff"
-
-	def draw(self, context):
-		
-		layout = self.layout
-		
-		col = layout.column(align = True)
-		col.operator("ax.hybrid_subdiv", icon = 'MOD_SUBSURF')
-		col.operator("ax.set_auto_smooth", icon = 'MATSHADERBALL')
-		
-		col = layout.column(align = True)
-		col.operator("ax.locate_vertex", icon = 'VERTEXSEL')
-		col.operator("ax.locate_vertices", icon = 'SNAP_VERTEX')
 
 class AX_PT_utility_3d(bpy.types.Panel):
 	
