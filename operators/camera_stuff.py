@@ -356,3 +356,58 @@ class AX_OT_hybrid_subdiv(bpy.types.Operator):
 		col.prop(self, "sharp_or_smooth")
 		
 		layout.prop(self, "shade_smooth")
+
+
+class AX_OT_frame_range_from_cam(bpy.types.Operator):
+	
+	bl_idname = "ax.frame_range_from_cam"
+	bl_label = "Frame Range from Camera"
+	bl_description = "Automatically set scene frame range from scene's camera. Expects blabla_startframe_endframe name."
+	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(cls, context):
+		return context.scene.camera
+
+	def execute(self, context):
+
+		def get_min_max_frame(cam):
+			min_frame = int(cam.name.split("_")[-2])
+			max_frame = int(cam.name.split("_")[-1])
+			return min_frame, max_frame
+
+		cam_obj = context.scene.camera
+
+		min_frame, max_frame = get_min_max_frame(cam_obj)
+
+		if max_frame < min_frame:
+			# ERROR WARNING ERROR_INVALID_INPUT
+			self.report({'WARNING'}, f"Make sure that end_frame isn't lower than start_frame.")
+			return {'CANCELLED'}
+		
+		bpy.context.scene.frame_start = min_frame
+		bpy.context.scene.frame_end = max_frame
+		bpy.context.scene.frame_current = min_frame
+		
+		return {'FINISHED'}
+
+class AX_OT_passepartout(bpy.types.Operator):
+	
+	bl_idname = "ax.passepartout"
+	bl_label = "Set Passepartout"
+	bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(cls, context):
+		return context.scene.camera  # TODO rather if any cams exist?
+
+	def execute(self, context):
+
+		cams = [cam for cam in bpy.data.objects if cam.type == 'CAMERA' and cam.name.startswith("cam_")]
+		
+		# TODO switch if for all cams or active?
+		for cam in cams:
+			cam.data.passepartout_alpha = 1.0
+		
+		return {'FINISHED'}

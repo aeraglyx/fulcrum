@@ -1,11 +1,19 @@
 # Fulcrum
 
-Blender addon containing random tools.
+Blender addon containing random tools. Mostly harmless.
+
+## Ease of Access
+- Motion Blur
+- Transparent
+- View Transform (Standard/Filmic)
+- Lock Camera to View
 
 ## 3D Stuff
 - Basic setup for projection mapping
+- Set up an Empty as a DOF controller
 - Setup camera for isometric art
 - Hybrid subdivision which combines *Simple* and *Catmull-Clark* algorithms
+- Set *Auto Smooth*
 - Locate a single vertex or multiple vertices by its indices
 
 ## Node Stuff
@@ -20,7 +28,7 @@ Blender addon containing random tools.
 ## Miscellaneous
 - Automatically set *Time Limit* based on target render time of full animation
 - Mass conversion of Vertex Groups to Vertex Colors
-- Set mass of the whole object (instead of per vertex mass) in Cloth modifier
+- Set mass of the whole object (instead of per vertex mass) in Cloth modifier (quite useless)
 - Swatches for main colours in Vertex Paint mode
 - Faster access to *Toggle System Console*
 

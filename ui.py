@@ -128,7 +128,6 @@ class AX_PT_utility_node(bpy.types.Panel):
 		layout = self.layout
 
 		layout.operator("wm.console_toggle", icon = 'CONSOLE')
-		layout.prop(context.preferences.themes['Default'].node_editor, "grid_levels")
 
 
 # --- VIEW 3D ---
@@ -146,7 +145,8 @@ class AX_PT_ease_of_access(bpy.types.Panel):
 		col = layout.column(align = True)
 		col.prop(context.scene.render, "use_motion_blur")
 		col.prop(context.scene.render, "film_transparent")
-		col.prop(context.area.spaces.active, "lock_camera")
+		layout.prop(context.scene.view_settings, "view_transform", text = "")
+		layout.label(text = "DON'T PANIC!")
 
 class AX_PT_paint(bpy.types.Panel):
 	
@@ -194,6 +194,27 @@ class AX_PT_paint(bpy.types.Panel):
 			props = row.operator("ax.set_weight_brush", text = "1.0", icon = 'NONE')
 			props.weight = 1.0
 
+class AX_PT_camera_stuff(bpy.types.Panel):
+	
+	bl_space_type = "VIEW_3D"
+	bl_region_type = "UI"
+	bl_category = "Fulcrum"
+	bl_label = "Camera Stuff"
+
+	def draw(self, context):
+		
+		layout = self.layout
+		
+		col = layout.column(align = True)
+		col.operator("ax.isometric_setup", icon = 'FILE_3D')  # VIEW_ORTHO  FILE_3D
+		# maybe 2 buttons, one with "alignment" 0.0, one with 1.0
+		col.operator("ax.dof_setup", icon = 'CAMERA_DATA')
+		col.operator("ax.projection_setup", icon = 'MOD_UVPROJECT')  # STICKY_UVS_LOC  UV  MOD_UVPROJECT  IMAGE_PLANE
+		
+		layout.prop(context.area.spaces.active, "lock_camera")
+
+		layout.operator("ax.frame_range_from_cam", icon = 'ARROW_LEFTRIGHT')
+
 class AX_PT_3d_stuff(bpy.types.Panel):
 	
 	bl_space_type = "VIEW_3D"
@@ -206,13 +227,8 @@ class AX_PT_3d_stuff(bpy.types.Panel):
 		layout = self.layout
 		
 		col = layout.column(align = True)
-		col.operator("ax.isometric_setup", icon = 'FILE_3D')  # VIEW_ORTHO  FILE_3D
-		# maybe 2 buttons, one with "alignment" 0.0, one with 1.0
-		col.operator("ax.dof_setup", icon = 'CAMERA_DATA')
-		col.operator("ax.projection_setup", icon = 'MOD_UVPROJECT')  # STICKY_UVS_LOC  UV  MOD_UVPROJECT  IMAGE_PLANE
-		
-		col = layout.column(align = True)
 		col.operator("ax.hybrid_subdiv", icon = 'MOD_SUBSURF')
+		col.operator("ax.set_auto_smooth", icon = 'MATSHADERBALL')
 		
 		col = layout.column(align = True)
 		col.operator("ax.locate_vertex", icon = 'VERTEXSEL')
