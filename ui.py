@@ -211,6 +211,17 @@ class AX_PT_camera_stuff(bpy.types.Panel):
 		col.operator("ax.dof_setup", icon = 'CAMERA_DATA')
 		col.operator("ax.projection_setup", icon = 'MOD_UVPROJECT')  # STICKY_UVS_LOC  UV  MOD_UVPROJECT  IMAGE_PLANE
 		
+		# ARROW_LEFTRIGHT
+		col = layout.column(align = True)
+		col.label(text = "Set Passepartout:")
+		row = col.row(align = True)
+		passepartout_none = row.operator("ax.passepartout", text = "None")
+		passepartout_none.alpha = 0.0
+		passepartout_normal = row.operator("ax.passepartout", text = "0.75")
+		passepartout_normal.alpha = 0.75
+		passepartout_full = row.operator("ax.passepartout", text = "Full")
+		passepartout_full.alpha = 1.0
+		
 		layout.prop(context.area.spaces.active, "lock_camera")
 
 		layout.operator("ax.frame_range_from_cam", icon = 'ARROW_LEFTRIGHT')

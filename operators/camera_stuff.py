@@ -401,13 +401,20 @@ class AX_OT_passepartout(bpy.types.Operator):
 	@classmethod
 	def poll(cls, context):
 		return context.scene.camera  # TODO rather if any cams exist?
+	
+	alpha: bpy.props.FloatProperty(
+		name = "Alpha",
+		description = "Number of total subdivisions",
+		min = 0.0, default = 0.5, max = 1.0,
+		subtype = 'FACTOR'
+	)
 
 	def execute(self, context):
 
-		cams = [cam for cam in bpy.data.objects if cam.type == 'CAMERA' and cam.name.startswith("cam_")]
+		cams = [cam for cam in bpy.data.objects if cam.type == 'CAMERA']  # and cam.name.startswith("cam_")
 		
 		# TODO switch if for all cams or active?
 		for cam in cams:
-			cam.data.passepartout_alpha = 1.0
+			cam.data.passepartout_alpha = self.alpha
 		
 		return {'FINISHED'}
