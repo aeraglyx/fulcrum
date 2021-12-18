@@ -297,7 +297,8 @@ class AX_OT_frame_range_from_cam(bpy.types.Operator):
 
 	@classmethod
 	def poll(cls, context):
-		return context.scene.camera
+		# TODO if camera is parented inside active object ?
+		return context.object.type == 'CAMERA' or context.scene.camera
 
 	def execute(self, context):
 
@@ -305,9 +306,13 @@ class AX_OT_frame_range_from_cam(bpy.types.Operator):
 			min_frame = int(cam.name.split("_")[-2])
 			max_frame = int(cam.name.split("_")[-1])
 			return min_frame, max_frame
-
-		cam_obj = context.scene.camera
-
+		
+		if context.object.type == 'CAMERA':
+			cam_obj = context.object
+			context.scene.camera = cam_obj
+		else:
+			cam_obj = context.scene.camera
+		
 		min_frame, max_frame = get_min_max_frame(cam_obj)
 
 		if max_frame < min_frame:
@@ -317,9 +322,13 @@ class AX_OT_frame_range_from_cam(bpy.types.Operator):
 		
 		bpy.context.scene.frame_start = min_frame
 		bpy.context.scene.frame_end = max_frame
-		bpy.context.scene.frame_current = min_frame
+
+		frame_orig = bpy.context.scene.frame_current
+		new_frame = max(min_frame, min(frame_orig, max_frame))
+		bpy.context.scene.frame_current = new_frame
 		
 		return {'FINISHED'}
+
 
 class AX_OT_passepartout(bpy.types.Operator):
 	
