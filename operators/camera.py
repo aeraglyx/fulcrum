@@ -313,7 +313,11 @@ class AX_OT_frame_range_from_cam(bpy.types.Operator):
 		else:
 			cam_obj = context.scene.camera
 		
-		min_frame, max_frame = get_min_max_frame(cam_obj)
+		try:
+			min_frame, max_frame = get_min_max_frame(cam_obj)
+		except:
+			self.report({'WARNING'}, f"Expects blabla_startframe_endframe name.")
+			return {'CANCELLED'}
 
 		if max_frame < min_frame:
 			# ERROR WARNING ERROR_INVALID_INPUT
