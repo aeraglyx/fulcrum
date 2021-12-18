@@ -144,10 +144,13 @@ class AX_PT_ease_of_access(bpy.types.Panel):
 	def draw(self, context):
 		
 		layout = self.layout
+
 		col = layout.column(align = True)
 		col.prop(context.scene.render, "use_motion_blur")
 		col.prop(context.scene.render, "film_transparent")
 		layout.prop(context.scene.view_settings, "view_transform", text = "")
+		layout.prop(context.scene.tool_settings, "use_keyframe_insert_auto")
+
 		layout.label(text = "DON'T PANIC!")
 
 class AX_PT_paint(bpy.types.Panel):
