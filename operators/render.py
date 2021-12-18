@@ -11,12 +11,16 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 	# def poll(cls, context):
 	# 	return bool(context.scene.camera)
 
-	# alignment: bpy.props.FloatProperty(
-	# 	name = "Center / Cursor",
-	# 	description = "Center empty in camera's view or not",
-	# 	subtype = 'FACTOR',
-	# 	soft_min = 0.0, default = 0.0, soft_max = 1.0  # TODO maybe default to center ?
-	# )
+	combine_direct_indirect: bpy.props.BoolProperty(
+		name = "Combine Direct & Indirect",
+		description = "",
+		default = False
+	)
+	combine_light_color: bpy.props.BoolProperty(
+		name = "Combine Light & Color",
+		description = "",
+		default = False
+	)
 
 
 	def execute(self, context):
@@ -62,10 +66,21 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 			view_layer.use_pass_object_index = False
 			view_layer.use_pass_material_index = False
 
-		view_layers = context.scene.view_layers
+		bpy.context.scene.use_nodes = True
 
+		view_layers = context.scene.view_layers
 		for view_layer in view_layers:
+
 			set_render_passes(view_layer)
+			
+			input_node = context.scene.node_tree.nodes.new(type = 'CompositorNodesRLayers')
+			context.scene.node_tree.nodes.active.layer = view_layer.name
+		
+			output_node = context.scene.node_tree.nodes.new(type = 'CompositorNodeOutputFile')
+			file_slots = output_node.file_slots
+			file_slots.clear()
+			for render_pass in render_passes:
+				file_slots.new("")
 
 		return {'FINISHED'}
 
