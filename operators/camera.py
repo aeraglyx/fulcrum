@@ -334,6 +334,31 @@ class AX_OT_frame_range_from_cam(bpy.types.Operator):
 		return {'FINISHED'}
 
 
+class AX_OT_set_aspect_ratio(bpy.types.Operator):
+	
+	bl_idname = "ax.set_aspect_ratio"
+	bl_label = "Set Aspect Ratio"
+	bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(cls, context):
+		return True
+	
+	aspect_ratio: bpy.props.FloatProperty(
+		name = "Aspect Ratio",
+		default = 2.0,
+	)
+
+	def execute(self, context):
+
+		x = context.scene.render.resolution_x
+		y_new = int(x / self.aspect_ratio)
+		context.scene.render.resolution_y = y_new
+		
+		return {'FINISHED'}
+
+
 class AX_OT_passepartout(bpy.types.Operator):
 	
 	bl_idname = "ax.passepartout"

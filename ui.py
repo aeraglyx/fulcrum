@@ -245,6 +245,18 @@ class AX_PT_camera_stuff(bpy.types.Panel):
 		passepartout_normal.alpha = 0.75
 		passepartout_full = row.operator("ax.passepartout", text = "Full")
 		passepartout_full.alpha = 1.0
+
+		col = layout.column(align = True)
+		col.label(text = "Set Aspect Ratio:")
+		row = col.row(align = True)
+		sixteen_by_nine = row.operator("ax.set_aspect_ratio", text = "1.78")
+		sixteen_by_nine.aspect_ratio = 1.777777
+		two_to_one = row.operator("ax.set_aspect_ratio", text = "2.00")
+		two_to_one.aspect_ratio = 2.0
+		cinemascope = row.operator("ax.set_aspect_ratio", text = "2.40")
+		cinemascope.aspect_ratio = 2.4
+
+
 		
 		layout.prop(context.area.spaces.active, "lock_camera")
 

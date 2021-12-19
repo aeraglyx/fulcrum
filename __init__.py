@@ -24,7 +24,7 @@ from .operators.utility import AX_OT_open_script_dir, AX_OT_open_blend_dir
 from .operators.copy_pasta import AX_OT_copy_nodes, AX_OT_paste_nodes
 from .operators.render_slots import AX_OT_render_to_new_slot
 from .operators.three_d import AX_OT_locate_vertex, AX_OT_locate_vertices, AX_OT_cloth_vert_mass, AX_OT_set_auto_smooth, AX_OT_hybrid_subdiv
-from .operators.camera import AX_OT_dof_setup, AX_OT_isometric_setup, AX_OT_projection_setup, AX_OT_frame_range_from_cam, AX_OT_passepartout
+from .operators.camera import AX_OT_dof_setup, AX_OT_isometric_setup, AX_OT_projection_setup, AX_OT_frame_range_from_cam, AX_OT_passepartout, AX_OT_set_aspect_ratio
 from .operators.render import AX_OT_set_render_passes
 
 from . ui import (
@@ -74,6 +74,7 @@ classes = (
 	AX_OT_projection_setup,
 	AX_OT_frame_range_from_cam,
 	AX_OT_passepartout,
+	AX_OT_set_aspect_ratio,
 
 	AX_OT_hybrid_subdiv,
 	AX_OT_locate_vertex,
