@@ -247,8 +247,20 @@ class AX_PT_camera_stuff(bpy.types.Panel):
 		passepartout_full.alpha = 1.0
 
 		col = layout.column(align = True)
+		col.label(text = "Set Resolution:")
+		row = col.row(align = True)
+		half = row.operator("ax.set_resolution", text = "Half")
+		half.width = 960
+		full_hd = row.operator("ax.set_resolution", text = "FHD")
+		full_hd.width = 1920
+		ultra_hd = row.operator("ax.set_resolution", text = "UHD")
+		ultra_hd.width = 3840
+
+		col = layout.column(align = True)
 		col.label(text = "Set Aspect Ratio:")
 		row = col.row(align = True)
+		square = row.operator("ax.set_aspect_ratio", text = "1.00")
+		square.aspect_ratio = 1.0
 		sixteen_by_nine = row.operator("ax.set_aspect_ratio", text = "1.78")
 		sixteen_by_nine.aspect_ratio = 1.777777
 		two_to_one = row.operator("ax.set_aspect_ratio", text = "2.00")
