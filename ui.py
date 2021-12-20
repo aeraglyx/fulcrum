@@ -217,6 +217,7 @@ class AX_PT_3d_stuff(bpy.types.Panel):
 		col = layout.column(align = True)
 		col.operator("ax.locate_vertex", icon = 'VERTEXSEL')
 		col.operator("ax.locate_vertices", icon = 'SNAP_VERTEX')
+		col.operator("ax.find_material", icon = 'MATERIAL_DATA')
 
 class AX_PT_camera_stuff(bpy.types.Panel):
 	

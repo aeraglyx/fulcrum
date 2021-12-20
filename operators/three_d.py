@@ -294,3 +294,32 @@ class AX_OT_hybrid_subdiv(bpy.types.Operator):
 		col.prop(self, "sharp_or_smooth")
 		
 		layout.prop(self, "shade_smooth")
+
+class AX_OT_find_material(bpy.types.Operator):
+
+	# why tf
+
+	bl_idname = "ax.find_material"
+	bl_label = "Find Material"
+	bl_description = "Identify material based on mesh selection"
+	bl_options = {'REGISTER', 'UNDO'}
+	
+	@classmethod
+	def poll(cls, context):
+		return context.active_object.mode
+
+	def execute(self, context):
+
+		obj = context.active_object
+		edges = obj.data.polygons
+
+		for edge in edges:
+			if edge.select == True:
+				mat_index = edge.material_index
+				break
+		
+		obj.active_material_index = mat_index
+		mat = obj.material_slots[mat_index].material
+
+		self.report({'INFO'}, f"#{mat_index} - {mat.name}")
+		return {'FINISHED'}
