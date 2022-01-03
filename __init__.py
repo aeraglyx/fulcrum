@@ -112,6 +112,31 @@ def register():
 		
 	# bpy.app.handlers.render_pre.append(setup_render_slots)
 	
+	
+	@persistent
+	def save_in_solid_shading(scene):
+		# bpy.context.space_data.shading.type = 'SOLID'
+		# bpy.data.workspaces['Scripting'].screens['Scripting'].areas[4].spaces[0].shading.type = 'SOLID'
+
+		# for area in bpy.context.screen.areas:
+		# 	for space in area.spaces:
+		# 			if space.type == 'VIEW_3D':
+		# 				if space.shading.type == 'MATERIAL':
+		# 					space.shading.type = 'SOLID'
+
+		for workspace in bpy.data.workspaces:
+			for screen in workspace.screens:
+				for area in screen.areas:
+					for space in area.spaces:
+						if space.type == 'VIEW_3D':
+							if space.shading.type == 'MATERIAL':
+								space.shading.type = 'SOLID'
+		
+		print("fulcrum: save_pre handler done")
+	
+	# bpy.app.handlers.save_pre.append(save_in_solid_shading)
+	bpy.app.handlers.save_pre.append(save_in_solid_shading)  # TODO restore after saving
+	
 	print("FULCRUM registered")
 
 def unregister():
@@ -119,6 +144,10 @@ def unregister():
 	# for handler in bpy.app.handlers.render_pre:
 	# 	if handler.__name__ == "setup_render_slots":
 	# 		bpy.app.handlers.render_pre.remove(handler)
+	
+	for handler in bpy.app.handlers.save_pre:
+		if handler.__name__ == "save_in_solid_shading":
+			bpy.app.handlers.save_pre.remove(handler)
 
 	for cls in classes:
 		bpy.utils.unregister_class(cls)
