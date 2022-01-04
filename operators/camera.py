@@ -298,7 +298,7 @@ class AX_OT_frame_range_from_cam(bpy.types.Operator):
 	@classmethod
 	def poll(cls, context):
 		# TODO if camera is parented inside active object ?
-		return context.object.type == 'CAMERA' or context.scene.camera
+		return context.object.type == 'CAMERA' or context.scene.camera  # BUG
 
 	def execute(self, context):
 
@@ -330,8 +330,18 @@ class AX_OT_frame_range_from_cam(bpy.types.Operator):
 		frame_orig = bpy.context.scene.frame_current
 		new_frame = max(min_frame, min(frame_orig, max_frame))
 		bpy.context.scene.frame_current = new_frame
-
-		# bpy.ops.action.view_all()  # TODO 
+		
+		for area in bpy.context.screen.areas:
+			if area.type in ['DOPESHEET_EDITOR', 'GRAPH_EDITOR', 'NLA_EDITOR']:
+				for region in area.regions:
+					if region.type == 'WINDOW':
+						override = {'area': area, 'region': region}
+						if area.type == 'DOPESHEET_EDITOR':
+							bpy.ops.action.view_all(override)
+						if area.type == 'GRAPH_EDITOR':
+							bpy.ops.graph.view_all(override)
+						if area.type == 'NLA_EDITOR':
+							bpy.ops.nla.view_all(override)
 		
 		return {'FINISHED'}
 
