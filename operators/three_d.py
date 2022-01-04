@@ -12,7 +12,7 @@ class AX_OT_locate_vertex(bpy.types.Operator):
 	
 	@classmethod
 	def poll(cls, context):
-		return context.active_object
+		return context.object and context.object.type == 'MESH'
 	
 	index: bpy.props.IntProperty(
 		name = "Index",
@@ -73,7 +73,7 @@ class AX_OT_locate_vertices(bpy.types.Operator):
 	
 	@classmethod
 	def poll(cls, context):
-		return context.active_object
+		return context.active_object and context.object.type == 'MESH'
 	
 	indices_str: bpy.props.StringProperty(
 		name = "Indices",
