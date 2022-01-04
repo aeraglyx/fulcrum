@@ -217,13 +217,16 @@ class AX_PT_3d_stuff(bpy.types.Panel):
 		col = layout.column(align = True)
 		col.operator("ax.locate_vertex", icon = 'VERTEXSEL')
 		col.operator("ax.locate_vertices", icon = 'SNAP_VERTEX')
-		col.operator("ax.find_material", icon = 'MATERIAL_DATA')
 
-class AX_PT_camera_stuff(bpy.types.Panel):
+class CameraStuffPanel(bpy.types.Panel):
 	
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"
 	bl_category = "Fulcrum"
+
+class AX_PT_camera_main(CameraStuffPanel, bpy.types.Panel):
+	
+	bl_idname = "AX_PT_camera_main"
 	bl_label = "Camera Stuff"
 
 	def draw(self, context):
@@ -236,14 +239,28 @@ class AX_PT_camera_stuff(bpy.types.Panel):
 		col.operator("ax.dof_setup", icon = 'CAMERA_DATA')
 		col.operator("ax.projection_setup", icon = 'MOD_UVPROJECT')  # STICKY_UVS_LOC  UV  MOD_UVPROJECT  IMAGE_PLANE
 		
+		layout.prop(context.area.spaces.active, "lock_camera")
+
+		layout.operator("ax.frame_range_from_cam", icon = 'ARROW_LEFTRIGHT')
+
+class AX_PT_camera_subpanel_01(CameraStuffPanel, bpy.types.Panel):
+
+	bl_parent_id = "AX_PT_camera_main"
+	bl_label = "Presets"
+	bl_options = {"DEFAULT_CLOSED"}
+
+	def draw(self, context):
+
+		layout = self.layout
+
 		# ARROW_LEFTRIGHT
 		col = layout.column(align = True)
 		col.label(text = "Set Passepartout:")
 		row = col.row(align = True)
 		passepartout_none = row.operator("ax.passepartout", text = "None")
 		passepartout_none.alpha = 0.0
-		passepartout_normal = row.operator("ax.passepartout", text = "0.75")
-		passepartout_normal.alpha = 0.75
+		passepartout_normal = row.operator("ax.passepartout", text = "0.8")
+		passepartout_normal.alpha = 0.8
 		passepartout_full = row.operator("ax.passepartout", text = "Full")
 		passepartout_full.alpha = 1.0
 
@@ -268,12 +285,6 @@ class AX_PT_camera_stuff(bpy.types.Panel):
 		two_to_one.aspect_ratio = 2.0
 		cinemascope = row.operator("ax.set_aspect_ratio", text = "2.40")
 		cinemascope.aspect_ratio = 2.4
-
-
-		
-		layout.prop(context.area.spaces.active, "lock_camera")
-
-		layout.operator("ax.frame_range_from_cam", icon = 'ARROW_LEFTRIGHT')
 
 class AX_PT_utility_3d(bpy.types.Panel):
 	

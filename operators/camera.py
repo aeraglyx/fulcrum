@@ -330,6 +330,8 @@ class AX_OT_frame_range_from_cam(bpy.types.Operator):
 		frame_orig = bpy.context.scene.frame_current
 		new_frame = max(min_frame, min(frame_orig, max_frame))
 		bpy.context.scene.frame_current = new_frame
+
+		# bpy.ops.action.view_all()  # TODO 
 		
 		return {'FINISHED'}
 
@@ -391,8 +393,8 @@ class AX_OT_passepartout(bpy.types.Operator):
 	
 	alpha: bpy.props.FloatProperty(
 		name = "Alpha",
-		description = "Number of total subdivisions",
-		min = 0.0, default = 0.5, max = 1.0,
+		description = "",
+		min = 0.0, default = 0.8, max = 1.0,
 		subtype = 'FACTOR'
 	)
 
