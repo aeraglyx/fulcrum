@@ -270,3 +270,24 @@ class AX_OT_add_todo_note(bpy.types.Operator):
 
 		col = layout.column(align = True)
 		col.prop(self, "note")
+
+
+class AX_OT_hide_group_inputs(bpy.types.Operator):
+	
+	bl_idname = "ax.hide_group_inputs"
+	bl_label = "Hide Group Inputs"
+	bl_description = ""
+	
+	# @classmethod
+	# def poll(cls, context):
+	# 	return hasattr(context, "selected_nodes")
+
+	def execute(self, context):
+		nodes = context.space_data.edit_tree.nodes
+		print(context.space_data.edit_tree.name)
+		for node in nodes:
+			if node.type == 'GROUP_INPUT':
+				for socket in node.outputs:
+					if socket.enabled and not socket.is_linked:
+						socket.hide = True
+		return {'FINISHED'}

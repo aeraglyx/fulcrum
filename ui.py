@@ -71,6 +71,7 @@ class AX_PT_node_tools(bpy.types.Panel):
 		col = layout.column(align = True)
 		col.operator("ax.center_nodes", icon = 'ANCHOR_CENTER')
 		col.operator("ax.nodes_to_grid", icon = 'SNAP_GRID')
+		col.operator("ax.hide_group_inputs", icon = 'NODE')  # HIDE_ON
 
 		col = layout.column(align = True)
 		row = col.row(align = True)
@@ -82,7 +83,7 @@ class AX_PT_node_tools(bpy.types.Panel):
 		row.operator("ax.copy_nodes", text = "Copy", icon = 'COPYDOWN')
 		row.operator("ax.paste_nodes", text = "Pasta", icon = 'PASTEDOWN')
 
-		layout.operator("ax.set_render_passes", icon = 'NODE_COMPOSITING')  # XXX
+		layout.operator("ax.set_render_passes", icon = 'NODE_COMPOSITING')
 		
 class AX_PT_optimization(bpy.types.Panel):
 	

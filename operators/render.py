@@ -88,7 +88,7 @@ def check_if_render_slot_is_used(slot):
 	tmp_path = os.path.join(bpy.path.abspath('//'), "tmp_img.png")
 
 	try:
-		bpy.data.images['Render Result'].save_render(filepath = tmp_path)
+		bpy.data.images['Render Result'].save_render(filepath=tmp_path)
 		# XXX probably only works for saved files ^
 		return True
 	except RuntimeError:
@@ -198,7 +198,7 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 	mist: bpy.props.BoolProperty(
 		name = "Mist",
 		description = "",
-		default = True
+		default = False
 	)
 	position: bpy.props.BoolProperty(
 		name = "Position",
@@ -243,7 +243,8 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 		context.scene.render.film_transparent = self.transparent
 		
 		def set_render_passes(view_layer):
-
+			
+			cycles_view_layer = view_layer.cycles
 			view_layer.use_pass_combined = True
 
 			view_layer.use_pass_diffuse_color = self.diffuse
@@ -258,14 +259,14 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 			view_layer.use_pass_transmission_direct = self.transmission
 			view_layer.use_pass_transmission_indirect = self.transmission
 
-			view_layer.use_pass_volume_direct = self.volume
-			view_layer.use_pass_volume_indirect = self.volume
+			cycles_view_layer.use_pass_volume_direct = self.volume
+			cycles_view_layer.use_pass_volume_indirect = self.volume
 
 			view_layer.use_pass_emit = self.emit
 			view_layer.use_pass_environment = self.env
 			view_layer.use_pass_shadow = self.shadow
 			view_layer.use_pass_ambient_occlusion = self.ao
-			view_layer.use_pass_shadow_catcher = self.shadow_catcher
+			cycles_view_layer.use_pass_shadow_catcher = self.shadow_catcher
 
 			view_layer.use_pass_z = self.z
 			view_layer.use_pass_mist = self.mist
@@ -298,6 +299,7 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 			def mix_nodes(socket_a, socket_b, mode):
 				mix_node = nodes.new(type="CompositorNodeMixRGB")
 				mix_node.blend_type = mode
+				mix_node.hide = True
 				links.new(socket_a, mix_node.inputs[1])
 				links.new(socket_b, mix_node.inputs[2])
 				return mix_node.outputs[0]
@@ -340,8 +342,9 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 						plug_socket(socket_ind, out + "_ind")
 						plug_socket(socket_col, out + "_col")
 
-			input_node = nodes.new(type='CompositorNodesRLayers')
-			context.scene.node_tree.nodes.active.layer = view_layer.name
+			input_node = nodes.new(type='CompositorNodeRLayers')
+			input_node.layer = view_layer.name
+			input_node.show_preview = False
 		
 			output_node = nodes.new(type='CompositorNodeOutputFile')
 			output_node.format.file_format = 'OPEN_EXR'
@@ -391,22 +394,28 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 	def draw(self, context):
 
 		layout = self.layout
-		col = layout.column(align = True)
-		
+		layout.use_property_split = True
+		layout.use_property_decorate = False
+
+		col = layout.column(heading="Main", align=True)
 		col.prop(self, "combine_dir_ind")
 		col.prop(self, "combine_light_color")
 		col.prop(self, "transparent")
 		
+		col = layout.column(heading="Light", align=True)
 		col.prop(self, "diffuse")
 		col.prop(self, "glossy")
 		col.prop(self, "transmission")
 		col.prop(self, "volume")
 		col.prop(self, "emit")
 		col.prop(self, "env")
+		
+		col = layout.column(heading="Extra", align=True)
 		col.prop(self, "shadow")
 		col.prop(self, "ao")
 		col.prop(self, "shadow_catcher")
 		
+		col = layout.column(heading="Data", align=True)
 		col.prop(self, "z")
 		col.prop(self, "mist")
 		col.prop(self, "position")
@@ -414,6 +423,7 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 		col.prop(self, "vector")
 		col.prop(self, "uv")
 
+		col = layout.column(heading="Crypto", align=True)
 		col.prop(self, "crypto_asset")
 		col.prop(self, "crypto_material")
 		col.prop(self, "crypto_object")
