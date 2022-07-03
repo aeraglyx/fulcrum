@@ -2,7 +2,7 @@ bl_info = {
 	"name": "Fulcrum",
 	"author": "Vladislav Macíček (Aeraglyx)",
 	"description": "All kinds of tools",
-	"blender": (3, 1, 0),
+	"blender": (3, 3, 0),
 	"version": (0, 1, 10),
 	"location": "Everywhere",
 	"doc_url": "https://github.com/aeraglyx/fulcrum",
@@ -134,8 +134,7 @@ def register():
 		
 		print("fulcrum: save_pre handler done")
 	
-	# bpy.app.handlers.save_pre.append(save_in_solid_shading)
-	bpy.app.handlers.save_pre.append(save_in_solid_shading)  # TODO restore after saving
+	# bpy.app.handlers.save_pre.append(save_in_solid_shading)  # TODO restore after saving
 	
 	print("FULCRUM registered")
 
@@ -145,9 +144,9 @@ def unregister():
 	# 	if handler.__name__ == "setup_render_slots":
 	# 		bpy.app.handlers.render_pre.remove(handler)
 	
-	for handler in bpy.app.handlers.save_pre:
-		if handler.__name__ == "save_in_solid_shading":
-			bpy.app.handlers.save_pre.remove(handler)
+	# for handler in bpy.app.handlers.save_pre:
+	# 	if handler.__name__ == "save_in_solid_shading":
+	# 		bpy.app.handlers.save_pre.remove(handler)
 
 	for cls in classes:
 		bpy.utils.unregister_class(cls)
