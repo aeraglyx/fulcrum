@@ -22,6 +22,54 @@ def get_node_name(node):
 		name = node.name
 		return re.sub(".[0-9]{3,}$", "", name) # XXX {3} or {3,}
 
+def get_input_loc(socket):
+	X_OFFSET = -1.0
+	Y_TOP = -34.0
+	Y_BOTTOM = 16.0
+	Y_OFFSET = 22.0
+
+	# 2 offsets 
+	VEC_BOTTOM = 28.0
+	VEC_TOP = 32.0
+
+	def is_tall(node, socket):
+		if socket.type != 'VECTOR':
+			return False
+		if socket.hide_value:
+			return False
+		if socket.is_linked:
+			return False
+		# if node.type == 'BSDF_PRINCIPLED' and socket.identifier == 'Subsurface Radius':
+		# 	return False  # an exception confirms a rule?
+		return True
+	
+	node = socket.node
+	scaling = node.dimensions[0] / node.width
+
+	if socket.is_output:
+		x = node.location.x + node.dimensions.x/scaling + X_OFFSET
+		y = node.location.y + Y_TOP    
+		for output in node.outputs:
+			if output.hide or not output.enabled:
+				continue
+			if output == socket:
+				out = [x, y]
+			y -= Y_OFFSET
+	else:
+		x = node.location.x
+		y = node.location.y - node.dimensions.y/scaling + Y_BOTTOM
+		for input in reversed(node.inputs):
+			if input.hide or not input.enabled:
+				continue
+			tall = is_tall(node, input)
+			y += VEC_BOTTOM*tall
+			if input == socket:
+				out = [x, y]
+			y += Y_OFFSET + VEC_TOP*tall
+	
+	# print(out)
+	return out
+
 
 class AX_OT_find_inputs(bpy.types.Operator):
 	
@@ -57,7 +105,6 @@ class AX_OT_find_inputs(bpy.types.Operator):
 		
 		return {'FINISHED'}
 
-
 class AX_OT_node_flow(bpy.types.Operator):
 	
 	bl_idname = "ax.node_flow"
@@ -90,7 +137,6 @@ class AX_OT_node_flow(bpy.types.Operator):
 		color_nodes(nodes_out, [0.2, 0.45, 0.6])
 
 		return {'FINISHED'}
-
 
 class AX_OT_unused_nodes(bpy.types.Operator):
 	
@@ -146,31 +192,87 @@ class AX_OT_unused_nodes(bpy.types.Operator):
 
 		return {'FINISHED'}
 
-
-class AX_OT_align_nodes(bpy.types.Operator):  # TODO
+class AX_OT_align_nodes(bpy.types.Operator):
 
 	# layered graph drawing
 	
 	bl_idname = "ax.align_nodes"
 	bl_label = "Align Nodes"
 	bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
 	
 	@classmethod
 	def poll(cls, context):
 		return hasattr(context, "selected_nodes")
+	
+	test: bpy.props.FloatProperty(
+		name = "Test",
+		description = "Number of total subdivisions",
+		soft_min = 0.0, default = 0.25, soft_max = 8.0,
+	)
+	spacing: bpy.props.IntVectorProperty(
+		name = "Spacing",
+		description = "Spacing between nodes",
+		min = 0, default = (40, 20), soft_max = 100,
+		size = 2
+	)
 
 	def execute(self, context):
 
 		nodes = context.space_data.edit_tree.nodes
-		selected = context.selected_nodes
-		
-		node.dimensions.y
 
-		for input in (input for input in node_current.inputs if input.enabled):
-			pass
+		levels = {node:0 for node in nodes}
+		def figure_out_levels(node_current, level_current):
+			inputs = (x for x in node_current.inputs if x.enabled)
+			for input in inputs:
+				for link in input.links:
+					node = link.from_node
+					if levels[node] <= level_current:
+						levels[node] = level_current + 1
+						figure_out_levels(node, level_current + 1)
+		
+		root_node = context.active_node
+		figure_out_levels(root_node, 0)
+		
+		level_current = 1
+		x = 0
+		while True:
+			nodes = [node for (node, level) in levels.items() if level == level_current]
+			if not nodes:
+				break
+			orders = []
+			for node in nodes:
+				weight_total = 0.0
+				pos_thingy = 0.0
+				outputs = (x for x in node.outputs if x.enabled)
+				for output in outputs:
+					for link in output.links:
+						level_diff = level_current - levels[link.to_node]
+						weight = 2**(self.test*(1-level_diff))
+						weight_total += weight
+						pos_thingy += get_input_loc(link.to_socket)[1] * weight
+				orders.append(pos_thingy / weight_total)
+			nodes = [node for _, node in sorted(zip(orders, nodes), reverse=True)]
+			spacing_y = self.spacing[1]
+			def node_height(node):
+				return node.dimensions[1] * node.width / node.dimensions[0]
+			full_height = sum([node_height(node) for node in nodes]) + spacing_y*(len(nodes)-1)
+			x -= max([node.width for node in nodes]) + self.spacing[0]
+			y = full_height*0.5
+			for node in nodes:
+				node.location = [x, y]
+				y -= node_height(node) + spacing_y
+			level_current += 1
 
 		return {'FINISHED'}
 
+	def draw(self, context):
+		layout = self.layout
+		layout.use_property_split = True
+		layout.use_property_decorate = False
+		# col = layout.column(align = True)
+		layout.prop(self, "spacing")
+		layout.prop(self, "test")
 
 class AX_OT_nodes_to_grid(bpy.types.Operator):
 	
@@ -191,7 +293,6 @@ class AX_OT_nodes_to_grid(bpy.types.Operator):
 			node.location.y = int(node.location.y / 10) * 10
 
 		return {'FINISHED'}
-
 
 class AX_OT_center_nodes(bpy.types.Operator):
 	
@@ -227,7 +328,6 @@ class AX_OT_center_nodes(bpy.types.Operator):
 		# bpy.ops.node.view_all()
 
 		return {'FINISHED'}
-
 
 class AX_OT_add_todo_note(bpy.types.Operator):
 	
@@ -270,7 +370,6 @@ class AX_OT_add_todo_note(bpy.types.Operator):
 
 		col = layout.column(align = True)
 		col.prop(self, "note")
-
 
 class AX_OT_hide_group_inputs(bpy.types.Operator):
 	

@@ -18,7 +18,7 @@ from .operators.reset_node_color import AX_OT_reset_node_color
 from .operators.render import AX_OT_anim_time_limit, AX_OT_render_to_new_slot
 from .operators.vert_group_2_col import AX_OT_vert_group_2_col
 from .operators.paint import AX_OT_set_paint_brush, AX_OT_set_weight_brush
-from .operators.node_flow import AX_OT_node_flow, AX_OT_unused_nodes, AX_OT_find_inputs, AX_OT_center_nodes, AX_OT_nodes_to_grid, AX_OT_add_todo_note, AX_OT_hide_group_inputs
+from .operators.node_flow import AX_OT_node_flow, AX_OT_unused_nodes, AX_OT_find_inputs, AX_OT_center_nodes, AX_OT_nodes_to_grid, AX_OT_add_todo_note, AX_OT_hide_group_inputs, AX_OT_align_nodes
 from .operators.versioning import AX_OT_version_encode, AX_OT_version_decode
 from .operators.utility import AX_OT_open_script_dir, AX_OT_open_blend_dir
 from .operators.copy_pasta import AX_OT_copy_nodes, AX_OT_paste_nodes
@@ -67,6 +67,7 @@ classes = (
 	AX_OT_version_decode,
 	AX_OT_copy_nodes,
 	AX_OT_paste_nodes,
+	AX_OT_align_nodes,
 
 	AX_OT_render_to_new_slot,
 	AX_OT_set_render_passes,

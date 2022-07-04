@@ -287,7 +287,6 @@ class AX_OT_projection_setup(bpy.types.Operator, ImportHelper):
 		
 		layout.prop(self, "shade_smooth")
 
-
 class AX_OT_frame_range_from_cam(bpy.types.Operator):
 	
 	bl_idname = "ax.frame_range_from_cam"
@@ -345,7 +344,6 @@ class AX_OT_frame_range_from_cam(bpy.types.Operator):
 		
 		return {'FINISHED'}
 
-
 class AX_OT_set_resolution(bpy.types.Operator):
 	
 	bl_idname = "ax.set_resolution"
@@ -368,7 +366,6 @@ class AX_OT_set_resolution(bpy.types.Operator):
 		
 		return {'FINISHED'}
 
-
 class AX_OT_set_aspect_ratio(bpy.types.Operator):
 	
 	bl_idname = "ax.set_aspect_ratio"
@@ -388,7 +385,6 @@ class AX_OT_set_aspect_ratio(bpy.types.Operator):
 		context.scene.render.resolution_y = y_new
 		
 		return {'FINISHED'}
-
 
 class AX_OT_passepartout(bpy.types.Operator):
 	

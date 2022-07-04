@@ -72,6 +72,7 @@ class AX_PT_node_tools(bpy.types.Panel):
 		col.operator("ax.center_nodes", icon = 'ANCHOR_CENTER')
 		col.operator("ax.nodes_to_grid", icon = 'SNAP_GRID')
 		col.operator("ax.hide_group_inputs", icon = 'NODE')  # HIDE_ON
+		col.operator("ax.align_nodes", icon = 'ALIGN_CENTER')
 
 		col = layout.column(align = True)
 		row = col.row(align = True)

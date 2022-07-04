@@ -16,7 +16,6 @@ class AX_OT_open_script_dir(bpy.types.Operator):
 		
 		return {'FINISHED'}
 
-
 class AX_OT_open_blend_dir(bpy.types.Operator):
 	
 	bl_idname = "ax.open_blend_dir"
