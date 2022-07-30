@@ -22,7 +22,7 @@ def get_node_name(node):
 		name = node.name
 		return re.sub(".[0-9]{3,}$", "", name) # XXX {3} or {3,}
 
-def get_input_loc(socket):
+def get_socket_loc(socket):
 	X_OFFSET = -1.0
 	Y_TOP = -34.0
 	Y_BOTTOM = 16.0
@@ -47,7 +47,7 @@ def get_input_loc(socket):
 	scaling = node.dimensions[0] / node.width
 
 	if socket.is_output:
-		x = node.location.x + node.dimensions.x/scaling + X_OFFSET
+		x = node.location.x + node.dimensions.x / scaling + X_OFFSET
 		y = node.location.y + Y_TOP    
 		for output in node.outputs:
 			if output.hide or not output.enabled:
@@ -57,17 +57,16 @@ def get_input_loc(socket):
 			y -= Y_OFFSET
 	else:
 		x = node.location.x
-		y = node.location.y - node.dimensions.y/scaling + Y_BOTTOM
+		y = node.location.y - node.dimensions.y / scaling + Y_BOTTOM
 		for input in reversed(node.inputs):
 			if input.hide or not input.enabled:
 				continue
 			tall = is_tall(node, input)
-			y += VEC_BOTTOM*tall
+			y += VEC_BOTTOM * tall
 			if input == socket:
 				out = [x, y]
-			y += Y_OFFSET + VEC_TOP*tall
+			y += Y_OFFSET + VEC_TOP * tall
 	
-	# print(out)
 	return out
 
 
@@ -220,8 +219,8 @@ class AX_OT_align_nodes(bpy.types.Operator):
 	def execute(self, context):
 
 		nodes = context.space_data.edit_tree.nodes
-
 		levels = {node:0 for node in nodes}
+
 		def figure_out_levels(node_current, level_current):
 			inputs = (x for x in node_current.inputs if x.enabled)
 			for input in inputs:
@@ -230,6 +229,9 @@ class AX_OT_align_nodes(bpy.types.Operator):
 					if levels[node] <= level_current:
 						levels[node] = level_current + 1
 						figure_out_levels(node, level_current + 1)
+		
+		def node_height(node):
+			return node.dimensions[1] * node.width / node.dimensions[0]
 		
 		root_node = context.active_node
 		figure_out_levels(root_node, 0)
@@ -248,17 +250,15 @@ class AX_OT_align_nodes(bpy.types.Operator):
 				for output in outputs:
 					for link in output.links:
 						level_diff = level_current - levels[link.to_node]
-						weight = 2**(self.test*(1-level_diff))
+						weight = 2 ** (self.test * (1 - level_diff))
 						weight_total += weight
-						pos_thingy += get_input_loc(link.to_socket)[1] * weight
+						pos_thingy += get_socket_loc(link.to_socket)[1] * weight
 				orders.append(pos_thingy / weight_total)
 			nodes = [node for _, node in sorted(zip(orders, nodes), reverse=True)]
 			spacing_y = self.spacing[1]
-			def node_height(node):
-				return node.dimensions[1] * node.width / node.dimensions[0]
-			full_height = sum([node_height(node) for node in nodes]) + spacing_y*(len(nodes)-1)
+			full_height = sum([node_height(node) for node in nodes]) + spacing_y * (len(nodes) - 1)
 			x -= max([node.width for node in nodes]) + self.spacing[0]
-			y = full_height*0.5
+			y = full_height * 0.5
 			for node in nodes:
 				node.location = [x, y]
 				y -= node_height(node) + spacing_y
@@ -285,13 +285,10 @@ class AX_OT_nodes_to_grid(bpy.types.Operator):
 		return hasattr(context, "selected_nodes")
 
 	def execute(self, context):
-
 		selected = context.selected_nodes
-
 		for node in selected:
 			node.location.x = int(node.location.x / 10) * 10
 			node.location.y = int(node.location.y / 10) * 10
-
 		return {'FINISHED'}
 
 class AX_OT_center_nodes(bpy.types.Operator):
@@ -307,7 +304,6 @@ class AX_OT_center_nodes(bpy.types.Operator):
 	def execute(self, context):
 
 		nodes = context.space_data.edit_tree.nodes
-
 		# FIXME takes nodes inside groups as well (does it?)
 
 		node_center = mathutils.Vector((0, 0))
@@ -390,3 +386,45 @@ class AX_OT_hide_group_inputs(bpy.types.Operator):
 					if socket.enabled and not socket.is_linked:
 						socket.hide = True
 		return {'FINISHED'}
+
+class AX_OT_tex_to_name(bpy.types.Operator):
+	
+	bl_idname = "ax.tex_to_name"
+	bl_label = "Tex > Mat Name"
+	bl_description = "Name material or object after image used by the active Image Texture node"
+	bl_options = {'REGISTER', 'UNDO'}
+	
+	@classmethod
+	def poll(cls, context):
+		if context.area.ui_type == 'ShaderNodeTree':
+			if context.space_data.shader_type == 'OBJECT':
+				if hasattr(context, "active_node"):
+					node = context.active_node
+					if node and node.select and node.type == 'TEX_IMAGE':
+						return bool(node.image)
+		return False
+	
+	mat: bpy.props.BoolProperty(
+		name = "Material",
+		description = "xxx",
+		default = True)
+	obj: bpy.props.BoolProperty(
+		name = "Object",
+		description = "xxx",
+		default = True)
+
+	def execute(self, context):
+		node = context.active_node	
+		img_name = ".".join(node.image.name.split(".")[:-1])
+		if self.mat:
+			context.material.name = img_name
+		if self.obj:
+			context.object.name = img_name
+		return {'FINISHED'}
+	
+	def draw(self, context):
+		layout = self.layout
+		layout.use_property_split = True
+		layout.use_property_decorate = False
+		layout.prop(self, "mat")
+		layout.prop(self, "obj")

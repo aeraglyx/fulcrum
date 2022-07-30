@@ -3,7 +3,7 @@ bl_info = {
 	"author": "Vladislav Macíček (Aeraglyx)",
 	"description": "All kinds of tools",
 	"blender": (3, 3, 0),
-	"version": (0, 1, 10),
+	"version": (0, 1, 11),
 	"location": "Everywhere",
 	"doc_url": "https://github.com/aeraglyx/fulcrum",
 	"category": 'User Interface',
@@ -11,16 +11,16 @@ bl_info = {
 }
 
 import bpy
-from bpy.app.handlers import persistent
+# from bpy.app.handlers import persistent
 
 from .operators.compare import AX_OT_compare, my_properties, AX_OT_benchmark
 from .operators.reset_node_color import AX_OT_reset_node_color
 from .operators.render import AX_OT_anim_time_limit, AX_OT_render_to_new_slot
 from .operators.vert_group_2_col import AX_OT_vert_group_2_col
 from .operators.paint import AX_OT_set_paint_brush, AX_OT_set_weight_brush
-from .operators.node_flow import AX_OT_node_flow, AX_OT_unused_nodes, AX_OT_find_inputs, AX_OT_center_nodes, AX_OT_nodes_to_grid, AX_OT_add_todo_note, AX_OT_hide_group_inputs, AX_OT_align_nodes
-from .operators.versioning import AX_OT_version_encode, AX_OT_version_decode
-from .operators.utility import AX_OT_open_script_dir, AX_OT_open_blend_dir
+from .operators.nodes import AX_OT_node_flow, AX_OT_unused_nodes, AX_OT_find_inputs, AX_OT_center_nodes, AX_OT_nodes_to_grid, AX_OT_add_todo_note, AX_OT_hide_group_inputs, AX_OT_align_nodes, AX_OT_tex_to_name
+from .operators.node_versioning import AX_OT_version_encode, AX_OT_version_decode
+from .operators.file_stuff import AX_OT_save_as_new_version, AX_OT_go_to_latest_version, AX_OT_open_script_dir, AX_OT_open_blend_dir
 from .operators.copy_pasta import AX_OT_copy_nodes, AX_OT_paste_nodes
 from .operators.three_d import AX_OT_locate_vertex, AX_OT_locate_vertices, AX_OT_cloth_vert_mass, AX_OT_set_auto_smooth, AX_OT_hybrid_subdiv
 from .operators.camera import AX_OT_dof_setup, AX_OT_isometric_setup, AX_OT_projection_setup, AX_OT_frame_range_from_cam
@@ -34,6 +34,7 @@ from . ui import (
 	AX_PT_render,
 	AX_PT_data,
 	AX_PT_physics,
+	AX_PT_versioning,
 	AX_PT_ease_of_access,
 	AX_PT_paint,
 	AX_PT_utility_3d,
@@ -53,6 +54,8 @@ classes = (
 
 	AX_OT_open_script_dir,
 	AX_OT_open_blend_dir,
+	AX_OT_save_as_new_version,
+	AX_OT_go_to_latest_version,
 	
 	AX_OT_reset_node_color,
 	AX_OT_compare,
@@ -68,6 +71,7 @@ classes = (
 	AX_OT_copy_nodes,
 	AX_OT_paste_nodes,
 	AX_OT_align_nodes,
+	AX_OT_tex_to_name,
 
 	AX_OT_render_to_new_slot,
 	AX_OT_set_render_passes,
@@ -86,6 +90,7 @@ classes = (
 	AX_OT_cloth_vert_mass,
 	AX_OT_set_auto_smooth,
 
+	AX_PT_versioning,
 	AX_PT_ease_of_access,
 	AX_PT_3d_stuff,
 	AX_PT_camera_main,
@@ -115,26 +120,26 @@ def register():
 	# bpy.app.handlers.render_pre.append(setup_render_slots)
 	
 	
-	@persistent
-	def save_in_solid_shading(scene):
-		# bpy.context.space_data.shading.type = 'SOLID'
-		# bpy.data.workspaces['Scripting'].screens['Scripting'].areas[4].spaces[0].shading.type = 'SOLID'
+	# @persistent
+	# def save_in_solid_shading(scene):
+	# 	# bpy.context.space_data.shading.type = 'SOLID'
+	# 	# bpy.data.workspaces['Scripting'].screens['Scripting'].areas[4].spaces[0].shading.type = 'SOLID'
 
-		# for area in bpy.context.screen.areas:
-		# 	for space in area.spaces:
-		# 			if space.type == 'VIEW_3D':
-		# 				if space.shading.type == 'MATERIAL':
-		# 					space.shading.type = 'SOLID'
+	# 	# for area in bpy.context.screen.areas:
+	# 	# 	for space in area.spaces:
+	# 	# 			if space.type == 'VIEW_3D':
+	# 	# 				if space.shading.type == 'MATERIAL':
+	# 	# 					space.shading.type = 'SOLID'
 
-		for workspace in bpy.data.workspaces:
-			for screen in workspace.screens:
-				for area in screen.areas:
-					for space in area.spaces:
-						if space.type == 'VIEW_3D':
-							if space.shading.type == 'MATERIAL':
-								space.shading.type = 'SOLID'
+	# 	for workspace in bpy.data.workspaces:
+	# 		for screen in workspace.screens:
+	# 			for area in screen.areas:
+	# 				for space in area.spaces:
+	# 					if space.type == 'VIEW_3D':
+	# 						if space.shading.type == 'MATERIAL':
+	# 							space.shading.type = 'SOLID'
 		
-		print("fulcrum: save_pre handler done")
+	# 	print("fulcrum: save_pre handler done")
 	
 	# bpy.app.handlers.save_pre.append(save_in_solid_shading)  # TODO restore after saving
 	

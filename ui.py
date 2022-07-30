@@ -57,34 +57,50 @@ class AX_PT_node_tools(bpy.types.Panel):
 	def draw(self, context):
 		layout = self.layout
 
-		col = layout.column(align = True)
-		selected = col.operator("ax.reset_node_color", text = "Reset Selected", icon = 'COLOR')  # FILE_REFRESH  COLOR  RESTRICT_COLOR_OFF
+		col = layout.column(align=True)
+		selected = col.operator("ax.reset_node_color", text="Reset Selected", icon='COLOR')  # FILE_REFRESH  COLOR  RESTRICT_COLOR_OFF
 		selected.all = False
-		all = col.operator("ax.reset_node_color", text = "Reset All", icon = 'GROUP_VCOL')
+		all = col.operator("ax.reset_node_color", text="Reset All", icon='GROUP_VCOL')
 		all.all = True
 
-		col = layout.column(align = True)
-		col.operator("ax.find_inputs", icon = 'COLLECTION_COLOR_04')  # icon = 'NODE'
-		col.operator("ax.node_flow", icon = 'COLLECTION_COLOR_05')  # icon = 'NODETREE'  # STROKE  ANIM_DATA  TRACKING
-		col.operator("ax.unused_nodes", icon = 'COLLECTION_COLOR_01')  # icon = 'PLUGIN'
+		col = layout.column(align=True)
+		col.operator("ax.find_inputs", icon='COLLECTION_COLOR_04')  # icon = 'NODE'
+		col.operator("ax.node_flow", icon='COLLECTION_COLOR_05')  # icon = 'NODETREE'  # STROKE  ANIM_DATA  TRACKING
+		col.operator("ax.unused_nodes", icon='COLLECTION_COLOR_01')  # icon = 'PLUGIN'
 		
-		col = layout.column(align = True)
-		col.operator("ax.center_nodes", icon = 'ANCHOR_CENTER')
-		col.operator("ax.nodes_to_grid", icon = 'SNAP_GRID')
-		col.operator("ax.hide_group_inputs", icon = 'NODE')  # HIDE_ON
-		col.operator("ax.align_nodes", icon = 'ALIGN_CENTER')
+		col = layout.column(align=True)
+		col.operator("ax.center_nodes", icon='ANCHOR_CENTER')
+		col.operator("ax.nodes_to_grid", icon='SNAP_GRID')
+		col.operator("ax.hide_group_inputs", icon='NODE')  # HIDE_ON
+		col.operator("ax.align_nodes", icon='ALIGN_CENTER')
 
-		col = layout.column(align = True)
-		row = col.row(align = True)
-		row.operator("ax.version_encode", text = "Encode", icon = 'SYSTEM')
-		row.operator("ax.version_decode", text = "Decode", icon = 'ZOOM_ALL')
+		col = layout.column(align=True)
+		row = col.row(align=True)
+		row.operator("ax.version_encode", text="Encode", icon='SYSTEM')
+		row.operator("ax.version_decode", text="Decode", icon='ZOOM_ALL')
 		
-		col = layout.column(align = True)
-		row = col.row(align = True)
-		row.operator("ax.copy_nodes", text = "Copy", icon = 'COPYDOWN')
-		row.operator("ax.paste_nodes", text = "Pasta", icon = 'PASTEDOWN')
+		# col = layout.column(align=True)
+		# row = col.row(align=True)
+		# row.operator("ax.copy_nodes", text="Copy", icon='COPYDOWN')
+		# row.operator("ax.paste_nodes", text="Pasta", icon='PASTEDOWN')
 
-		layout.operator("ax.set_render_passes", icon = 'NODE_COMPOSITING')
+		if context.area.ui_type == 'ShaderNodeTree':
+			if context.space_data.shader_type == 'OBJECT':
+				col = layout.column(align=True)
+				col.label(text="Texture name to:", icon='TEXTURE')
+				row = col.row(align=True)
+				mat = row.operator("ax.tex_to_name", text="Mat")  # NODE_MATERIAL
+				mat.mat = True
+				mat.obj = False
+				obj = row.operator("ax.tex_to_name", text="Obj")  # OBJECT_DATA
+				obj.mat = False
+				obj.obj = True
+				both = row.operator("ax.tex_to_name", text="Both")
+				both.mat = True
+				both.obj = True
+		
+		if context.area.ui_type == 'CompositorNodeTree':
+			layout.operator("ax.set_render_passes", icon='NODE_COMPOSITING')
 		
 class AX_PT_optimization(bpy.types.Panel):
 	
@@ -136,6 +152,28 @@ class AX_PT_utility_node(bpy.types.Panel):
 
 # --- VIEW 3D ---
 
+from .operators.file_stuff import is_current_file_version
+class AX_PT_versioning(bpy.types.Panel):
+	
+	bl_space_type = "VIEW_3D"
+	bl_region_type = "UI"
+	bl_category = "Fulcrum"
+	bl_label = "BLEND File"
+
+	def draw (self, context):
+
+		layout = self.layout
+		if not is_current_file_version():
+			layout.label(text="Not the latest file version!", icon='KEYTYPE_EXTREME_VEC')
+		# TODO  "Save this as new version"  "Go to the newest version"
+		# layout.prop(context.scene.fulcrum, "version")
+		
+		col = layout.column(align=True)
+		col.operator("ax.go_to_latest_version", icon='LOOP_FORWARDS')
+		col.operator("ax.save_as_new_version", icon='DUPLICATE')
+		
+		layout.operator("ax.open_blend_dir", icon='FILE_BACKUP')
+
 class AX_PT_ease_of_access(bpy.types.Panel):
 	
 	bl_space_type = "VIEW_3D"
@@ -147,10 +185,10 @@ class AX_PT_ease_of_access(bpy.types.Panel):
 		
 		layout = self.layout
 
-		col = layout.column(align = True)
+		col = layout.column(align=True)
 		col.prop(context.scene.render, "use_motion_blur")
 		col.prop(context.scene.render, "film_transparent")
-		layout.prop(context.scene.view_settings, "view_transform", text = "")
+		layout.prop(context.scene.view_settings, "view_transform", text="")
 		layout.prop(context.scene.tool_settings, "use_keyframe_insert_auto")
 
 		layout.label(text = "DON'T PANIC!")
@@ -169,36 +207,34 @@ class AX_PT_paint(bpy.types.Panel):
 		return weight or paint
 
 	def draw(self, context):
-		
 		layout = self.layout
-		
 		if bpy.context.mode == 'PAINT_VERTEX':
 			
-			col = layout.column(align = True)
-			row = col.row(align = True)
-			props = row.operator("ax.set_paint_brush", text = "R", icon = 'NONE')
+			col = layout.column(align=True)
+			row = col.row(align=True)
+			props = row.operator("ax.set_paint_brush", text="R", icon='NONE')
 			props.color = (1.0, 0.0, 0.0)
-			props = row.operator("ax.set_paint_brush", text = "G", icon = 'NONE')
+			props = row.operator("ax.set_paint_brush", text="G", icon='NONE')
 			props.color = (0.0, 1.0, 0.0)
-			props = row.operator("ax.set_paint_brush", text = "B", icon = 'NONE')
+			props = row.operator("ax.set_paint_brush", text="B", icon='NONE')
 			props.color = (0.0, 0.0, 1.0)
 
-			row = col.row(align = True)
-			props = row.operator("ax.set_paint_brush", text = "Blegh", icon = 'NONE')
+			row = col.row(align=True)
+			props = row.operator("ax.set_paint_brush", text="Blegh", icon='NONE')
 			props.color = (0.0, 0.0, 0.0)
-			props = row.operator("ax.set_paint_brush", text = "Grey", icon = 'NONE')
+			props = row.operator("ax.set_paint_brush", text="Grey", icon='NONE')
 			props.color = (0.5, 0.5, 0.5)
-			props = row.operator("ax.set_paint_brush", text = "White", icon = 'NONE')
+			props = row.operator("ax.set_paint_brush", text="White", icon='NONE')
 			props.color = (1.0, 1.0, 1.0)
 
 		if bpy.context.mode == 'PAINT_WEIGHT':
 
-			row = layout.row(align = True)
-			props = row.operator("ax.set_weight_brush", text = "0.0", icon = 'NONE')
+			row = layout.row(align=True)
+			props = row.operator("ax.set_weight_brush", text="0.0", icon='NONE')
 			props.weight = 0.0
-			props = row.operator("ax.set_weight_brush", text = "0.5", icon = 'NONE')
+			props = row.operator("ax.set_weight_brush", text="0.5", icon='NONE')
 			props.weight = 0.5
-			props = row.operator("ax.set_weight_brush", text = "1.0", icon = 'NONE')
+			props = row.operator("ax.set_weight_brush", text="1.0", icon='NONE')
 			props.weight = 1.0
 
 class AX_PT_3d_stuff(bpy.types.Panel):
@@ -212,13 +248,23 @@ class AX_PT_3d_stuff(bpy.types.Panel):
 		
 		layout = self.layout
 		
-		col = layout.column(align = True)
-		col.operator("ax.hybrid_subdiv", icon = 'MOD_SUBSURF')
-		col.operator("ax.set_auto_smooth", icon = 'MATSHADERBALL')
+		col = layout.column(align=True)
+		col.operator("ax.hybrid_subdiv", icon='MOD_SUBSURF')
+		col.operator("ax.set_auto_smooth", icon='MATSHADERBALL')
 		
-		col = layout.column(align = True)
-		col.operator("ax.locate_vertex", icon = 'VERTEXSEL')
-		col.operator("ax.locate_vertices", icon = 'SNAP_VERTEX')
+		col = layout.column(align=True)
+		col.operator("ax.locate_vertex", icon='VERTEXSEL')
+		col.operator("ax.locate_vertices", icon='SNAP_VERTEX')
+
+		keymap_items = bpy.data.window_managers["WinMan"].keyconfigs["Blender user"].keymaps['3D View'].keymap_items
+		for item in keymap_items:
+			if item.idname == 'transform.translate' and item.type == 'G':
+				transform = item
+				break
+		col = layout.column(align=True)
+		col.label(text="Axis Selection:")
+		row = col.row(align=True)
+		row.prop(transform.properties, "constraint_axis", text="", toggle=True, slider=True)
 
 class CameraStuffPanel(bpy.types.Panel):
 	
@@ -232,18 +278,16 @@ class AX_PT_camera_main(CameraStuffPanel, bpy.types.Panel):
 	bl_label = "Camera Stuff"
 
 	def draw(self, context):
-		
-		layout = self.layout
-		
-		col = layout.column(align = True)
-		col.operator("ax.isometric_setup", icon = 'FILE_3D')  # VIEW_ORTHO  FILE_3D
-		# maybe 2 buttons, one with "alignment" 0.0, one with 1.0
-		col.operator("ax.dof_setup", icon = 'CAMERA_DATA')
-		col.operator("ax.projection_setup", icon = 'MOD_UVPROJECT')  # STICKY_UVS_LOC  UV  MOD_UVPROJECT  IMAGE_PLANE
-		
-		layout.prop(context.area.spaces.active, "lock_camera")
 
-		layout.operator("ax.frame_range_from_cam", icon = 'ARROW_LEFTRIGHT')
+		layout = self.layout
+		layout.operator("ax.frame_range_from_cam", icon='ARROW_LEFTRIGHT')
+		layout.prop(context.area.spaces.active, "lock_camera")
+		
+		col = layout.column(align=True)
+		col.operator("ax.isometric_setup", icon='FILE_3D')  # VIEW_ORTHO  FILE_3D
+		# maybe 2 buttons, one with "alignment" 0.0, one with 1.0
+		col.operator("ax.dof_setup", icon='CAMERA_DATA')
+		col.operator("ax.projection_setup", icon='MOD_UVPROJECT')  # STICKY_UVS_LOC  UV  MOD_UVPROJECT  IMAGE_PLANE
 
 class AX_PT_camera_subpanel_01(CameraStuffPanel, bpy.types.Panel):
 
@@ -298,8 +342,6 @@ class AX_PT_utility_3d(bpy.types.Panel):
 	def draw (self, context):
 		
 		layout = self.layout
-		layout.operator("wm.console_toggle", icon = 'CONSOLE')
-		
-		col = layout.column(align = True)
-		col.operator("ax.open_script_dir", icon = 'SCRIPT')  # FOLDER_REDIRECT  SCRIPT
-		col.operator("ax.open_blend_dir", icon = 'FILE_BLEND')  # FILE_BLEND  BLENDER
+		col = layout.column(align=True)
+		col.operator("wm.console_toggle", icon='CONSOLE')
+		col.operator("ax.open_script_dir", icon='SCRIPT')  # FOLDER_REDIRECT  SCRIPT

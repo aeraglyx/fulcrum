@@ -42,7 +42,6 @@ def has_version(name):
 		has_version = False
 	return has_version
 
-
 class AX_OT_version_encode(bpy.types.Operator):
 	
 	bl_idname = "ax.version_encode"
@@ -71,7 +70,6 @@ class AX_OT_version_encode(bpy.types.Operator):
 			new_name = name + "_#" + version
 		active.node_tree.name = new_name
 		return {'FINISHED'}
-
 
 class AX_OT_version_decode(bpy.types.Operator):
 	

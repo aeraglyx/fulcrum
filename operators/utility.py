@@ -1,6 +1,6 @@
 import bpy
 import os
-
+import subprocess
 
 class AX_OT_open_script_dir(bpy.types.Operator):
 	
@@ -10,10 +10,8 @@ class AX_OT_open_script_dir(bpy.types.Operator):
 	bl_options = {'REGISTER', 'UNDO'}
 
 	def execute(self, context):
-
 		path = bpy.utils.script_path_user()
 		os.startfile(path)
-		
 		return {'FINISHED'}
 
 class AX_OT_open_blend_dir(bpy.types.Operator):
@@ -28,8 +26,7 @@ class AX_OT_open_blend_dir(bpy.types.Operator):
 		return bpy.data.is_saved
 
 	def execute(self, context):
-
-		path = os.path.realpath(bpy.path.abspath("//"))  # XXX points to AHK dir when not saved
-		os.startfile(path)  # TODO select the blend?
-		
+		# path = os.path.realpath(bpy.path.abspath("//"))  # XXX points to AHK dir when not saved
+		path = bpy.data.filepath
+		subprocess.Popen('explorer /select,"' + path + '"')
 		return {'FINISHED'}

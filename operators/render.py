@@ -1,5 +1,4 @@
 import bpy
-import time
 import os
 
 
@@ -114,14 +113,11 @@ class AX_OT_render_to_new_slot(bpy.types.Operator):
 
 		return {'FINISHED'}
 	
-
-
-
 class AX_OT_set_render_passes(bpy.types.Operator):
 
 	bl_idname = "ax.set_render_passes"
 	bl_label = "Set Render Passes"
-	bl_description = ""
+	bl_description = "Set-up compositor nodes."
 	bl_options = {'REGISTER', 'UNDO'}
 
 	# @classmethod
@@ -354,6 +350,10 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 			
 			output_node.layer_slots.clear()
 
+			for node in nodes:
+				if node.type == 'COMPOSITE':
+					links.new(input_node.outputs['Image'], node.inputs['Image'])
+			
 			make_link_1('Image', 'rgba' if self.transparent else 'rgb')
 
 			if self.diffuse:

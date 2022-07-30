@@ -52,9 +52,9 @@ class AX_OT_dof_setup(bpy.types.Operator):
 		empty.location = empty_loc
 
 		for obj in bpy.data.objects:
-			obj.select_set(state = False)
+			obj.select_set(state=False)
 		
-		empty.select_set(state = True)
+		empty.select_set(state=True)
 		context.view_layer.objects.active = empty
 
 		return {'FINISHED'}
@@ -62,9 +62,8 @@ class AX_OT_dof_setup(bpy.types.Operator):
 	def draw(self, context):
 
 		layout = self.layout
-		col = layout.column(align = True)
+		col = layout.column(align=True)
 		col.prop(self, "alignment")
-
 
 class AX_OT_isometric_setup(bpy.types.Operator):
 
@@ -164,7 +163,6 @@ class AX_OT_isometric_setup(bpy.types.Operator):
 		col = layout.column(align = True)
 		col.prop(self, "scale")
 		col.prop(self, "distance")
-
 
 from bpy_extras.io_utils import ImportHelper
 from bpy.types import Operator
@@ -291,7 +289,7 @@ class AX_OT_frame_range_from_cam(bpy.types.Operator):
 	
 	bl_idname = "ax.frame_range_from_cam"
 	bl_label = "Frame Range from Camera"
-	bl_description = "Automatically set scene frame range from scene's camera. Expects blabla_startframe_endframe name."
+	bl_description = "Automatically set scene frame range from scene's camera. Expected format blabla_startframe_endframe."
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -315,7 +313,7 @@ class AX_OT_frame_range_from_cam(bpy.types.Operator):
 		try:
 			min_frame, max_frame = get_min_max_frame(cam_obj)
 		except:
-			self.report({'WARNING'}, f"Expects blabla_startframe_endframe name.")
+			self.report({'WARNING'}, f"Expected format: blabla_startframe_endframe")
 			return {'CANCELLED'}
 
 		if max_frame < min_frame:
