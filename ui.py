@@ -13,12 +13,10 @@ class AX_PT_render(bpy.types.Panel):
 
 	def draw(self, context):
 		layout = self.layout
-		
 		row = layout.row()
-		row.operator("ax.anim_time_limit", icon = 'RENDER_ANIMATION')
-
-		layout.operator("ax.benchmark", icon = 'NONE')
-		layout.operator("ax.render_to_new_slot", icon = 'RENDER_RESULT')
+		row.operator("ax.anim_time_limit", icon='RENDER_ANIMATION')
+		layout.operator("ax.benchmark", icon='NONE')
+		layout.operator("ax.render_to_new_slot", icon='RENDER_RESULT')
 
 class AX_PT_data(bpy.types.Panel):
 	
@@ -30,7 +28,7 @@ class AX_PT_data(bpy.types.Panel):
 	def draw(self, context):
 		layout = self.layout
 		row = layout.row()
-		row.operator("ax.vert_group_2_col", icon = 'COLOR')
+		row.operator("ax.vert_group_2_col", icon='COLOR')
 
 class AX_PT_physics(bpy.types.Panel):
 	
@@ -42,7 +40,7 @@ class AX_PT_physics(bpy.types.Panel):
 	def draw(self, context):
 		layout = self.layout
 		row = layout.row()
-		row.operator("ax.cloth_vert_mass", icon = 'MOD_VERTEX_WEIGHT')
+		row.operator("ax.cloth_vert_mass", icon='MOD_VERTEX_WEIGHT')
 
 
 # --- NODE EDITOR ---
@@ -55,24 +53,34 @@ class AX_PT_node_tools(bpy.types.Panel):
 	bl_label = "Node Tools"
 
 	def draw(self, context):
+
 		layout = self.layout
 
 		col = layout.column(align=True)
-		selected = col.operator("ax.reset_node_color", text="Reset Selected", icon='COLOR')  # FILE_REFRESH  COLOR  RESTRICT_COLOR_OFF
-		selected.all = False
-		all = col.operator("ax.reset_node_color", text="Reset All", icon='GROUP_VCOL')
-		all.all = True
-
-		col = layout.column(align=True)
-		col.operator("ax.find_inputs", icon='COLLECTION_COLOR_04')  # icon = 'NODE'
-		col.operator("ax.node_flow", icon='COLLECTION_COLOR_05')  # icon = 'NODETREE'  # STROKE  ANIM_DATA  TRACKING
-		col.operator("ax.unused_nodes", icon='COLLECTION_COLOR_01')  # icon = 'PLUGIN'
-		
-		col = layout.column(align=True)
+		col.operator("ax.align_nodes", icon='ALIGN_CENTER')
 		col.operator("ax.center_nodes", icon='ANCHOR_CENTER')
 		col.operator("ax.nodes_to_grid", icon='SNAP_GRID')
 		col.operator("ax.hide_group_inputs", icon='NODE')  # HIDE_ON
-		col.operator("ax.align_nodes", icon='ALIGN_CENTER')
+
+		# col = layout.column(align=True)
+		# col.operator("ax.find_inputs", icon='SEQUENCE_COLOR_04')  # icon = 'NODE'
+		# col.operator("ax.node_flow", icon='SEQUENCE_COLOR_05')  # icon = 'NODETREE'  # STROKE  ANIM_DATA  TRACKING
+		# col.operator("ax.unused_nodes", icon='SEQUENCE_COLOR_01')  # icon = 'PLUGIN'
+
+		col = layout.column(align=True)
+		col.label(text="Find:")  # COLOR
+		row = col.row(align=True)
+		row.operator("ax.find_inputs", text="Inputs")  # icon = 'NODE'
+		row.operator("ax.node_flow", text="Deps")  # icon = 'NODETREE'  # STROKE  ANIM_DATA  TRACKING
+		row.operator("ax.unused_nodes", text="Unused")  # icon = 'PLUGIN'
+
+		col = layout.column(align=True)
+		col.label(text="Reset node color:")  # COLOR
+		row = col.row(align=True)
+		selected = row.operator("ax.reset_node_color", text="Selected")  # FILE_REFRESH  COLOR  RESTRICT_COLOR_OFF
+		selected.all = False
+		all = row.operator("ax.reset_node_color", text="All")
+		all.all = True
 
 		col = layout.column(align=True)
 		row = col.row(align=True)
@@ -115,27 +123,21 @@ class AX_PT_optimization(bpy.types.Panel):
 		return in_shader_editor
 
 	def draw(self, context):
-		
 		layout = self.layout
 		props = context.scene.ax_compare
-
 		# layout.prop(props, "engine")
-		
 		# col = layout.column(align = True)
 		# col.prop(props, "frames")
 		# col.prop(props, "resolution")
 		# col.prop(props, "samples")
-		
 		# layout.prop(props, "use_base")
-		
 		# row_thicc = layout.row()
 		# row_thicc.scale_y = 1.4
 		row = layout.row()
-		row.operator("ax.compare", icon = 'NONE')  # SORTTIME TIME TEMP
-		
-		col = layout.column(align = True)
-		col.label(text = f"Ratio: {props.result:.3f}", icon = 'SETTINGS')  # UV_SYNC_SELECT CONSTRAINT SETTINGS
-		col.label(text = f"Confidence: {props.confidence*100:.0f}%", icon = 'RNDCURVE')  # INDIRECT_ONLY_ON RNDCURVE
+		row.operator("ax.compare", icon='NONE')  # SORTTIME TIME TEMP
+		col = layout.column(align=True)
+		col.label(text = f"Ratio: {props.result:.3f}", icon='SETTINGS')  # UV_SYNC_SELECT CONSTRAINT SETTINGS
+		col.label(text = f"Confidence: {props.confidence*100:.0f}%", icon='RNDCURVE')  # INDIRECT_ONLY_ON RNDCURVE
 
 class AX_PT_utility_node(bpy.types.Panel):
 	
@@ -146,13 +148,15 @@ class AX_PT_utility_node(bpy.types.Panel):
 
 	def draw(self, context):
 		layout = self.layout
+		col = layout.column(align=True)
+		col.operator("wm.console_toggle", icon='CONSOLE')
+		col.operator("ax.open_script_dir", icon='SCRIPT')
 
-		layout.operator("wm.console_toggle", icon = 'CONSOLE')
 
 
 # --- VIEW 3D ---
 
-from .operators.file_stuff import is_current_file_version
+from .ops.file_stuff import is_current_file_version
 class AX_PT_versioning(bpy.types.Panel):
 	
 	bl_space_type = "VIEW_3D"
@@ -161,18 +165,22 @@ class AX_PT_versioning(bpy.types.Panel):
 	bl_label = "BLEND File"
 
 	def draw (self, context):
-
 		layout = self.layout
-		if not is_current_file_version():
-			layout.label(text="Not the latest file version!", icon='KEYTYPE_EXTREME_VEC')
-		# TODO  "Save this as new version"  "Go to the newest version"
-		# layout.prop(context.scene.fulcrum, "version")
-		
-		col = layout.column(align=True)
-		col.operator("ax.go_to_latest_version", icon='LOOP_FORWARDS')
-		col.operator("ax.save_as_new_version", icon='DUPLICATE')
-		
-		layout.operator("ax.open_blend_dir", icon='FILE_BACKUP')
+		if bpy.data.is_saved:
+			if is_current_file_version():
+				if bpy.data.is_dirty:
+					layout.label(text="Latest but not saved.", icon='SEQUENCE_COLOR_03')
+				else:
+					layout.label(text="DON'T PANIC!", icon='SEQUENCE_COLOR_04')
+				# layout.operator("ax.go_to_latest_version", icon='SEQUENCE_COLOR_04')
+			else:
+				layout.label(text="Not the latest version!", icon='SEQUENCE_COLOR_01')
+				layout.operator("ax.go_to_latest_version", icon='LOOP_FORWARDS')
+			col = layout.column(align=True)
+			col.operator("ax.save_as_new_version", icon='DUPLICATE')
+			col.operator("ax.open_blend_dir", icon='FILE_BACKUP')
+		else:
+			layout.label(text="File not saved!", icon='SEQUENCE_COLOR_01')
 
 class AX_PT_ease_of_access(bpy.types.Panel):
 	
@@ -182,16 +190,12 @@ class AX_PT_ease_of_access(bpy.types.Panel):
 	bl_label = "Ease of Access"
 
 	def draw(self, context):
-		
 		layout = self.layout
-
 		col = layout.column(align=True)
 		col.prop(context.scene.render, "use_motion_blur")
 		col.prop(context.scene.render, "film_transparent")
 		layout.prop(context.scene.view_settings, "view_transform", text="")
 		layout.prop(context.scene.tool_settings, "use_keyframe_insert_auto")
-
-		layout.label(text = "DON'T PANIC!")
 
 class AX_PT_paint(bpy.types.Panel):
 	
@@ -249,8 +253,8 @@ class AX_PT_3d_stuff(bpy.types.Panel):
 		layout = self.layout
 		
 		col = layout.column(align=True)
-		col.operator("ax.hybrid_subdiv", icon='MOD_SUBSURF')
 		col.operator("ax.set_auto_smooth", icon='MATSHADERBALL')
+		col.operator("ax.hybrid_subdiv", icon='MOD_SUBSURF')
 		
 		col = layout.column(align=True)
 		col.operator("ax.locate_vertex", icon='VERTEXSEL')
@@ -340,7 +344,6 @@ class AX_PT_utility_3d(bpy.types.Panel):
 	bl_label = "Utility"
 
 	def draw (self, context):
-		
 		layout = self.layout
 		col = layout.column(align=True)
 		col.operator("wm.console_toggle", icon='CONSOLE')

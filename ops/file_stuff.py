@@ -72,12 +72,14 @@ class AX_OT_save_as_new_version(bpy.types.Operator):
 	bl_idname = "ax.save_as_new_version"
 	bl_label = "Save as New Version"
 	bl_description = "This will work even if the current file is not the latest version"
-	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(cls, context):
+		return bpy.data.is_saved
 	
 	# bpy.data.is_dirty
 	def execute(self, context):
 		latest_file = get_newest_file()
-
 		folder_path = bpy.path.abspath("//")
 		name = os.path.splitext(bpy.path.basename(latest_file))[0]
 		name = version_up(name) + ".blend"
@@ -89,32 +91,22 @@ class AX_OT_go_to_latest_version(bpy.types.Operator):
 	
 	bl_idname = "ax.go_to_latest_version"
 	bl_label = "Jump to Latest Version"
-	bl_description = ""
-	bl_options = {'REGISTER', 'UNDO'}
+	bl_description = "Opens the latest version of this file from the same directory"
+
+	@classmethod
+	def poll(cls, context):
+		return bpy.data.is_saved
 
 	def execute(self, context):
 		latest_file = get_newest_file()
 		bpy.ops.wm.open_mainfile(filepath=latest_file)
 		return {'FINISHED'}
 
-class AX_OT_open_script_dir(bpy.types.Operator):
-	
-	bl_idname = "ax.open_script_dir"
-	bl_label = "Open Script Directory"
-	bl_description = ""
-	bl_options = {'REGISTER', 'UNDO'}
-
-	def execute(self, context):
-		path = bpy.utils.script_path_user()
-		os.startfile(path)
-		return {'FINISHED'}
-
 class AX_OT_open_blend_dir(bpy.types.Operator):
 	
 	bl_idname = "ax.open_blend_dir"
-	bl_label = "Locate BLEND"
-	bl_description = ""
-	bl_options = {'REGISTER', 'UNDO'}
+	bl_label = "Find .blend file"
+	bl_description = "Opens file explorer with the current Blender file selected"
 
 	@classmethod
 	def poll(cls, context):
@@ -124,4 +116,15 @@ class AX_OT_open_blend_dir(bpy.types.Operator):
 		# path = os.path.realpath(bpy.path.abspath("//"))  # XXX points to AHK dir when not saved
 		path = bpy.data.filepath
 		subprocess.Popen('explorer /select,"' + path + '"')
+		return {'FINISHED'}
+
+class AX_OT_open_script_dir(bpy.types.Operator):
+	
+	bl_idname = "ax.open_script_dir"
+	bl_label = "Open Script Directory"
+	bl_description = "Opens folder with addons and themes"
+
+	def execute(self, context):
+		path = bpy.utils.script_path_user()
+		os.startfile(path)
 		return {'FINISHED'}

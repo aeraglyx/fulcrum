@@ -49,16 +49,13 @@ class AX_OT_version_encode(bpy.types.Operator):
 	bl_description = "Append encoded time to the end of node group's name"
 	
 	@classmethod
-	def poll(cls, context):
+	def poll(cls, context):  # doesn't work in compositor?
 		if hasattr(context, "active_node"):
 			node = context.active_node
 			if node:
 				return hasattr(node, "node_tree")
 		return False
-
 		# is_selected = context.active_node.select
-		# return is_group and is_selected
-		return is_group
 
 	def execute(self, context):
 		active = context.active_node
