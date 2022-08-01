@@ -22,7 +22,17 @@ def get_node_name(node):
 		name = node.name
 		return re.sub(".[0-9]{3,}$", "", name) # XXX {3} or {3,}
 
-def get_socket_loc(socket):
+def node_width(node):
+	if node.type == 'REROUTE':
+		return 0
+	return node.width
+
+def node_height(node):
+	if node.type == 'REROUTE':
+		return 0
+	return node.dimensions[1] * node.width / node.dimensions[0]
+
+def socket_loc(socket):
 	X_OFFSET = -1.0
 	Y_TOP = -34.0
 	Y_BOTTOM = 16.0
@@ -32,22 +42,20 @@ def get_socket_loc(socket):
 	VEC_BOTTOM = 28.0
 	VEC_TOP = 32.0
 
-	def is_tall(node, socket):
+	def is_tall(socket):
 		if socket.type != 'VECTOR':
 			return False
 		if socket.hide_value:
 			return False
 		if socket.is_linked:
 			return False
-		# if node.type == 'BSDF_PRINCIPLED' and socket.identifier == 'Subsurface Radius':
+		# if socket.node.type == 'BSDF_PRINCIPLED' and socket.identifier == 'Subsurface Radius':
 		# 	return False  # an exception confirms a rule?
 		return True
 	
 	node = socket.node
-	scaling = node.dimensions[0] / node.width
-
 	if socket.is_output:
-		x = node.location.x + node.dimensions.x / scaling + X_OFFSET
+		x = node.location.x + node_width(node) + X_OFFSET
 		y = node.location.y + Y_TOP    
 		for output in node.outputs:
 			if output.hide or not output.enabled:
@@ -57,11 +65,11 @@ def get_socket_loc(socket):
 			y -= Y_OFFSET
 	else:
 		x = node.location.x
-		y = node.location.y - node.dimensions.y / scaling + Y_BOTTOM
+		y = node.location.y - node_height(node) + Y_BOTTOM
 		for input in reversed(node.inputs):
 			if input.hide or not input.enabled:
 				continue
-			tall = is_tall(node, input)
+			tall = is_tall(input)
 			y += VEC_BOTTOM * tall
 			if input == socket:
 				out = [x, y]
@@ -197,7 +205,7 @@ class AX_OT_align_nodes(bpy.types.Operator):
 	
 	bl_idname = "ax.align_nodes"
 	bl_label = "Align Nodes"
-	bl_description = ""
+	bl_description = "Automatically align all the nodes preceding the selection"
 	bl_options = {'REGISTER', 'UNDO'}
 	
 	@classmethod
@@ -218,7 +226,9 @@ class AX_OT_align_nodes(bpy.types.Operator):
 
 	def execute(self, context):
 
-		nodes = context.space_data.edit_tree.nodes
+		nodes = context.space_data.edit_tree.nodes  # BUG doesn't work in compositor
+		# bpy.context.space_data.edit_tree
+		# nodes = context.active_node.id_data.nodes
 		levels = {node:0 for node in nodes}
 
 		def figure_out_levels(node_current, level_current):
@@ -229,9 +239,6 @@ class AX_OT_align_nodes(bpy.types.Operator):
 					if levels[node] <= level_current:
 						levels[node] = level_current + 1
 						figure_out_levels(node, level_current + 1)
-		
-		def node_height(node):
-			return node.dimensions[1] * node.width / node.dimensions[0]
 		
 		root_node = context.active_node
 		figure_out_levels(root_node, 0)
@@ -244,20 +251,22 @@ class AX_OT_align_nodes(bpy.types.Operator):
 				break
 			orders = []
 			for node in nodes:
+				node.select = True
 				weight_total = 0.0
 				pos_thingy = 0.0
-				outputs = (x for x in node.outputs if x.enabled)
+				outputs = (x for x in node.outputs if x.enabled and not x.hide)
 				for output in outputs:
-					for link in output.links:
+					links = (x for x in output.links if x.to_socket.enabled and not x.to_socket.hide)
+					for link in links:  # [link for link in output.links if link.to_socket.enabled or not link.to_socket.hide]
 						level_diff = level_current - levels[link.to_node]
 						weight = 2 ** (self.test * (1 - level_diff))
 						weight_total += weight
-						pos_thingy += get_socket_loc(link.to_socket)[1] * weight
+						pos_thingy += socket_loc(link.to_socket)[1] * weight
 				orders.append(pos_thingy / weight_total)
-			nodes = [node for _, node in sorted(zip(orders, nodes), reverse=True)]
+			nodes = [node for _, node in sorted(zip(orders, nodes), key=lambda x: x[0], reverse=True)]
 			spacing_y = self.spacing[1]
 			full_height = sum([node_height(node) for node in nodes]) + spacing_y * (len(nodes) - 1)
-			x -= max([node.width for node in nodes]) + self.spacing[0]
+			x -= max([node_width(node) for node in nodes]) + self.spacing[0]
 			y = full_height * 0.5
 			for node in nodes:
 				node.location = [x, y]

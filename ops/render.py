@@ -279,6 +279,56 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 			view_layer.use_pass_object_index = False
 			view_layer.use_pass_material_index = False
 
+		def plug_socket(socket, name):
+			socket_a = output_node.layer_slots.new(name)
+			links.new(socket, socket_a)
+		
+		def mix_nodes(socket_a, socket_b, mode):
+			mix_node = nodes.new(type="CompositorNodeMixRGB")
+			mix_node.blend_type = mode
+			mix_node.hide = True
+			links.new(socket_a, mix_node.inputs[1])
+			links.new(socket_b, mix_node.inputs[2])
+			return mix_node.outputs[0]
+
+		def make_link_1(input, output):
+			socket_a = input_node.outputs[input]
+			socket_b = output_node.layer_slots.new(output)
+			links.new(socket_a, socket_b)
+		
+		def make_link_2(dir, ind, out):
+			socket_dir = input_node.outputs[dir]
+			socket_ind = input_node.outputs[ind]
+			if self.combine_dir_ind:
+				socket_light = mix_nodes(socket_dir, socket_ind, 'ADD')
+				plug_socket(socket_light, out + "_light")
+			else:
+				plug_socket(socket_dir, out + "_dir")
+				plug_socket(socket_ind, out + "_ind")
+
+		def make_link_3(dir, ind, col, out):
+			socket_dir = input_node.outputs[dir]
+			socket_ind = input_node.outputs[ind]
+			socket_col = input_node.outputs[col]
+			if self.combine_dir_ind:
+				socket_light = mix_nodes(socket_dir, socket_ind, 'ADD')
+				if self.combine_light_color:
+					socket_combined = mix_nodes(socket_light, socket_col, 'MULTIPLY')
+					plug_socket(socket_combined, out)
+				else:
+					plug_socket(socket_light, out + "_light")
+					plug_socket(socket_col, out + "_col")
+			else:
+				if self.combine_light_color:
+					socket_dir = mix_nodes(socket_dir, socket_col, 'MULTIPLY')
+					socket_ind = mix_nodes(socket_ind, socket_col, 'MULTIPLY')
+					plug_socket(socket_dir, out + "_dir")
+					plug_socket(socket_ind, out + "_ind")
+				else:
+					plug_socket(socket_dir, out + "_dir")
+					plug_socket(socket_ind, out + "_ind")
+					plug_socket(socket_col, out + "_col")
+
 		bpy.context.scene.use_nodes = True
 		nodes = context.scene.node_tree.nodes
 		links = context.scene.node_tree.links
@@ -288,61 +338,12 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 
 			set_render_passes(view_layer)
 			
-			def plug_socket(socket, name):
-				socket_a = output_node.layer_slots.new(name)
-				links.new(socket, socket_a)
-			
-			def mix_nodes(socket_a, socket_b, mode):
-				mix_node = nodes.new(type="CompositorNodeMixRGB")
-				mix_node.blend_type = mode
-				mix_node.hide = True
-				links.new(socket_a, mix_node.inputs[1])
-				links.new(socket_b, mix_node.inputs[2])
-				return mix_node.outputs[0]
-
-			def make_link_1(input, output):
-				socket_a = input_node.outputs[input]
-				socket_b = output_node.layer_slots.new(output)
-				links.new(socket_a, socket_b)
-			
-			def make_link_2(dir, ind, out):
-				socket_dir = input_node.outputs[dir]
-				socket_ind = input_node.outputs[ind]
-				if self.combine_dir_ind:
-					socket_light = mix_nodes(socket_dir, socket_ind, 'ADD')
-					plug_socket(socket_light, out + "_light")
-				else:
-					plug_socket(socket_dir, out + "_dir")
-					plug_socket(socket_ind, out + "_ind")
-
-			def make_link_3(dir, ind, col, out):
-				socket_dir = input_node.outputs[dir]
-				socket_ind = input_node.outputs[ind]
-				socket_col = input_node.outputs[col]
-				if self.combine_dir_ind:
-					socket_light = mix_nodes(socket_dir, socket_ind, 'ADD')
-					if self.combine_light_color:
-						socket_combined = mix_nodes(socket_light, socket_col, 'MULTIPLY')
-						plug_socket(socket_combined, out)
-					else:
-						plug_socket(socket_light, out + "_light")
-						plug_socket(socket_col, out + "_col")
-				else:
-					if self.combine_light_color:
-						socket_dir = mix_nodes(socket_dir, socket_col, 'MULTIPLY')
-						socket_ind = mix_nodes(socket_ind, socket_col, 'MULTIPLY')
-						plug_socket(socket_dir, out + "_dir")
-						plug_socket(socket_ind, out + "_ind")
-					else:
-						plug_socket(socket_dir, out + "_dir")
-						plug_socket(socket_ind, out + "_ind")
-						plug_socket(socket_col, out + "_col")
-
 			input_node = nodes.new(type='CompositorNodeRLayers')
 			input_node.layer = view_layer.name
 			input_node.show_preview = False
 		
 			output_node = nodes.new(type='CompositorNodeOutputFile')
+			nodes.active = output_node
 			output_node.format.file_format = 'OPEN_EXR'
 			output_node.format.color_mode = 'RGBA' if self.transparent else 'RGB'
 			output_node.format.color_depth = '32'
@@ -388,7 +389,8 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 			if self.uv:
 				make_link_1('UV', 'uv')
 			
-
+			# bpy.ops.ax.align_nodes()
+			
 		return {'FINISHED'}
 
 	def draw(self, context):
