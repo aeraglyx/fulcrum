@@ -3,7 +3,7 @@ bl_info = {
 	"author": "Vladislav Macíček (Aeraglyx)",
 	"description": "All kinds of tools",
 	"blender": (3, 4, 0),
-	"version": (0, 1, 12),
+	"version": (0, 1, 13),
 	"location": "Everywhere",
 	"doc_url": "https://github.com/aeraglyx/fulcrum",
 	"category": 'User Interface',
@@ -37,6 +37,7 @@ from .ops.node_versioning import AX_OT_version_encode, AX_OT_version_decode
 from .ops.three_d import (
 	AX_OT_locate_vertex,
 	AX_OT_locate_vertices,
+	AX_OT_duplicates_to_instances,
 	AX_OT_cloth_vert_mass,
 	AX_OT_set_auto_smooth,
 	AX_OT_hybrid_subdiv,
@@ -63,9 +64,9 @@ from .ui import (
 	AX_PT_ease_of_access,
 	AX_PT_paint,
 	AX_PT_utility_3d,
-	AX_PT_camera_main,
-	AX_PT_camera_subpanel_01,
-	AX_PT_3d_stuff)
+	AX_PT_camera,
+	AX_PT_3d_stuff,
+	AX_PT_3d_axis_selection)
 
 classes = (
 	my_properties,
@@ -111,14 +112,15 @@ classes = (
 	AX_OT_hybrid_subdiv,
 	AX_OT_locate_vertex,
 	AX_OT_locate_vertices,
+	AX_OT_duplicates_to_instances,
 	AX_OT_cloth_vert_mass,
 	AX_OT_set_auto_smooth,
 
 	AX_PT_versioning,
 	AX_PT_ease_of_access,
 	AX_PT_3d_stuff,
-	AX_PT_camera_main,
-	AX_PT_camera_subpanel_01,
+	AX_PT_3d_axis_selection,
+	AX_PT_camera,
 	AX_PT_paint,
 	AX_PT_utility_3d,
 	

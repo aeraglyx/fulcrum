@@ -343,7 +343,7 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 			input_node.show_preview = False
 		
 			output_node = nodes.new(type='CompositorNodeOutputFile')
-			nodes.active = output_node
+			# nodes.active = output_node
 			output_node.format.file_format = 'OPEN_EXR'
 			output_node.format.color_mode = 'RGBA' if self.transparent else 'RGB'
 			output_node.format.color_depth = '32'
@@ -389,7 +389,8 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 			if self.uv:
 				make_link_1('UV', 'uv')
 			
-			# bpy.ops.ax.align_nodes()
+			nodes.active = output_node
+			bpy.ops.ax.align_nodes()
 			
 		return {'FINISHED'}
 

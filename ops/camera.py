@@ -92,15 +92,15 @@ class AX_OT_isometric_setup(bpy.types.Operator):
 		description = "Camera will be tilted upwards",
 		default = False
 	)
+	scale: bpy.props.FloatProperty(
+		name = "Scale",
+		description = "Orthographic Scale",
+		min = 0.0, default = 8.0, soft_max = 64
+	)
 	distance: bpy.props.FloatProperty(
 		name = "Distance",
 		description = "How far from the center is the camera",
 		soft_min = 0.0, default = 8.0, soft_max = 64
-	)
-	scale: bpy.props.FloatProperty(
-		name = "Scale",
-		description = "Orthographic Scale",
-		min = 0.0, default = 8.0, soft_max = 16
 	)
 
 	def execute(self, context):
@@ -108,7 +108,7 @@ class AX_OT_isometric_setup(bpy.types.Operator):
 		if context.scene.camera:
 			cam_obj = context.scene.camera
 		else:
-			cam_data = bpy.data.cameras.new(name = "camera_isometric")
+			cam_data = bpy.data.cameras.new(name="camera_isometric")
 			cam_obj = bpy.data.objects.new("camera_isometric", cam_data)
 			context.scene.collection.objects.link(cam_obj)
 			context.scene.camera = cam_obj
@@ -156,11 +156,11 @@ class AX_OT_isometric_setup(bpy.types.Operator):
 		layout = self.layout
 
 		row = layout.row()
-		row.prop(self, "direction", expand = True)
+		row.prop(self, "direction", expand=True)
 
 		layout.prop(self, "from_below")
 
-		col = layout.column(align = True)
+		col = layout.column(align=True)
 		col.prop(self, "scale")
 		col.prop(self, "distance")
 
@@ -289,7 +289,7 @@ class AX_OT_frame_range_from_cam(bpy.types.Operator):
 	
 	bl_idname = "ax.frame_range_from_cam"
 	bl_label = "Frame Range from Camera"
-	bl_description = "Automatically set scene frame range from scene's camera. Expected format blabla_startframe_endframe."
+	bl_description = "Automatically set scene frame range from scene's camera. Expected format blabla_startframe_endframe"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod

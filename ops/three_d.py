@@ -1,6 +1,7 @@
 import bpy
 import bmesh
 import re
+import random
 
 
 class AX_OT_locate_vertex(bpy.types.Operator):
@@ -331,5 +332,66 @@ class AX_OT_vert_group_2_col(bpy.types.Operator):
 			bpy.ops.paint.vertex_paint_toggle()
 
 		self.report({'INFO'}, f"Done.")
+
+		return {'FINISHED'}
+
+class AX_OT_duplicates_to_instances(bpy.types.Operator):
+	
+	bl_idname = "ax.duplicates_to_instances"
+	bl_label = "Duplicates to Instances"
+	bl_description = "Find objects with with duplicate meshes, make them use the same instance of mesh and remove the redundant data"
+	
+	@classmethod
+	def poll(cls, context):
+		return True
+
+	def execute(self, context):
+
+		def same_mesh(mesh_1, mesh_2):  # TODO make more robust
+			
+			n = 64
+			size = len(mesh_1.vertices)
+			if size != len(mesh_2.vertices):
+				return False
+			
+			num_list = range(0, size)
+			if size > n:
+				num_list = sorted(random.sample(num_list, n))
+			for n in num_list:
+				if mesh_1.vertices[n].co != mesh_2.vertices[n].co:
+					return False
+			
+			if set(mesh_1.materials) != set(mesh_2.materials):
+				return False
+			
+			return True
+		
+		def purge_meshes():
+			for block in bpy.data.meshes:
+				if block.users == 0:
+					bpy.data.meshes.remove(block)
+		
+		purge_meshes()
+		n1 = len(bpy.data.meshes)
+
+		objects = [obj for obj in bpy.data.objects if obj.type == 'MESH']
+		unique_meshes = []
+
+		for obj in objects:
+			mesh = obj.data
+			if mesh not in unique_meshes:
+				unique = True
+				for unique_mesh in unique_meshes:
+					if same_mesh(mesh, unique_mesh):
+						obj.data = unique_mesh
+						unique = False
+						break
+			if unique:
+				unique_meshes.append(mesh)
+		
+		purge_meshes()
+		n2 = len(bpy.data.meshes)
+		
+		self.report({'INFO'}, f"{n1} meshes reduced to {n2} unique mesh{'' if n2 == 1 else 'es'}.")
 
 		return {'FINISHED'}

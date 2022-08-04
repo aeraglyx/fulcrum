@@ -173,7 +173,7 @@ class AX_OT_unused_nodes(bpy.types.Operator):
 					return (node for node in nodes if node.bl_idname == 'ShaderNodeTree' and node.is_active_output == True)  # 'ShaderNodeTree'
 				if tree.type == 'TEXTURE':
 					return (node for node in nodes if node.bl_idname == 'TextureNodeTree')  # doesn't have active outputs  # 'TextureNodeTree'
-				if tree.type == 'COMPOSITE':
+				if tree.type == 'COMPOSITING':  # 'COMPOSITE'
 					return (node for node in nodes if node.bl_idname == 'CompositorNodeTree')  # well yes but actually no ^  # 'CompositorNodeTree'
 			else:
 				return (node for node in nodes if node.bl_idname == 'NodeGroupOutput')
@@ -225,6 +225,10 @@ class AX_OT_align_nodes(bpy.types.Operator):
 	)
 
 	def execute(self, context):
+		# if node_tree.type == 'COMPOSITING':
+		# 	nodes = context.scene.node_tree.nodes
+		print(context.space_data)
+		print(context.space_data.type)
 
 		nodes = context.space_data.edit_tree.nodes  # BUG doesn't work in compositor
 		# bpy.context.space_data.edit_tree

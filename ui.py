@@ -253,6 +253,9 @@ class AX_PT_3d_stuff(bpy.types.Panel):
 		layout = self.layout
 		
 		col = layout.column(align=True)
+		col.operator("ax.duplicates_to_instances", icon='DUPLICATE')
+		
+		col = layout.column(align=True)
 		col.operator("ax.set_auto_smooth", icon='MATSHADERBALL')
 		col.operator("ax.hybrid_subdiv", icon='MOD_SUBSURF')
 		
@@ -260,25 +263,42 @@ class AX_PT_3d_stuff(bpy.types.Panel):
 		col.operator("ax.locate_vertex", icon='VERTEXSEL')
 		col.operator("ax.locate_vertices", icon='SNAP_VERTEX')
 
+class AX_PT_3d_axis_selection(bpy.types.Panel):
+	
+	bl_space_type = "VIEW_3D"
+	bl_region_type = "UI"
+	bl_category = "Fulcrum"
+	bl_label = "Axis Selection"
+
+	def draw(self, context):
+		
+		layout = self.layout
+
 		keymap_items = bpy.data.window_managers["WinMan"].keyconfigs["Blender user"].keymaps['3D View'].keymap_items
+
 		for item in keymap_items:
 			if item.idname == 'transform.translate' and item.type == 'G':
 				transform = item
 				break
 		col = layout.column(align=True)
-		col.label(text="Axis Selection:")
+		col.label(text="Translation:")
 		row = col.row(align=True)
 		row.prop(transform.properties, "constraint_axis", text="", toggle=True, slider=True)
 
-class CameraStuffPanel(bpy.types.Panel):
+		for item in keymap_items:
+			if item.idname == 'transform.rotate' and item.type == 'R':
+				transform = item
+				break
+		col = layout.column(align=True)
+		col.label(text="Rotation:")
+		row = col.row(align=True)
+		row.prop(transform.properties, "constraint_axis", text="", toggle=True, slider=True)
+
+class AX_PT_camera(bpy.types.Panel):
 	
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"
 	bl_category = "Fulcrum"
-
-class AX_PT_camera_main(CameraStuffPanel, bpy.types.Panel):
-	
-	bl_idname = "AX_PT_camera_main"
 	bl_label = "Camera Stuff"
 
 	def draw(self, context):
@@ -293,48 +313,16 @@ class AX_PT_camera_main(CameraStuffPanel, bpy.types.Panel):
 		col.operator("ax.dof_setup", icon='CAMERA_DATA')
 		col.operator("ax.projection_setup", icon='MOD_UVPROJECT')  # STICKY_UVS_LOC  UV  MOD_UVPROJECT  IMAGE_PLANE
 
-class AX_PT_camera_subpanel_01(CameraStuffPanel, bpy.types.Panel):
-
-	bl_parent_id = "AX_PT_camera_main"
-	bl_label = "Presets"
-	bl_options = {"DEFAULT_CLOSED"}
-
-	def draw(self, context):
-
-		layout = self.layout
-
 		# ARROW_LEFTRIGHT
-		col = layout.column(align = True)
+		col = layout.column(align=True)
 		col.label(text = "Set Passepartout:")
-		row = col.row(align = True)
-		passepartout_none = row.operator("ax.passepartout", text = "None")
+		row = col.row(align=True)
+		passepartout_none = row.operator("ax.passepartout", text="None")
 		passepartout_none.alpha = 0.0
-		passepartout_normal = row.operator("ax.passepartout", text = "0.8")
+		passepartout_normal = row.operator("ax.passepartout", text="0.8")
 		passepartout_normal.alpha = 0.8
-		passepartout_full = row.operator("ax.passepartout", text = "Full")
+		passepartout_full = row.operator("ax.passepartout", text="Full")
 		passepartout_full.alpha = 1.0
-
-		col = layout.column(align = True)
-		col.label(text = "Set Resolution:")
-		row = col.row(align = True)
-		half = row.operator("ax.set_resolution", text = "Half")
-		half.width = 960
-		full_hd = row.operator("ax.set_resolution", text = "FHD")
-		full_hd.width = 1920
-		ultra_hd = row.operator("ax.set_resolution", text = "UHD")
-		ultra_hd.width = 3840
-
-		col = layout.column(align = True)
-		col.label(text = "Set Aspect Ratio:")
-		row = col.row(align = True)
-		square = row.operator("ax.set_aspect_ratio", text = "1.00")
-		square.aspect_ratio = 1.0
-		sixteen_by_nine = row.operator("ax.set_aspect_ratio", text = "1.78")
-		sixteen_by_nine.aspect_ratio = 1.777777
-		two_to_one = row.operator("ax.set_aspect_ratio", text = "2.00")
-		two_to_one.aspect_ratio = 2.0
-		cinemascope = row.operator("ax.set_aspect_ratio", text = "2.40")
-		cinemascope.aspect_ratio = 2.4
 
 class AX_PT_utility_3d(bpy.types.Panel):
 	
