@@ -44,6 +44,23 @@ class AX_PT_physics(bpy.types.Panel):
 
 
 # --- NODE EDITOR ---
+
+class AX_PT_node_group(bpy.types.Panel):
+	
+	bl_space_type = "NODE_EDITOR"
+	bl_region_type = "UI"
+	bl_category = "Group"
+	bl_label = "Fulcrum"
+
+	def draw(self, context):
+
+		layout = self.layout
+
+		col = layout.column(align=True)
+		col.label(text="GN Defaults:")
+		row = col.row(align=True)
+		row.operator("ax.set_gn_defaults", text="Set")
+		row.operator("ax.reset_gn_defaults", text="Reset")
 		
 class AX_PT_node_tools(bpy.types.Panel):
 	

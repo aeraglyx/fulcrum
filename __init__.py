@@ -58,6 +58,7 @@ from .ops.copy_pasta import AX_OT_copy_nodes, AX_OT_paste_nodes
 from .ui import (
 	AX_PT_optimization,
 	AX_PT_node_tools,
+	AX_PT_node_group,
 	AX_PT_utility_node,
 	AX_PT_render,
 	AX_PT_data,
@@ -129,6 +130,7 @@ classes = (
 	AX_PT_utility_3d,
 	
 	AX_PT_node_tools,
+	AX_PT_node_group,
 	AX_PT_optimization,
 	AX_PT_utility_node,
 

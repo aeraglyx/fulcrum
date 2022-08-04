@@ -516,4 +516,7 @@ class AX_OT_reset_gn_defaults(bpy.types.Operator):
 			if input.default_value:
 				modif[input.identifier] = input.default_value
 		
+		modif.show_viewport = False
+		modif.show_viewport = True
+		
 		return {'FINISHED'}
