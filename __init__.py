@@ -32,6 +32,8 @@ from .ops.nodes import (
 	AX_OT_hide_group_inputs,
 	AX_OT_align_nodes,
 	AX_OT_tex_to_name,
+	AX_OT_set_gn_defaults,
+	AX_OT_reset_gn_defaults,
 	AX_OT_reset_node_color)
 from .ops.node_versioning import AX_OT_version_encode, AX_OT_version_decode
 from .ops.three_d import (
@@ -90,6 +92,8 @@ classes = (
 	AX_OT_center_nodes,
 	AX_OT_nodes_to_grid,
 	AX_OT_hide_group_inputs,
+	AX_OT_set_gn_defaults,
+	AX_OT_reset_gn_defaults,
 	AX_OT_add_todo_note,
 	AX_OT_version_encode,
 	AX_OT_version_decode,

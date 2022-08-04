@@ -2,6 +2,7 @@ import bpy
 import re
 import mathutils
 
+
 def color_nodes(nodes, color):
 	for node in nodes:
 		node.use_custom_color = True
@@ -470,5 +471,49 @@ class AX_OT_reset_node_color(bpy.types.Operator):
 			selected = context.selected_nodes
 			for node in selected:
 				node.use_custom_color = False
+		
+		return {'FINISHED'}
+
+class AX_OT_set_gn_defaults(bpy.types.Operator):
+	
+	bl_idname = "ax.set_gn_defaults"
+	bl_label = "Set GN Defaults"
+	bl_description = ""
+	
+	@classmethod
+	def poll(cls, context):
+		return context.area.type == 'NODE_EDITOR'
+
+	def execute(self, context):
+
+		# group = context.space_data.edit_tree
+		modif = context.object.modifiers.active
+		group = modif.node_group
+
+		for input in group.inputs[1:]:
+			if input.default_value:
+				input.default_value = modif[input.identifier]
+		
+		return {'FINISHED'}
+
+class AX_OT_reset_gn_defaults(bpy.types.Operator):
+	
+	bl_idname = "ax.reset_gn_defaults"
+	bl_label = "Reset GN Defaults"
+	bl_description = ""
+	
+	@classmethod
+	def poll(cls, context):
+		return context.area.type == 'NODE_EDITOR'
+
+	def execute(self, context):
+
+		# group = context.space_data.edit_tree
+		modif = context.object.modifiers.active
+		group = modif.node_group
+
+		for input in group.inputs[1:]:
+			if input.default_value:
+				modif[input.identifier] = input.default_value
 		
 		return {'FINISHED'}

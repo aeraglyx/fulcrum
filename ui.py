@@ -62,6 +62,12 @@ class AX_PT_node_tools(bpy.types.Panel):
 		col.operator("ax.nodes_to_grid", icon='SNAP_GRID')
 		col.operator("ax.hide_group_inputs", icon='NODE')  # HIDE_ON
 
+		col = layout.column(align=True)
+		col.label(text="GN Defaults:")
+		row = col.row(align=True)
+		row.operator("ax.set_gn_defaults", text="Set")
+		row.operator("ax.reset_gn_defaults", text="Reset")
+
 		# col = layout.column(align=True)
 		# col.operator("ax.find_inputs", icon='SEQUENCE_COLOR_04')  # icon = 'NODE'
 		# col.operator("ax.node_flow", icon='SEQUENCE_COLOR_05')  # icon = 'NODETREE'  # STROKE  ANIM_DATA  TRACKING
