@@ -55,6 +55,7 @@ from .ops.camera import (
 from .ops.paint import AX_OT_set_paint_brush, AX_OT_set_weight_brush
 from .ops.compare import AX_OT_compare, my_properties, AX_OT_benchmark
 from .ops.copy_pasta import AX_OT_copy_nodes, AX_OT_paste_nodes
+from .ops.bbp import AX_OT_edit_gn_input
 from .ui import (
 	AX_PT_optimization,
 	AX_PT_node_tools,
@@ -65,6 +66,7 @@ from .ui import (
 	AX_PT_physics,
 	AX_PT_versioning,
 	AX_PT_ease_of_access,
+	AX_PT_bbp,
 	AX_PT_paint,
 	AX_PT_utility_3d,
 	AX_PT_camera,
@@ -123,6 +125,7 @@ classes = (
 
 	AX_PT_versioning,
 	AX_PT_ease_of_access,
+	AX_PT_bbp,
 	AX_PT_3d_stuff,
 	AX_PT_3d_axis_selection,
 	AX_PT_camera,
@@ -137,51 +140,47 @@ classes = (
 	AX_PT_render,
 	AX_PT_data,
 	AX_PT_physics,
+
+	AX_OT_edit_gn_input,
 )
+
+addon_keymaps = []
+
 
 def register():
 	for cls in classes:
 		bpy.utils.register_class(cls)
 	bpy.types.Scene.ax_compare = bpy.props.PointerProperty(type = my_properties)
 
-	# @persistent
-	# def setup_render_slots(scene):
-	# 	# print("blegh")
-	# 	bpy.ops.ax.render_to_new_slot()
-		
-	# bpy.app.handlers.render_pre.append(setup_render_slots)
+	# https://github.com/aachman98/Sorcar/blob/master/__init__.py#L113
+	# wm = bpy.context.window_manager
+	# kc = wm.keyconfigs.addon
+	# if kc:
+	# 	km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')
+	# 	kmi = km.keymap_items.new("ax.edit_gn_input", type='SPACE', value='PRESS', alt=True)
+	# 	addon_keymaps.append((km, kmi))
 	
-	
-	# @persistent
-	# def save_in_solid_shading(scene):
-	# 	# bpy.context.space_data.shading.type = 'SOLID'
-	# 	# bpy.data.workspaces['Scripting'].screens['Scripting'].areas[4].spaces[0].shading.type = 'SOLID'
-
-	# 	# for area in bpy.context.screen.areas:
-	# 	# 	for space in area.spaces:
-	# 	# 			if space.type == 'VIEW_3D':
-	# 	# 				if space.shading.type == 'MATERIAL':
-	# 	# 					space.shading.type = 'SOLID'
-
-	# 	for workspace in bpy.data.workspaces:
-	# 		for screen in workspace.screens:
-	# 			for area in screen.areas:
-	# 				for space in area.spaces:
-	# 					if space.type == 'VIEW_3D':
-	# 						if space.shading.type == 'MATERIAL':
-	# 							space.shading.type = 'SOLID'
-		
-	# 	print("fulcrum: save_pre handler done")
-	
-	# bpy.app.handlers.save_pre.append(save_in_solid_shading)  # TODO restore after saving
+	kc = bpy.context.window_manager.keyconfigs.addon
+	if kc:
+		km = kc.keymaps.new(name="3D View", space_type="VIEW_3D")
+		kmi = km.keymap_items.new('ax.edit_gn_input', 'SPACE', 'PRESS', alt=True)
+		addon_keymaps.append((km, kmi))
 	
 	print("FULCRUM registered")
 
 def unregister():
 
-	# for handler in bpy.app.handlers.render_pre:
-	# 	if handler.__name__ == "setup_render_slots":
-	# 		bpy.app.handlers.render_pre.remove(handler)
+	for km, kmi in addon_keymaps:
+		km.keymap_items.remove(kmi)
+	addon_keymaps.clear()
+
+	# kc = bpy.context.window_manager.keyconfigs.addon
+	# if kc:
+	# 	km = kc.keymaps["3D View"]
+	# 	for kmi in km.keymap_items:
+	# 		if kmi.idname == 'ax.edit_gn_input':
+	# 			km.keymap_items.remove(kmi)
+	# 			break
 
 	for cls in classes:
 		bpy.utils.unregister_class(cls)

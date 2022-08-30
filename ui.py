@@ -220,6 +220,19 @@ class AX_PT_ease_of_access(bpy.types.Panel):
 		layout.prop(context.scene.view_settings, "view_transform", text="")
 		layout.prop(context.scene.tool_settings, "use_keyframe_insert_auto")
 
+class AX_PT_bbp(bpy.types.Panel):
+	
+	bl_space_type = "VIEW_3D"
+	bl_region_type = "UI"
+	bl_category = "Fulcrum"
+	bl_label = "BBP"
+
+	def draw(self, context):
+		layout = self.layout
+		col = layout.column(align=True)
+		col.operator("ax.edit_gn_input", icon='GP_MULTIFRAME_EDITING')
+
+
 class AX_PT_paint(bpy.types.Panel):
 	
 	bl_space_type = "VIEW_3D"
