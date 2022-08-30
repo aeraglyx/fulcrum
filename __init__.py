@@ -55,6 +55,7 @@ from .ops.camera import (
 from .ops.paint import AX_OT_set_paint_brush, AX_OT_set_weight_brush
 from .ops.compare import AX_OT_compare, my_properties, AX_OT_benchmark
 from .ops.copy_pasta import AX_OT_copy_nodes, AX_OT_paste_nodes
+from .ops.bbp import AX_OT_edit_gn_input
 from .ui import (
 	AX_PT_optimization,
 	AX_PT_node_tools,
@@ -137,7 +138,12 @@ classes = (
 	AX_PT_render,
 	AX_PT_data,
 	AX_PT_physics,
+
+	AX_OT_edit_gn_input,
 )
+
+addon_keymaps = []
+
 
 def register():
 	for cls in classes:
