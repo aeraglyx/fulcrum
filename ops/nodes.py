@@ -1,82 +1,6 @@
 import bpy
-import re
 import mathutils
-
-
-def color_nodes(nodes, color):
-	for node in nodes:
-		node.use_custom_color = True
-		node.color = color
-
-def clear_node_color(nodes):
-	for node in nodes:
-		node.use_custom_color = False
-
-def get_node_name(node):
-	"""Get node name that is visible to user"""
-	# label > prop. name > name
-	if bool(node.label):
-		return node.label
-	elif hasattr(node, "node_tree"):
-		return node.node_tree.name
-	else:
-		name = node.name
-		return re.sub(".[0-9]{3,}$", "", name) # XXX {3} or {3,}
-
-def node_width(node):
-	if node.type == 'REROUTE':
-		return 0
-	return node.width
-
-def node_height(node):
-	if node.type == 'REROUTE':
-		return 0
-	return node.dimensions[1] * node.width / node.dimensions[0]
-
-def socket_loc(socket):
-	X_OFFSET = -1.0
-	Y_TOP = -34.0
-	Y_BOTTOM = 16.0
-	Y_OFFSET = 22.0
-
-	# 2 offsets 
-	VEC_BOTTOM = 28.0
-	VEC_TOP = 32.0
-
-	def is_tall(socket):
-		if socket.type != 'VECTOR':
-			return False
-		if socket.hide_value:
-			return False
-		if socket.is_linked:
-			return False
-		# if socket.node.type == 'BSDF_PRINCIPLED' and socket.identifier == 'Subsurface Radius':
-		# 	return False  # an exception confirms a rule?
-		return True
-	
-	node = socket.node
-	if socket.is_output:
-		x = node.location.x + node_width(node) + X_OFFSET
-		y = node.location.y + Y_TOP    
-		for output in node.outputs:
-			if output.hide or not output.enabled:
-				continue
-			if output == socket:
-				out = [x, y]
-			y -= Y_OFFSET
-	else:
-		x = node.location.x
-		y = node.location.y - node_height(node) + Y_BOTTOM
-		for input in reversed(node.inputs):
-			if input.hide or not input.enabled:
-				continue
-			tall = is_tall(input)
-			y += VEC_BOTTOM * tall
-			if input == socket:
-				out = [x, y]
-			y += Y_OFFSET + VEC_TOP * tall
-	
-	return out
+from ..functions import *
 
 
 class AX_OT_find_inputs(bpy.types.Operator):
@@ -162,22 +86,6 @@ class AX_OT_unused_nodes(bpy.types.Operator):
 
 		tree = context.space_data.edit_tree  # context.active_node.id_data
 		nodes = tree.nodes
-		# output_node = nodes.get("Material Output")
-		def is_original_tree(tree):
-			return context.material.node_tree == tree  # XXX bruh
-
-		def get_output_nodes(tree):
-			if is_original_tree(tree):
-				if tree.type == 'GEOMETRY':
-					return (node for node in nodes if node.bl_idname == 'GeometryNodeTree')  # bl_idname = 'GeometryNodeTree'
-				if tree.type == 'SHADER':
-					return (node for node in nodes if node.bl_idname == 'ShaderNodeTree' and node.is_active_output == True)  # 'ShaderNodeTree'
-				if tree.type == 'TEXTURE':
-					return (node for node in nodes if node.bl_idname == 'TextureNodeTree')  # doesn't have active outputs  # 'TextureNodeTree'
-				if tree.type == 'COMPOSITING':  # 'COMPOSITE'
-					return (node for node in nodes if node.bl_idname == 'CompositorNodeTree')  # well yes but actually no ^  # 'CompositorNodeTree'
-			else:
-				return (node for node in nodes if node.bl_idname == 'NodeGroupOutput')
 		
 		clear_node_color(nodes)
 
@@ -189,7 +97,7 @@ class AX_OT_unused_nodes(bpy.types.Operator):
 				for link in input.links:
 					func(link.from_node)
 		
-		output_nodes = get_output_nodes(tree)
+		output_nodes = get_output_nodes(context)
 		for output_node in output_nodes:
 			func(output_node)
 		
