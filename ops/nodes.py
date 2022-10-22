@@ -49,7 +49,7 @@ class AX_OT_node_flow(bpy.types.Operator):
 
 	def execute(self, context):
 
-		nodes = bpy.context.space_data.edit_tree.nodes
+		nodes = context.space_data.edit_tree.nodes
 		selected = context.selected_nodes
 		
 		clear_node_color(nodes)

@@ -1,6 +1,27 @@
 import re
+import math
 # import mathutils
 
+def oklab_hsl_2_srgb(h, s, l):
+	""" HSL but based on Oklab, so better :) """
+	# https://bottosson.github.io/posts/oklab/
+
+	a = s * math.cos(h * math.tau)
+	b = s * math.sin(h * math.tau)
+
+	x = l + 0.3963377774 * a + 0.2158037573 * b
+	y = l - 0.1055613458 * a - 0.0638541728 * b
+	z = l - 0.0894841775 * a - 1.2914855480 * b
+
+	x = x * x * x
+	y = y * y * y
+	z = z * z * z
+
+	return [
+		+4.0767416621 * x - 3.3077115913 * y + 0.2309699292 * z,
+		-1.2684380046 * x + 2.6097574011 * y - 0.3413193965 * z,
+		-0.0041960863 * x - 0.7034186147 * y + 1.7076147010 * z
+	]
 
 def color_nodes(nodes, color):
 	for node in nodes:

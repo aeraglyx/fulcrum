@@ -11,7 +11,7 @@ bl_info = {
 }
 
 import bpy
-# from bpy.app.handlers import persistent
+from bpy.app.handlers import persistent
 
 from .ops.file_stuff import (
 	AX_OT_save_as_new_version,
@@ -141,15 +141,52 @@ classes = (
 
 addon_keymaps = []
 
+from .functions import *
+
+def unused_nodes():
+	tree = bpy.context.space_data.edit_tree  # context.active_node.id_data
+	nodes = tree.nodes
+	
+	clear_node_color(nodes)
+
+	used = set()
+	def func(node_current):
+		used.add(node_current)
+		used.add(node_current.parent)
+		for input in (x for x in node_current.inputs if x.enabled):  # TODO muted nodes and muted links
+			for link in input.links:
+				func(link.from_node)
+	
+	output_nodes = get_output_nodes(bpy.context)
+	for output_node in output_nodes:
+		func(output_node)
+	
+	# TODO don't delete viewer (geo, shader, ...) - check if connected to used node, otherwise yeet
+	unused = [node for node in nodes if node not in used]
+
+	# color_nodes(unused, [0.65, 0.29, 0.32])  # shows up darker **2.2 **0.45
+	color_nodes(unused, oklab_hsl_2_srgb(0.0, 0.08, 0.7))
+
+@persistent
+def ax_depsgraph_handler(scene):
+	# print(bpy.context.area.id_data.name)
+	if hasattr(bpy.context, 'selected_nodes'):
+		unused_nodes()
+
 
 def register():
 	for cls in classes:
 		bpy.utils.register_class(cls)
 	bpy.types.Scene.ax_compare = bpy.props.PointerProperty(type = my_properties)
+	bpy.app.handlers.depsgraph_update_post.append(ax_depsgraph_handler)
 	
 	print("FULCRUM registered")
 
 def unregister():
+
+	for handler in bpy.app.handlers.render_complete:
+		if handler.__name__ == 'ax_depsgraph_handler':
+			bpy.app.handlers.depsgraph_update_post.remove(handler)
 
 	for cls in classes:
 		bpy.utils.unregister_class(cls)
