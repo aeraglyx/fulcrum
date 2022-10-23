@@ -102,11 +102,16 @@ def get_original_tree(tree, context):
 	if tree.type == 'GEOMETRY':
 		original_tree = context.object.modifiers.active.node_group
 	if tree.type == 'SHADER':
-		original_tree = context.material.node_tree
-	# if tree.type == 'TEXTURE':
-	# 	original_tree = context.
+		if context.space_data.shader_type == 'OBJECT':
+			original_tree = context.material.node_tree
+		if context.space_data.shader_type == 'WORLD':
+			original_tree = context.scene.world.node_tree
+		if context.space_data.shader_type == 'LINESTYLE':
+			pass  # TODO
 	if tree.type == 'COMPOSITING':
 		original_tree = context.scene.node_tree
+	# if tree.type == 'TEXTURE':
+	# 	original_tree = context.
 	return original_tree
 
 def is_original_tree(tree, context):
@@ -114,13 +119,14 @@ def is_original_tree(tree, context):
 
 def get_output_nodes(context):
 	tree = context.space_data.edit_tree
-	print(tree.type)
+	# print(tree.type)
 	nodes = tree.nodes
 	if is_original_tree(tree, context):
 		if tree.type == 'GEOMETRY':
 			output_nodes = (node for node in nodes if node.bl_idname == 'NodeGroupOutput')  # bl_idname = 'GeometryNodeTree'
 		if tree.type == 'SHADER':
-			output_nodes = (node for node in nodes if node.bl_idname == 'ShaderNodeTree' and node.is_active_output == True)  # 'ShaderNodeTree'
+			output_nodes = (node for node in nodes if node.bl_idname in ['ShaderNodeTree', 'ShaderNodeOutputWorld'] and node.is_active_output == True)  # 'ShaderNodeTree'
+			# print([node.name for node in output_nodes])
 		if tree.type == 'TEXTURE':
 			output_nodes = (node for node in nodes if node.bl_idname == 'TextureNodeTree')  # doesn't have active outputs  # 'TextureNodeTree'
 		if tree.type == 'COMPOSITING':  # 'COMPOSITE'

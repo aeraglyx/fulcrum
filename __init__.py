@@ -154,7 +154,7 @@ def unused_nodes():
 		used.add(node_current)
 		used.add(node_current.parent)
 		for input in (x for x in node_current.inputs if x.enabled):  # TODO muted nodes and muted links
-			for link in input.links:
+			for link in (x for x in input.links if not x.is_muted):
 				func(link.from_node)
 	
 	output_nodes = get_output_nodes(bpy.context)
@@ -163,9 +163,21 @@ def unused_nodes():
 	
 	# TODO don't delete viewer (geo, shader, ...) - check if connected to used node, otherwise yeet
 	unused = [node for node in nodes if node not in used]
+	print([node.name for node in unused])
 
 	# color_nodes(unused, [0.65, 0.29, 0.32])  # shows up darker **2.2 **0.45
 	color_nodes(unused, oklab_hsl_2_srgb(0.0, 0.08, 0.7))
+
+# def color_nodes_by_type():
+# 	tree = bpy.context.space_data.edit_tree  # context.active_node.id_data
+# 	nodes = tree.nodes
+
+# 	clear_node_color(nodes)
+# 	for node in nodes:
+#		# bpy.context.preferences.themes[0].node_editor.geometry_node
+# 		node.use_custom_color = True
+# 		node.color = color
+	
 
 @persistent
 def ax_depsgraph_handler(scene):
