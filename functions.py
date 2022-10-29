@@ -1,6 +1,6 @@
 import re
 import math
-# import mathutils
+import mathutils
 
 def oklab_hsl_2_srgb(h, s, l):
 	""" HSL but based on Oklab, so better :) """
@@ -53,6 +53,29 @@ def node_height(node):
 		return 0
 	return node.dimensions[1] * node.width / node.dimensions[0]
 
+def node_size(node):
+	if node.type == 'REROUTE':
+		return mathutils.Vector((0, 0))
+	x = node.width
+	y = node.dimensions[1] * node.width / node.dimensions[0]
+	return mathutils.Vector((x, y))
+	
+def node_center(node):
+	return node.location + 0.5 * mathutils.Vector((node_size(node).x, - node_size(node).y))  # 0.5*node_size(node)
+
+def node_intersection(node_1, node_2):
+	x = 20
+	y = 20
+	lx = max(node_1.location.x - x, node_2.location.x - x)
+	rx = min(node_1.location.x + node_width(node_1) + x, node_2.location.x + node_width(node_2) + x)
+	if lx > rx:
+		return None
+	uy = min(node_1.location.y + y, node_2.location.y + y)
+	dy = max(node_1.location.y - node_height(node_1) - y, node_2.location.y - node_height(node_2) - y)
+	if uy < dy:
+		return None
+	return (mathutils.Vector((lx, dy)), mathutils.Vector((rx - lx, uy - dy)))
+
 def socket_loc(socket):
 	X_OFFSET = -1.0
 	Y_TOP = -34.0
@@ -82,7 +105,7 @@ def socket_loc(socket):
 			if output.hide or not output.enabled:
 				continue
 			if output == socket:
-				out = [x, y]
+				out = mathutils.Vector((x, y))
 			y -= Y_OFFSET
 	else:
 		x = node.location.x
@@ -93,7 +116,7 @@ def socket_loc(socket):
 			tall = is_tall(input)
 			y += VEC_BOTTOM * tall
 			if input == socket:
-				out = [x, y]
+				out = mathutils.Vector((x, y))
 			y += Y_OFFSET + VEC_TOP * tall
 	
 	return out
@@ -126,7 +149,6 @@ def get_output_nodes(context):
 			output_nodes = (node for node in nodes if node.bl_idname == 'NodeGroupOutput')  # bl_idname = 'GeometryNodeTree'
 		if tree.type == 'SHADER':
 			output_nodes = (node for node in nodes if node.bl_idname in ['ShaderNodeTree', 'ShaderNodeOutputWorld'] and node.is_active_output == True)  # 'ShaderNodeTree'
-			# print([node.name for node in output_nodes])
 		if tree.type == 'TEXTURE':
 			output_nodes = (node for node in nodes if node.bl_idname == 'TextureNodeTree')  # doesn't have active outputs  # 'TextureNodeTree'
 		if tree.type == 'COMPOSITING':  # 'COMPOSITE'

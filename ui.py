@@ -75,6 +75,7 @@ class AX_PT_node_tools(bpy.types.Panel):
 
 		col = layout.column(align=True)
 		col.operator("ax.align_nodes", icon='ALIGN_CENTER')
+		col.operator("ax.align_nodes_v2", icon='ALIGN_CENTER')
 		col.operator("ax.center_nodes", icon='ANCHOR_CENTER')
 		col.operator("ax.nodes_to_grid", icon='SNAP_GRID')
 		col.operator("ax.hide_group_inputs", icon='NODE')  # HIDE_ON
@@ -104,6 +105,9 @@ class AX_PT_node_tools(bpy.types.Panel):
 		selected.all = False
 		all = row.operator("ax.reset_node_color", text="All")
 		all.all = True
+
+		# layout.prop(context.scene, 'use_node_handler')
+		layout.prop(context.scene, 'use_node_handler')
 
 		col = layout.column(align=True)
 		row = col.row(align=True)

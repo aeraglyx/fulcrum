@@ -31,6 +31,7 @@ from .ops.nodes import (
 	AX_OT_add_todo_note,
 	AX_OT_hide_group_inputs,
 	AX_OT_align_nodes,
+	AX_OT_align_nodes_v2,
 	AX_OT_tex_to_name,
 	AX_OT_set_gn_defaults,
 	AX_OT_reset_gn_defaults,
@@ -101,6 +102,7 @@ classes = (
 	AX_OT_copy_nodes,
 	AX_OT_paste_nodes,
 	AX_OT_align_nodes,
+	AX_OT_align_nodes_v2,
 	AX_OT_tex_to_name,
 
 	AX_OT_render_to_new_slot,
@@ -142,31 +144,36 @@ classes = (
 addon_keymaps = []
 
 from .functions import *
+import time
 
 def unused_nodes():
-	tree = bpy.context.space_data.edit_tree  # context.active_node.id_data
-	nodes = tree.nodes
-	
-	clear_node_color(nodes)
+	use_node_handler = bpy.context.scene['use_node_handler']
+	if use_node_handler:
+		start_time = time.perf_counter()
+		tree = bpy.context.space_data.edit_tree  # context.active_node.id_data
+		nodes = tree.nodes
+		
+		clear_node_color(nodes)
 
-	used = set()
-	def func(node_current):
-		used.add(node_current)
-		used.add(node_current.parent)
-		for input in (x for x in node_current.inputs if x.enabled):  # TODO muted nodes and muted links
-			for link in (x for x in input.links if not x.is_muted):
-				func(link.from_node)
-	
-	output_nodes = get_output_nodes(bpy.context)
-	for output_node in output_nodes:
-		func(output_node)
-	
-	# TODO don't delete viewer (geo, shader, ...) - check if connected to used node, otherwise yeet
-	unused = [node for node in nodes if node not in used]
-	print([node.name for node in unused])
+		used = set()
+		def func(node_current):
+			used.add(node_current)
+			used.add(node_current.parent)
+			for input in (x for x in node_current.inputs if x.enabled):  # TODO enabled and muted for both inputs and links?
+				for link in (x for x in input.links if not x.is_muted):
+					if link.from_node not in used:
+						func(link.from_node)
+		
+		output_nodes = get_output_nodes(bpy.context)
+		for output_node in output_nodes:
+			func(output_node)
+		
+		# TODO don't delete viewer (geo, shader, ...) - check if connected to used node, otherwise yeet
+		unused = [node for node in nodes if node not in used]
 
-	# color_nodes(unused, [0.65, 0.29, 0.32])  # shows up darker **2.2 **0.45
-	color_nodes(unused, oklab_hsl_2_srgb(0.0, 0.08, 0.7))
+		# color_nodes(unused, [0.65, 0.29, 0.32])  # shows up darker **2.2 **0.45
+		color_nodes(unused, oklab_hsl_2_srgb(0.0, 0.05, 0.6))
+		print(f"handler - {time.perf_counter() - start_time}")
 
 # def color_nodes_by_type():
 # 	tree = bpy.context.space_data.edit_tree  # context.active_node.id_data
@@ -189,7 +196,11 @@ def ax_depsgraph_handler(scene):
 def register():
 	for cls in classes:
 		bpy.utils.register_class(cls)
-	bpy.types.Scene.ax_compare = bpy.props.PointerProperty(type = my_properties)
+	bpy.types.Scene.ax_compare = bpy.props.PointerProperty(type=my_properties)
+	bpy.types.Scene.use_node_handler = bpy.props.BoolProperty(
+		name='Use Node Handler',
+		default=False,
+	)
 	bpy.app.handlers.depsgraph_update_post.append(ax_depsgraph_handler)
 	
 	print("FULCRUM registered")
@@ -199,7 +210,7 @@ def unregister():
 	for handler in bpy.app.handlers.render_complete:
 		if handler.__name__ == 'ax_depsgraph_handler':
 			bpy.app.handlers.depsgraph_update_post.remove(handler)
-
+	del bpy.types.Scene.use_node_handler
 	for cls in classes:
 		bpy.utils.unregister_class(cls)
 	del bpy.types.Scene.ax_compare

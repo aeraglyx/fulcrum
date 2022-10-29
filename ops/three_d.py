@@ -159,7 +159,7 @@ class AX_OT_cloth_vert_mass(bpy.types.Operator):
 				to_delete.append(modif)
 				cloth_modif = modif
 		
-		print(f"{cloth_modif = }")
+		# print(f"{cloth_modif = }")
 		
 		for modif in to_delete:
 			modifiers.remove(modif)
