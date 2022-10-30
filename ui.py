@@ -106,8 +106,10 @@ class AX_PT_node_tools(bpy.types.Panel):
 		all = row.operator("ax.reset_node_color", text="All")
 		all.all = True
 
-		# layout.prop(context.scene, 'use_node_handler')
-		layout.prop(context.scene, 'use_node_handler')
+		col = layout.column(align=True)
+		col.prop(context.scene.fulcrum, 'use_node_handler')
+		if context.scene.fulcrum.use_node_handler:
+			col.prop(context.scene.fulcrum, 'node_vis_type', text='')
 
 		col = layout.column(align=True)
 		row = col.row(align=True)
@@ -151,7 +153,7 @@ class AX_PT_optimization(bpy.types.Panel):
 
 	def draw(self, context):
 		layout = self.layout
-		props = context.scene.ax_compare
+		props = context.scene.fulcrum
 		# layout.prop(props, "engine")
 		# col = layout.column(align = True)
 		# col.prop(props, "frames")

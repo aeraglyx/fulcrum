@@ -5,14 +5,14 @@ import time
 import statistics
 
 
-class my_properties(bpy.types.PropertyGroup):
+# class my_properties(bpy.types.PropertyGroup):
 
-	result: bpy.props.FloatProperty(
-		default = 1.0
-	)
-	confidence: bpy.props.FloatProperty(
-		default = 0.5
-	)
+# 	result: bpy.props.FloatProperty(
+# 		default = 1.0
+# 	)
+# 	confidence: bpy.props.FloatProperty(
+# 		default = 0.5
+# 	)
 
 
 def lerp(x, in_min, in_max, out_min, out_max):
@@ -99,7 +99,7 @@ class AX_OT_compare(bpy.types.Operator):
 
 	def execute(self, context):
 		
-		props = context.scene.ax_compare
+		props = context.scene.fulcrum
 
 		def prepare_nodes():
 			if node.outputs[0].type == 'SHADER': # TODO fix when i select output (or any other nodes without out?)

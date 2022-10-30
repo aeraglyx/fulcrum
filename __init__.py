@@ -54,7 +54,8 @@ from .ops.camera import (
 	AX_OT_set_aspect_ratio,
 	AX_OT_passepartout)
 from .ops.paint import AX_OT_set_paint_brush, AX_OT_set_weight_brush
-from .ops.compare import AX_OT_compare, my_properties, AX_OT_benchmark
+from .ops.compare import AX_OT_compare, AX_OT_benchmark
+from .props import my_properties
 from .ops.copy_pasta import AX_OT_copy_nodes, AX_OT_paste_nodes
 from .ui import (
 	AX_PT_optimization,
@@ -147,33 +148,54 @@ from .functions import *
 import time
 
 def unused_nodes():
-	use_node_handler = bpy.context.scene['use_node_handler']
-	if use_node_handler:
-		start_time = time.perf_counter()
-		tree = bpy.context.space_data.edit_tree  # context.active_node.id_data
-		nodes = tree.nodes
-		
-		clear_node_color(nodes)
+	tree = bpy.context.space_data.edit_tree  # context.active_node.id_data
+	nodes = tree.nodes
+	
+	clear_node_color(nodes)
 
-		used = set()
-		def func(node_current):
-			used.add(node_current)
-			used.add(node_current.parent)
-			for input in (x for x in node_current.inputs if x.enabled):  # TODO enabled and muted for both inputs and links?
-				for link in (x for x in input.links if not x.is_muted):
-					if link.from_node not in used:
-						func(link.from_node)
-		
-		output_nodes = get_output_nodes(bpy.context)
-		for output_node in output_nodes:
-			func(output_node)
-		
-		# TODO don't delete viewer (geo, shader, ...) - check if connected to used node, otherwise yeet
-		unused = [node for node in nodes if node not in used]
+	used = set()
+	def func(node_current):
+		used.add(node_current)
+		used.add(node_current.parent)
+		for input in (x for x in node_current.inputs if x.enabled):  # TODO enabled and muted for both inputs and links?
+			for link in (x for x in input.links if not x.is_muted):
+				if link.from_node not in used:
+					func(link.from_node)
+	
+	output_nodes = get_output_nodes(bpy.context)
+	for output_node in output_nodes:
+		func(output_node)
+	
+	# TODO don't delete viewer (geo, shader, ...) - check if connected to used node, otherwise yeet
+	unused = [node for node in nodes if node not in used]
 
-		# color_nodes(unused, [0.65, 0.29, 0.32])  # shows up darker **2.2 **0.45
-		color_nodes(unused, oklab_hsl_2_srgb(0.0, 0.05, 0.6))
-		print(f"handler - {time.perf_counter() - start_time}")
+	# color_nodes(unused, [0.65, 0.29, 0.32])  # shows up darker **2.2 **0.45
+	color_nodes(unused, oklab_hsl_2_srgb(0.0, 0.05, 0.6))
+
+def node_color_levels():
+	tree = bpy.context.space_data.edit_tree  # context.active_node.id_data
+	nodes = tree.nodes
+
+	used = set()
+	levels = {node:0 for node in nodes}
+	def figure_out_levels(node_current, level_current):
+		used.add(node_current)
+		inputs = (x for x in node_current.inputs if x.enabled)
+		for input in inputs:
+			for link in (x for x in input.links if not x.is_muted):
+				node = link.from_node
+				if levels[node] <= level_current:
+					levels[node] = level_current + 1
+					figure_out_levels(node, level_current + 1)
+	root_nodes = get_output_nodes(bpy.context)
+	for root_node in root_nodes:
+		figure_out_levels(root_node, 0)
+	
+	clear_node_color(used)
+
+	for node in used:
+		node.use_custom_color = True
+		node.color = oklab_hsl_2_srgb(-0.075 * levels[node], 0.05, 0.6)
 
 # def color_nodes_by_type():
 # 	tree = bpy.context.space_data.edit_tree  # context.active_node.id_data
@@ -189,18 +211,27 @@ def unused_nodes():
 @persistent
 def ax_depsgraph_handler(scene):
 	# print(bpy.context.area.id_data.name)
-	if hasattr(bpy.context, 'selected_nodes'):
-		unused_nodes()
+	use_node_handler = bpy.context.scene.fulcrum['use_node_handler']  # FIXME for the 1st time, use_node_handler isn't there
+	if use_node_handler:
+		start_time = time.perf_counter()
+		if hasattr(bpy.context, 'selected_nodes'):
+			match bpy.context.scene.fulcrum.node_vis_type:
+				case 'UNUSED':
+					unused_nodes()
+				case 'LEVELS':
+					node_color_levels()
+		print(f"handler - {time.perf_counter() - start_time}")
+		
 
 
 def register():
 	for cls in classes:
 		bpy.utils.register_class(cls)
-	bpy.types.Scene.ax_compare = bpy.props.PointerProperty(type=my_properties)
-	bpy.types.Scene.use_node_handler = bpy.props.BoolProperty(
-		name='Use Node Handler',
-		default=False,
-	)
+	bpy.types.Scene.fulcrum = bpy.props.PointerProperty(type=my_properties)
+	# bpy.types.Scene.use_node_handler = bpy.props.BoolProperty(
+	# 	name='Use Node Handler',
+	# 	default=False,
+	# )
 	bpy.app.handlers.depsgraph_update_post.append(ax_depsgraph_handler)
 	
 	print("FULCRUM registered")
@@ -210,10 +241,10 @@ def unregister():
 	for handler in bpy.app.handlers.render_complete:
 		if handler.__name__ == 'ax_depsgraph_handler':
 			bpy.app.handlers.depsgraph_update_post.remove(handler)
-	del bpy.types.Scene.use_node_handler
+	# del bpy.types.Scene.use_node_handler
 	for cls in classes:
 		bpy.utils.unregister_class(cls)
-	del bpy.types.Scene.ax_compare
+	del bpy.types.Scene.fulcrum
 	
 	print("FULCRUM unregistered")
 

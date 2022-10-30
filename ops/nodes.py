@@ -1,6 +1,7 @@
 import bpy
 import mathutils
 from ..functions import *
+import itertools
 
 
 class AX_OT_find_inputs(bpy.types.Operator):
@@ -220,25 +221,30 @@ class AX_OT_align_nodes_v2(bpy.types.Operator):
 		min=0, default=(40, 20), soft_max=100,
 		size=2
 	)
-	max_angle: bpy.props.FloatProperty(
-		name="Spacing",
-		description="Spacing between nodes",
-		min=0.0, default=0.75, soft_max=3.14,
+	angle: bpy.props.FloatProperty(
+		name="Angle",
+		description="...",
+		min=0.0, default=1.25, soft_max=4.0,
 	)
 	iter: bpy.props.IntProperty(
 		name="Iterations",
 		description="Number of iterations",
-		min=0, default=128, soft_max=1024,
+		min=0, default=1, soft_max=1024,
 	)
 	step_size: bpy.props.FloatProperty(
 		name="Step Size",
 		description="...",
 		min=0.0, default=0.1, soft_max=1.0,
 	)
-	test: bpy.props.FloatProperty(
-		name="Step Size",
+	repulsion: bpy.props.FloatProperty(
+		name="repulsion",
 		description="...",
-		min=0.0, default=1.25, soft_max=2,
+		soft_min=0.0, default=1.0, soft_max=4.0,
+	)
+	spring: bpy.props.FloatProperty(
+		name="spring",
+		description="...",
+		soft_min=0.0, default=1.0, soft_max=4.0,
 	)
 
 	def execute(self, context):
@@ -260,34 +266,68 @@ class AX_OT_align_nodes_v2(bpy.types.Operator):
 		
 		
 		for _ in range(self.iter):
+			# TODO cooling factor
+			node_pairs = itertools.combinations(nodes, 2)
 			force_field = {node:mathutils.Vector((0.0, 0.0)) for node in nodes}
-			nodesx = [node for node in nodes if node.type != 'REROUTE']
-			for node_a in nodes:
+
+			for node_pair in node_pairs:
+				# print(node_pair)
 				force = mathutils.Vector((0.0, 0.0))
-				for node_b in [node for node in nodes if node != node_a]:
+				direction = node_center(node_pair[1]) - node_center(node_pair[0])
+				
+				intersection = node_intersection(node_pair[0], node_pair[1])
+				print(intersection)
+				# self.report({'INFO'}, f'{get_node_name(node_a)} - {intersection}')
+				if intersection:
+					intersect_size = intersection[1]
+					# direction = node_center(node_a) - node_center(node_b)
+					# if abs(direction.x) < 0.1 and abs(direction.y) < 0.1:
 
-					center_a = node_center(node_a)
-					center_b = node_center(node_b)
-					direction = node_center(node_b) - node_center(node_a)
+					if abs(direction.x) < 0.1:
+						factor = intersect_size.y / abs(direction.y)
+					elif abs(direction.y) < 0.1:
+						factor = intersect_size.y / abs(direction.x)
+					else:
+						factor = min(intersect_size.x / abs(direction.x), intersect_size.y / abs(direction.y))
+					force += - factor * 0.5 * direction
+
+				repulsion = 1.0 * direction.normalized() / (direction.length/200)**2.0
+				force -= repulsion * self.repulsion
+				force_field[node_pair[0]] += force
+				force_field[node_pair[1]] -= force
+
+
+			# print(list(node_pairs))
+			# nodesx = [node for node in nodes if node.type != 'REROUTE']
+			# for node_a in nodes:
+			# 	force = mathutils.Vector((0.0, 0.0))
+			# 	for node_b in [node for node in nodes if node != node_a]:
+
+			# 		center_a = node_center(node_a)
+			# 		center_b = node_center(node_b)
+			# 		direction = node_center(node_b) - node_center(node_a)
 					
-					intersection = node_intersection(node_a, node_b)
-					# self.report({'INFO'}, f'{get_node_name(node_a)} - {intersection}')
-					if intersection:
-						intersect_size = intersection[1]
-						# direction = node_center(node_a) - node_center(node_b)
-						# if abs(direction.x) < 0.1 and abs(direction.y) < 0.1:
+			# 		intersection = node_intersection(node_a, node_b)
+			# 		# self.report({'INFO'}, f'{get_node_name(node_a)} - {intersection}')
+			# 		if intersection:
+			# 			intersect_size = intersection[1]
+			# 			# direction = node_center(node_a) - node_center(node_b)
+			# 			# if abs(direction.x) < 0.1 and abs(direction.y) < 0.1:
 
-						if abs(direction.x) < 0.1:
-							factor = intersect_size.y / abs(direction.y)
-						elif abs(direction.y) < 0.1:
-							factor = intersect_size.y / abs(direction.x)
-						else:
-							factor = min(intersect_size.x / abs(direction.x), intersect_size.y / abs(direction.y))
-						force += - factor * 0.5 * direction
+			# 			if abs(direction.x) < 0.1:
+			# 				factor = intersect_size.y / abs(direction.y)
+			# 			elif abs(direction.y) < 0.1:
+			# 				factor = intersect_size.y / abs(direction.x)
+			# 			else:
+			# 				factor = min(intersect_size.x / abs(direction.x), intersect_size.y / abs(direction.y))
+			# 			force += - factor * 0.5 * direction
+
+			# 		repulsion = 1.0 * direction.normalized() / (direction.length/200)**2.0
+			# 		force -= repulsion * self.repulsion
 					
 				# spring = 0.5 * direction.length * direction.normalized()
 				# force += spring * self.step_size
-				force_field[node_a] += force
+				# force_field[node_a] += force
 			
 			for link in links:
 				node_a = link.from_node
@@ -295,8 +335,8 @@ class AX_OT_align_nodes_v2(bpy.types.Operator):
 				loc_a = socket_loc(link.from_socket)
 				loc_b = socket_loc(link.to_socket)
 				dir = loc_b - loc_a
-				angle = dir.angle_signed(mathutils.Vector((1.0, 0.0)), 0.0)
-				force = 0.5 * (mathutils.Vector((dir.length, 0)) - self.test * dir) * self.step_size
+				# angle = dir.angle_signed(mathutils.Vector((1.0, 0.0)), 0.0)
+				force = 0.5 * (mathutils.Vector((dir.length, 0)) - self.angle * dir) * self.spring * self.step_size
 				# force = 0.5 * dir.normalized() * (self.link_length - dir.length)
 				force_field[node_a] -= force
 				force_field[node_b] += force
@@ -313,8 +353,9 @@ class AX_OT_align_nodes_v2(bpy.types.Operator):
 		# col = layout.column(align = True)
 		layout.prop(self, "iter")
 		layout.prop(self, "step_size")
-		layout.prop(self, "link_length")
-		layout.prop(self, "test")
+		layout.prop(self, "spring")
+		layout.prop(self, "repulsion")
+		layout.prop(self, "angle")
 
 class AX_OT_nodes_to_grid(bpy.types.Operator):
 	
