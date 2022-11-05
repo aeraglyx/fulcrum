@@ -2,6 +2,23 @@ import re
 import math
 import mathutils
 
+def oklab_2_srgb(l, a, b):
+	# https://bottosson.github.io/posts/oklab/
+
+	x = l + 0.3963377774 * a + 0.2158037573 * b
+	y = l - 0.1055613458 * a - 0.0638541728 * b
+	z = l - 0.0894841775 * a - 1.2914855480 * b
+
+	x = x * x * x
+	y = y * y * y
+	z = z * z * z
+
+	return [
+		+4.0767416621 * x - 3.3077115913 * y + 0.2309699292 * z,
+		-1.2684380046 * x + 2.6097574011 * y - 0.3413193965 * z,
+		-0.0041960863 * x - 0.7034186147 * y + 1.7076147010 * z
+	]
+
 def oklab_hsl_2_srgb(h, s, l):
 	""" HSL but based on Oklab, so better :) """
 	# https://bottosson.github.io/posts/oklab/
@@ -61,7 +78,7 @@ def node_size(node):
 	return mathutils.Vector((x, y))
 	
 def node_center(node):
-	return node.location + 0.5 * mathutils.Vector((node_size(node).x, - node_size(node).y))  # 0.5*node_size(node)
+	return node.location + node_size(node) * mathutils.Vector((0.5, -0.5))
 
 def node_intersection(node_1, node_2):
 	x = 20

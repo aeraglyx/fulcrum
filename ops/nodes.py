@@ -1,7 +1,8 @@
 import bpy
 import mathutils
-from ..functions import *
+import random
 import itertools
+from ..functions import *
 
 
 class AX_OT_find_inputs(bpy.types.Operator):
@@ -357,6 +358,255 @@ class AX_OT_align_nodes_v2(bpy.types.Operator):
 		layout.prop(self, "repulsion")
 		layout.prop(self, "angle")
 
+class AX_OT_align_nodes_v3(bpy.types.Operator):
+
+	# layered graph drawing
+	
+	bl_idname = "ax.align_nodes_v3"
+	bl_label = "Align Nodes (FD v3)"
+	bl_description = "Automatically align all the nodes"
+	bl_options = {'REGISTER', 'UNDO'}
+	
+	@classmethod
+	def poll(cls, context):
+		return hasattr(context, "selected_nodes")
+	
+	spacing: bpy.props.IntVectorProperty(
+		name="Spacing",
+		description="Spacing between nodes",
+		min=0, default=(40, 20), soft_max=100,
+		size=2
+	)
+	angle: bpy.props.FloatProperty(
+		name="Angle",
+		description="...",
+		min=0.0, default=1.25, soft_max=4.0,
+	)
+	iter: bpy.props.IntProperty(
+		name="Iterations",
+		description="Number of iterations",
+		min=0, default=1, soft_max=1024,
+	)
+	step_size: bpy.props.FloatProperty(
+		name="Step Size",
+		description="...",
+		min=0.0, default=0.1, soft_max=1.0,
+	)
+	repulsion: bpy.props.FloatProperty(
+		name="repulsion",
+		description="...",
+		soft_min=0.0, default=1.0, soft_max=4.0,
+	)
+	spring: bpy.props.FloatProperty(
+		name="spring",
+		description="...",
+		soft_min=0.0, default=1.0, soft_max=4.0,
+	)
+
+	def execute(self, context):
+
+		tree = context.space_data.edit_tree  # BUG doesn't work in compositor
+		nodes = tree.nodes
+		links = tree.links
+		# self.report({'INFO'}, f'{intersection}')
+		
+		
+		for _ in range(self.iter):
+			# TODO cooling factor
+			node_pairs = itertools.combinations(nodes, 2)
+			force_field = {node:mathutils.Vector((0.0, 0.0)) for node in nodes}
+
+			for node_pair in node_pairs:
+				# print(node_pair)
+				force = mathutils.Vector((0.0, 0.0))
+				direction = node_center(node_pair[1]) - node_center(node_pair[0])
+				
+				intersection = node_intersection(node_pair[0], node_pair[1])
+				print(intersection)
+				# self.report({'INFO'}, f'{get_node_name(node_a)} - {intersection}')
+				if intersection:
+					intersect_size = intersection[1]
+					# direction = node_center(node_a) - node_center(node_b)
+					# if abs(direction.x) < 0.1 and abs(direction.y) < 0.1:
+
+					if abs(direction.x) < 0.1:
+						factor = intersect_size.y / abs(direction.y)
+					elif abs(direction.y) < 0.1:
+						factor = intersect_size.y / abs(direction.x)
+					else:
+						factor = min(intersect_size.x / abs(direction.x), intersect_size.y / abs(direction.y))
+					force += - factor * 0.5 * direction
+
+				repulsion = 1.0 * direction.normalized() / (direction.length/200)**2.0
+				force -= repulsion * self.repulsion
+				force_field[node_pair[0]] += force
+				force_field[node_pair[1]] -= force
+			
+			for link in links:
+				node_a = link.from_node
+				node_b = link.to_node
+				loc_a = socket_loc(link.from_socket)
+				loc_b = socket_loc(link.to_socket)
+				dir = loc_b - loc_a
+				force = 0.5 * (mathutils.Vector((dir.length, 0)) - self.angle * dir) * self.spring * self.step_size
+				force_field[node_a] -= force
+				force_field[node_b] += force
+			
+			for node, force in force_field.items():
+				node.location += force
+
+		return {'FINISHED'}
+
+	def draw(self, context):
+		layout = self.layout
+		layout.use_property_split = True
+		layout.use_property_decorate = False
+		# col = layout.column(align = True)
+		layout.prop(self, "iter")
+		layout.prop(self, "step_size")
+		layout.prop(self, "spring")
+		layout.prop(self, "repulsion")
+		layout.prop(self, "angle")
+
+class Node:
+	def __init__(self, node):
+		self.center = node_center(node)
+		self.radius = node_size(node) * 0.5
+
+class AX_OT_color_node_flow(bpy.types.Operator):
+
+	# layered graph drawing
+	
+	bl_idname = "ax.color_node_flow"
+	bl_label = "Color Node Flow"
+	bl_description = "Automatically color all the nodes"
+	bl_options = {'REGISTER', 'UNDO'}
+	
+	@classmethod
+	def poll(cls, context):
+		return hasattr(context, "selected_nodes")
+	
+	strength: bpy.props.FloatProperty(
+		name="Strength",
+		description="...",
+		min=0.0, default=0.07, soft_max=1.0,
+	)
+	iter: bpy.props.IntProperty(
+		name="Iterations",
+		description="Number of iterations",
+		min=0, default=1, soft_max=1024,
+	)
+	step_size: bpy.props.FloatProperty(
+		name="Step Size",
+		description="...",
+		min=0.0, default=0.1, soft_max=1.0,
+	)
+	repulsion: bpy.props.FloatProperty(
+		name="repulsion",
+		description="...",
+		soft_min=0.0, default=1.0, soft_max=4.0,
+	)
+	spring: bpy.props.FloatProperty(
+		name="spring",
+		description="...",
+		soft_min=0.0, default=1.0, soft_max=4.0,
+	)
+
+	def execute(self, context):
+
+		tree = context.space_data.edit_tree  # BUG doesn't work in compositor
+		nodes = tree.nodes
+		links = tree.links
+		# self.report({'INFO'}, f'{intersection}')
+		node_pairs = itertools.combinations(nodes, 2)
+
+		# for node in nodes:
+		# 	node_center(node)
+		# 	ab = mathutils.Vector((random.random(), random.random()))
+			# - ab.normalized() * ab.length
+		# nodes_x = [Node(node) for node in nodes]
+		node_ab = {node:mathutils.Vector((random.random(), random.random())) for node in nodes}
+		xy_dist = {pair:(node_center(pair[1]) - node_center(pair[0])).length for pair in node_pairs}
+		
+		
+		for _ in range(self.iter):
+			force_field = {node:mathutils.Vector((0.0, 0.0)) for node in nodes}
+
+			for node in nodes:
+				force_field[node] -= node_ab[node]
+
+			for pair in node_pairs:
+				direction = node_ab[pair[1]] - node_ab[pair[0]]
+				# TODO branched
+				force = self.repulsion * direction.normalized() / xy_dist[pair]
+				force_field[pair[0]] -= force
+				force_field[pair[1]] += force
+			
+			for node in nodes:
+				# TODO cooling factor
+				node_ab[node] += force_field[node] * self.step_size
+
+
+
+
+			# node_pairs = itertools.combinations(nodes, 2)
+			# force_field = {node:mathutils.Vector((0.0, 0.0)) for node in nodes}
+
+			# for node_pair in node_pairs:
+			# 	# print(node_pair)
+			# 	force = mathutils.Vector((0.0, 0.0))
+			# 	direction = node_center(node_pair[1]) - node_center(node_pair[0])
+				
+			# 	intersection = node_intersection(node_pair[0], node_pair[1])
+			# 	print(intersection)
+			# 	# self.report({'INFO'}, f'{get_node_name(node_a)} - {intersection}')
+			# 	if intersection:
+			# 		intersect_size = intersection[1]
+			# 		# direction = node_center(node_a) - node_center(node_b)
+			# 		# if abs(direction.x) < 0.1 and abs(direction.y) < 0.1:
+
+			# 		if abs(direction.x) < 0.1:
+			# 			factor = intersect_size.y / abs(direction.y)
+			# 		elif abs(direction.y) < 0.1:
+			# 			factor = intersect_size.y / abs(direction.x)
+			# 		else:
+			# 			factor = min(intersect_size.x / abs(direction.x), intersect_size.y / abs(direction.y))
+			# 		force += - factor * 0.5 * direction
+
+			# 	repulsion = 1.0 * direction.normalized() / (direction.length/200)**2.0
+			# 	force -= repulsion * self.repulsion
+			# 	force_field[node_pair[0]] += force
+			# 	force_field[node_pair[1]] -= force
+			
+			for link in links:
+				node_a = link.from_node
+				node_b = link.to_node
+				force = 0.5 * (mathutils.Vector((dir.length, 0)) - self.angle * dir) * self.spring * self.step_size
+				force_field[node_a] -= force
+				force_field[node_b] += force
+			
+			for node, force in force_field.items():
+				node.location += force
+		
+		for node in nodes:
+			node.use_custom_color = True
+			sat = self.strength
+			node.color = oklab_2_srgb(0.5, ab.x * sat, ab.y * sat)
+
+		return {'FINISHED'}
+
+	def draw(self, context):
+		layout = self.layout
+		layout.use_property_split = True
+		layout.use_property_decorate = False
+		# col = layout.column(align = True)
+		layout.prop(self, "strength")
+		layout.prop(self, "iter")
+		layout.prop(self, "step_size")
+		layout.prop(self, "spring")
+		layout.prop(self, "repulsion")
+		layout.prop(self, "angle")
+
 class AX_OT_nodes_to_grid(bpy.types.Operator):
 	
 	bl_idname = "ax.nodes_to_grid"
@@ -427,7 +677,7 @@ class AX_OT_add_todo_note(bpy.types.Operator):
 
 		nodes = context.space_data.edit_tree.nodes
 
-		todo_node = nodes.new(type = 'NodeFrame')
+		todo_node = nodes.new(type='NodeFrame')
 		todo_node.label = self.note
 		todo_node.width = 400
 		todo_node.height = 100
@@ -447,7 +697,7 @@ class AX_OT_add_todo_note(bpy.types.Operator):
 		# layout.use_property_split = True
 		# layout.use_property_decorate = False
 
-		col = layout.column(align = True)
+		col = layout.column(align=True)
 		col.prop(self, "note")
 
 class AX_OT_hide_group_inputs(bpy.types.Operator):
