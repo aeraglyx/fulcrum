@@ -520,20 +520,14 @@ class AX_OT_color_node_flow(bpy.types.Operator):
 		# self.report({'INFO'}, f'{intersection}')
 		node_pairs = itertools.combinations(nodes, 2)
 
-		# for node in nodes:
-		# 	node_center(node)
-		# 	ab = mathutils.Vector((random.random(), random.random()))
-			# - ab.normalized() * ab.length
-		# nodes_x = [Node(node) for node in nodes]
-		node_ab = {node:mathutils.Vector((random.random(), random.random())) for node in nodes}
+		node_ab = {node:mathutils.Vector((random.uniform(-1, 1), random.uniform(-1, 1))) for node in nodes}
 		xy_dist = {pair:(node_center(pair[1]) - node_center(pair[0])).length for pair in node_pairs}
-		
 		
 		for _ in range(self.iter):
 			force_field = {node:mathutils.Vector((0.0, 0.0)) for node in nodes}
 
 			for node in nodes:
-				force_field[node] -= node_ab[node]
+				force_field[node] -= node_ab[node] * self.strength
 
 			for pair in node_pairs:
 				direction = node_ab[pair[1]] - node_ab[pair[0]]
@@ -545,53 +539,11 @@ class AX_OT_color_node_flow(bpy.types.Operator):
 			for node in nodes:
 				# TODO cooling factor
 				node_ab[node] += force_field[node] * self.step_size
-
-
-
-
-			# node_pairs = itertools.combinations(nodes, 2)
-			# force_field = {node:mathutils.Vector((0.0, 0.0)) for node in nodes}
-
-			# for node_pair in node_pairs:
-			# 	# print(node_pair)
-			# 	force = mathutils.Vector((0.0, 0.0))
-			# 	direction = node_center(node_pair[1]) - node_center(node_pair[0])
-				
-			# 	intersection = node_intersection(node_pair[0], node_pair[1])
-			# 	print(intersection)
-			# 	# self.report({'INFO'}, f'{get_node_name(node_a)} - {intersection}')
-			# 	if intersection:
-			# 		intersect_size = intersection[1]
-			# 		# direction = node_center(node_a) - node_center(node_b)
-			# 		# if abs(direction.x) < 0.1 and abs(direction.y) < 0.1:
-
-			# 		if abs(direction.x) < 0.1:
-			# 			factor = intersect_size.y / abs(direction.y)
-			# 		elif abs(direction.y) < 0.1:
-			# 			factor = intersect_size.y / abs(direction.x)
-			# 		else:
-			# 			factor = min(intersect_size.x / abs(direction.x), intersect_size.y / abs(direction.y))
-			# 		force += - factor * 0.5 * direction
-
-			# 	repulsion = 1.0 * direction.normalized() / (direction.length/200)**2.0
-			# 	force -= repulsion * self.repulsion
-			# 	force_field[node_pair[0]] += force
-			# 	force_field[node_pair[1]] -= force
-			
-			for link in links:
-				node_a = link.from_node
-				node_b = link.to_node
-				force = 0.5 * (mathutils.Vector((dir.length, 0)) - self.angle * dir) * self.spring * self.step_size
-				force_field[node_a] -= force
-				force_field[node_b] += force
-			
-			for node, force in force_field.items():
-				node.location += force
 		
 		for node in nodes:
 			node.use_custom_color = True
-			sat = self.strength
-			node.color = oklab_2_srgb(0.5, ab.x * sat, ab.y * sat)
+			ab = node_ab[node]
+			node.color = oklab_2_srgb(0.5, ab.x, ab.y)
 
 		return {'FINISHED'}
 
