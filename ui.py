@@ -73,10 +73,14 @@ class AX_PT_node_tools(bpy.types.Panel):
 
 		layout = self.layout
 
+		layout.prop(context.scene.fulcrum, 'dev')
+
 		col = layout.column(align=True)
 		col.operator("ax.align_nodes", icon='ALIGN_CENTER')
-		col.operator("ax.align_nodes_v2", icon='ALIGN_CENTER')
-		col.operator("ax.color_node_flow", icon='ALIGN_CENTER')
+		if context.scene.fulcrum.dev:
+			col.operator("ax.align_nodes_v2", icon='ALIGN_CENTER')
+			col.operator("ax.color_node_flow", icon='COLOR')
+			col.operator("ax.randomize_node_color", icon='COLOR')
 		col.operator("ax.center_nodes", icon='ANCHOR_CENTER')
 		col.operator("ax.nodes_to_grid", icon='SNAP_GRID')
 		col.operator("ax.hide_group_inputs", icon='NODE')  # HIDE_ON

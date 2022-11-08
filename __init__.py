@@ -32,6 +32,7 @@ from .ops.nodes import (
 	AX_OT_hide_group_inputs,
 	AX_OT_align_nodes,
 	AX_OT_align_nodes_v2,
+	AX_OT_randomize_node_color,
 	AX_OT_color_node_flow,
 	AX_OT_tex_to_name,
 	AX_OT_set_gn_defaults,
@@ -105,6 +106,7 @@ classes = (
 	AX_OT_paste_nodes,
 	AX_OT_align_nodes,
 	AX_OT_align_nodes_v2,
+	AX_OT_randomize_node_color,
 	AX_OT_color_node_flow,
 	AX_OT_tex_to_name,
 

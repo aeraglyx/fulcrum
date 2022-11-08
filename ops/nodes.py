@@ -1,5 +1,6 @@
 import bpy
 import mathutils
+import math
 import random
 import itertools
 from ..functions import *
@@ -468,6 +469,41 @@ class AX_OT_align_nodes_v3(bpy.types.Operator):
 		layout.prop(self, "repulsion")
 		layout.prop(self, "angle")
 
+class AX_OT_randomize_node_color(bpy.types.Operator):
+
+	bl_idname = "ax.randomize_node_color"
+	bl_label = "Randomize Node Color"
+	bl_description = "..."
+	bl_options = {'REGISTER', 'UNDO'}
+	
+	@classmethod
+	def poll(cls, context):
+		return hasattr(context, "selected_nodes")
+	
+	strength: bpy.props.FloatProperty(
+		name="Strength",
+		description="...",
+		min=0.0, default=0.05, soft_max=1.0,
+	)
+
+	def execute(self, context):
+
+		tree = context.space_data.edit_tree  # BUG doesn't work in compositor
+		nodes = tree.nodes
+		
+		for node in nodes:
+			node.use_custom_color = True
+			ab = mathutils.Vector((random.uniform(-1, 1), random.uniform(-1, 1))) * self.strength
+			node.color = oklab_2_srgb(0.6, ab.x, ab.y)
+
+		return {'FINISHED'}
+
+	def draw(self, context):
+		layout = self.layout
+		layout.use_property_split = True
+		layout.use_property_decorate = False
+		layout.prop(self, "strength")
+
 class Node:
 	def __init__(self, node):
 		self.center = node_center(node)
@@ -511,6 +547,11 @@ class AX_OT_color_node_flow(bpy.types.Operator):
 		description="...",
 		soft_min=0.0, default=1.0, soft_max=4.0,
 	)
+	cool: bpy.props.FloatProperty(
+		name="Cooling Factor",
+		description="...",
+		soft_min=0.0, default=1.0, soft_max=4.0,
+	)
 
 	def execute(self, context):
 
@@ -521,28 +562,36 @@ class AX_OT_color_node_flow(bpy.types.Operator):
 		node_pairs = itertools.combinations(nodes, 2)
 
 		node_ab = {node:mathutils.Vector((random.uniform(-1, 1), random.uniform(-1, 1))) for node in nodes}
+		node_z = {node:node.location.x * 0.01 for node in nodes}
 		xy_dist = {pair:(node_center(pair[1]) - node_center(pair[0])).length for pair in node_pairs}
 		
-		for _ in range(self.iter):
+		for i in range(self.iter):
+
+			cooling_factor = 2 ** (- self.cool * i)
 			force_field = {node:mathutils.Vector((0.0, 0.0)) for node in nodes}
 
-			for node in nodes:
-				force_field[node] -= node_ab[node] * self.strength
+			# for node in nodes:
+			# 	force_field[node] -= node_ab[node]
 
 			for pair in node_pairs:
 				direction = node_ab[pair[1]] - node_ab[pair[0]]
 				# TODO branched
-				force = self.repulsion * direction.normalized() / xy_dist[pair]
+				# TODO lock output node
+				virtual_distance = math.sqrt(node_ab[node].length_squared + node_z ** 2)
+				force = self.repulsion * direction / virtual_distance
 				force_field[pair[0]] -= force
 				force_field[pair[1]] += force
 			
 			for node in nodes:
 				# TODO cooling factor
-				node_ab[node] += force_field[node] * self.step_size
+				node_ab[node] += force_field[node] * self.step_size  # * cooling_factor
+				l = node_ab[node].length
+				if l > 1.0:
+					node_ab[node] /= l
 		
 		for node in nodes:
 			node.use_custom_color = True
-			ab = node_ab[node]
+			ab = node_ab[node] * self.strength
 			node.color = oklab_2_srgb(0.5, ab.x, ab.y)
 
 		return {'FINISHED'}
