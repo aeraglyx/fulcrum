@@ -211,10 +211,11 @@ class AX_PT_versioning(bpy.types.Panel):
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"
 	bl_category = "Fulcrum"
-	bl_label = "BLEND File"
+	bl_label = "FULCRUM"
 
 	def draw (self, context):
 		layout = self.layout
+		layout.prop(context.scene.fulcrum, 'dev')
 		if bpy.data.is_saved:
 			if is_current_file_version():
 				if bpy.data.is_dirty:
@@ -230,6 +231,7 @@ class AX_PT_versioning(bpy.types.Panel):
 			col.operator("ax.open_blend_dir", icon='FILE_BACKUP')
 		else:
 			layout.label(text="File not saved!", icon='SEQUENCE_COLOR_01')
+		
 
 class AX_PT_ease_of_access(bpy.types.Panel):
 	
@@ -310,9 +312,10 @@ class AX_PT_3d_stuff(bpy.types.Panel):
 		col.operator("ax.set_auto_smooth", icon='MATSHADERBALL')
 		col.operator("ax.hybrid_subdiv", icon='MOD_SUBSURF')
 		
-		col = layout.column(align=True)
-		col.operator("ax.locate_vertex", icon='VERTEXSEL')
-		col.operator("ax.locate_vertices", icon='SNAP_VERTEX')
+		if context.scene.fulcrum.dev:
+			col = layout.column(align=True)
+			col.operator("ax.locate_vertex", icon='VERTEXSEL')
+			col.operator("ax.locate_vertices", icon='SNAP_VERTEX')
 
 class AX_PT_3d_axis_selection(bpy.types.Panel):
 	

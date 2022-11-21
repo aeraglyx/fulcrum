@@ -84,6 +84,7 @@ class AX_OT_save_as_new_version(bpy.types.Operator):
 		name = version_up(name) + ".blend"
 		new_filepath = os.path.join(folder_path, name)
 		bpy.ops.wm.save_as_mainfile(filepath=new_filepath)
+		# TODO save versions in a subfolder
 		return {'FINISHED'}
 
 class AX_OT_go_to_latest_version(bpy.types.Operator):

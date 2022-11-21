@@ -424,6 +424,6 @@ class AX_OT_obj_backup(bpy.types.Operator):
 		obj_copy.hide_viewport = True
 		obj_copy.hide_render = True
 
-		self.report({'INFO'}, f"{obj_orig.name} backed up successfully!")
+		self.report({'INFO'}, f"\"{obj_orig.name}\" backed up successfully!")
 
 		return {'FINISHED'}
