@@ -104,12 +104,27 @@ class AX_PT_node_tools(bpy.types.Panel):
 		row.operator("ax.unused_nodes", text="Unused")  # icon = 'PLUGIN'
 
 		col = layout.column(align=True)
-		col.label(text="Reset node color:")  # COLOR
+		col.label(text="Node color:")  # COLOR  RESTRICT_COLOR_OFF  FILE_REFRESH
 		row = col.row(align=True)
-		selected = row.operator("ax.reset_node_color", text="Selected")  # FILE_REFRESH  COLOR  RESTRICT_COLOR_OFF
-		selected.all = False
-		all = row.operator("ax.reset_node_color", text="All")
-		all.all = True
+		grey = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_09')
+		grey.color = [0.25, 0.25, 0.25]
+		red = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_01')
+		red.color = [0.33, 0.18, 0.19]
+		orange = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_02')
+		orange.color = [0.40, 0.27, 0.19]
+		yellow = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_03')
+		yellow.color = [0.40, 0.40, 0.30]
+		green = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_04')
+		green.color = [0.24, 0.35, 0.26]
+		blue = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_05')
+		blue.color = [0.25, 0.34, 0.39]
+		purple = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_06')
+		purple.color = [0.28, 0.26, 0.40]
+		pink = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_07')
+		pink.color = [0.41, 0.30, 0.40]
+		brown = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_08')
+		brown.color = [0.29, 0.25, 0.22]
+		col.operator("ax.reset_node_color", text="Reset", icon='FILE_REFRESH')
 
 		col = layout.column(align=True)
 		col.prop(context.scene.fulcrum, 'use_node_handler')
@@ -228,8 +243,10 @@ class AX_PT_ease_of_access(bpy.types.Panel):
 		col = layout.column(align=True)
 		col.prop(context.scene.render, "use_motion_blur")
 		col.prop(context.scene.render, "film_transparent")
-		layout.prop(context.scene.view_settings, "view_transform", text="")
-		layout.prop(context.scene.tool_settings, "use_keyframe_insert_auto")
+		col.operator("ax.obj_backup", icon='DUPLICATE')
+
+		# layout.prop(context.scene.view_settings, "view_transform", text="")
+		# layout.prop(context.scene.tool_settings, "use_keyframe_insert_auto")
 
 class AX_PT_paint(bpy.types.Panel):
 	

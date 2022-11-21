@@ -770,12 +770,6 @@ class AX_OT_reset_node_color(bpy.types.Operator):
 	bl_idname = "ax.reset_node_color"
 	bl_label = "Reset Node Color"
 	bl_description = "Reset custom node color"
-
-	all: bpy.props.BoolProperty(
-		name = "All",
-		description = "Reset color for all nodes, not just selected",
-		default = False
-	)
 	
 	@classmethod
 	def poll(cls, context):
@@ -783,15 +777,37 @@ class AX_OT_reset_node_color(bpy.types.Operator):
 
 	def execute(self, context):
 		
-		if self.all == True:
-			nodes = context.space_data.edit_tree.nodes  # context.active_node.id_data.nodes
-			for node in nodes:
-				node.use_custom_color = False
-		else:
-			selected = context.selected_nodes
-			for node in selected:
+		nodes = context.space_data.edit_tree.nodes  # context.active_node.id_data.nodes
+		for node in nodes:
+			if node.bl_idname != 'NodeFrame':
 				node.use_custom_color = False
 		
+		return {'FINISHED'}
+
+class AX_OT_set_node_color(bpy.types.Operator):
+	
+	""" Set custom node color """
+	
+	bl_idname = "ax.set_node_color"
+	bl_label = "Set Node Color"
+	bl_description = "Set custom node color"
+	
+	@classmethod
+	def poll(cls, context):
+		return context.area.type == 'NODE_EDITOR'
+
+	color: bpy.props.FloatVectorProperty(
+		name="Color",
+		subtype='COLOR',
+		default=[0.0,0.0,0.0])
+
+	def execute(self, context):
+		
+		nodes = context.selected_nodes  # context.active_node.id_data.nodes
+		for node in nodes:
+			node.use_custom_color = True
+			node.color = self.color
+
 		return {'FINISHED'}
 
 class AX_OT_set_gn_defaults(bpy.types.Operator):

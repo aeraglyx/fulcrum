@@ -37,6 +37,7 @@ from .ops.nodes import (
 	AX_OT_tex_to_name,
 	AX_OT_set_gn_defaults,
 	AX_OT_reset_gn_defaults,
+	AX_OT_set_node_color,
 	AX_OT_reset_node_color)
 from .ops.node_versioning import AX_OT_version_encode, AX_OT_version_decode
 from .ops.three_d import (
@@ -46,6 +47,7 @@ from .ops.three_d import (
 	AX_OT_cloth_vert_mass,
 	AX_OT_set_auto_smooth,
 	AX_OT_hybrid_subdiv,
+	AX_OT_obj_backup,
 	AX_OT_vert_group_2_col)
 from .ops.camera import (
 	AX_OT_dof_setup,
@@ -89,6 +91,7 @@ classes = (
 	AX_OT_save_as_new_version,
 	AX_OT_go_to_latest_version,
 	
+	AX_OT_set_node_color,
 	AX_OT_reset_node_color,
 	AX_OT_compare,
 	AX_OT_node_flow,
@@ -127,6 +130,7 @@ classes = (
 	AX_OT_duplicates_to_instances,
 	AX_OT_cloth_vert_mass,
 	AX_OT_set_auto_smooth,
+	AX_OT_obj_backup,
 
 	AX_PT_versioning,
 	AX_PT_ease_of_access,

@@ -395,3 +395,35 @@ class AX_OT_duplicates_to_instances(bpy.types.Operator):
 		self.report({'INFO'}, f"{n1} meshes reduced to {n2} unique mesh{'' if n2 == 1 else 'es'}.")
 
 		return {'FINISHED'}
+
+class AX_OT_obj_backup(bpy.types.Operator):
+	
+	bl_idname = "ax.obj_backup"
+	bl_label = "Backup Object"
+	bl_description = ""
+	
+	@classmethod
+	def poll(cls, context):
+		return True
+
+	def execute(self, context):
+		
+		obj_orig = context.active_object
+		obj_copy = obj_orig.copy()
+
+		obj_copy.data = obj_orig.data.copy()
+		if obj_orig.animation_data:
+			obj_copy.animation_data.action = obj_orig.animation_data.action.copy()
+		obj_copy.name = obj_orig.name + "_backup"
+		
+		context.collection.objects.link(obj_copy)
+		context.view_layer.objects.active = obj_orig
+		for layer in context.scene.view_layers:
+			obj_copy.select_set(False, view_layer=layer)
+			obj_copy.hide_set(True, view_layer=layer)
+		obj_copy.hide_viewport = True
+		obj_copy.hide_render = True
+
+		self.report({'INFO'}, f"{obj_orig.name} backed up successfully!")
+
+		return {'FINISHED'}
