@@ -856,3 +856,25 @@ class AX_OT_reset_gn_defaults(bpy.types.Operator):
 		modif.show_viewport = True
 		
 		return {'FINISHED'}
+
+class AX_OT_set_node_size(bpy.types.Operator):
+	
+	bl_idname = "ax.set_node_size"
+	bl_label = "Set Node Size"
+	bl_description = ""
+	
+	@classmethod
+	def poll(cls, context):
+		return context.area.type == 'NODE_EDITOR'
+	
+	size: bpy.props.FloatProperty(
+		name="Size",
+		default=1.0)
+
+	def execute(self, context):
+
+		nodes = context.selected_nodes
+		for node in nodes:
+			node.width = node.bl_width_default * self.size
+		
+		return {'FINISHED'}

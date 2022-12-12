@@ -38,7 +38,8 @@ from .ops.nodes import (
 	AX_OT_set_gn_defaults,
 	AX_OT_reset_gn_defaults,
 	AX_OT_set_node_color,
-	AX_OT_reset_node_color)
+	AX_OT_reset_node_color,
+	AX_OT_set_node_size)
 from .ops.node_versioning import AX_OT_version_encode, AX_OT_version_decode
 from .ops.three_d import (
 	AX_OT_locate_vertex,
@@ -112,6 +113,7 @@ classes = (
 	AX_OT_randomize_node_color,
 	AX_OT_color_node_flow,
 	AX_OT_tex_to_name,
+	AX_OT_set_node_size,
 
 	AX_OT_render_to_new_slot,
 	AX_OT_set_render_passes,

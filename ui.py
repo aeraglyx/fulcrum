@@ -104,6 +104,18 @@ class AX_PT_node_tools(bpy.types.Panel):
 		row.operator("ax.unused_nodes", text="Unused")  # icon = 'PLUGIN'
 
 		col = layout.column(align=True)
+		col.label(text="Node Size:")  # COLOR
+		row = col.row(align=True)
+		half = row.operator("ax.set_node_size", text="Def.")
+		half.size = 0.5
+		default = row.operator("ax.set_node_size", text="Def.")
+		default.size = 1.0
+		two = row.operator("ax.set_node_size", text="2x")
+		two.size = 2.0
+		four = row.operator("ax.set_node_size", text="4x")
+		four.size = 4.0
+
+		col = layout.column(align=True)
 		col.label(text="Node color:")  # COLOR  RESTRICT_COLOR_OFF  FILE_REFRESH
 		row = col.row(align=True)
 		grey = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_09')
