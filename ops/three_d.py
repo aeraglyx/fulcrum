@@ -380,7 +380,8 @@ class AX_OT_obj_backup(bpy.types.Operator):
 			obj_copy.animation_data.action = obj_orig.animation_data.action.copy()
 		obj_copy.name = obj_orig.name + "_backup"
 		
-		context.collection.objects.link(obj_copy)
+		collection = obj_orig.users_collection[0]
+		collection.objects.link(obj_copy)
 		context.view_layer.objects.active = obj_orig
 		for layer in context.scene.view_layers:
 			obj_copy.select_set(False, view_layer=layer)

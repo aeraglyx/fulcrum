@@ -5,7 +5,7 @@ class my_properties(bpy.types.PropertyGroup):
 
 	dev: bpy.props.BoolProperty(
 		name='More Stuff',
-		default=True,
+		default=False,
 	)
 	use_node_handler: bpy.props.BoolProperty(
 		name='Node Visualizer',

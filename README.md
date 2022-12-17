@@ -1,6 +1,7 @@
 # Fulcrum
 
 Blender addon containing random tools. Mostly harmless.
+(readme out of date)
 
 ## Ease of Access
 - Motion Blur
@@ -13,11 +14,10 @@ Blender addon containing random tools. Mostly harmless.
 - Set up an Empty as a DOF controller
 - Setup camera for isometric art
 - Hybrid subdivision which combines *Simple* and *Catmull-Clark* algorithms
-- Set *Auto Smooth*
 - Locate a single vertex or multiple vertices by its indices
 
 ## Node Stuff
-- Compare speed of selected nodes and color them by their efficiency
+- Compare speed of selected shader nodes and color them by their efficiency
 - Show all nodes used by the selected node
 - Show unused nodes in red
 - Reset custom color of selected or all nodes
