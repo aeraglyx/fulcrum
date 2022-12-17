@@ -23,9 +23,10 @@ from .ops.render import (
 	AX_OT_anim_time_limit,
 	AX_OT_render_to_new_slot)
 from .ops.nodes import (
-	AX_OT_node_flow,
-	AX_OT_unused_nodes,
-	AX_OT_find_inputs,
+	AX_OT_select_node_inputs,
+	AX_OT_select_node_dependencies,
+	AX_OT_select_group_inputs,
+	AX_OT_select_unused_nodes,
 	AX_OT_center_nodes,
 	AX_OT_nodes_to_grid,
 	AX_OT_add_todo_note,
@@ -46,7 +47,6 @@ from .ops.three_d import (
 	AX_OT_locate_vertices,
 	AX_OT_duplicates_to_instances,
 	AX_OT_cloth_vert_mass,
-	AX_OT_set_auto_smooth,
 	AX_OT_hybrid_subdiv,
 	AX_OT_obj_backup,
 	AX_OT_vert_group_2_col)
@@ -65,7 +65,7 @@ from .ops.copy_pasta import AX_OT_copy_nodes, AX_OT_paste_nodes
 from .ui import (
 	AX_PT_optimization,
 	AX_PT_node_tools,
-	AX_PT_node_group,
+	# AX_PT_node_group,
 	AX_PT_utility_node,
 	AX_PT_render,
 	AX_PT_data,
@@ -92,12 +92,14 @@ classes = (
 	AX_OT_save_as_new_version,
 	AX_OT_go_to_latest_version,
 	
+	AX_OT_select_node_inputs,
+	AX_OT_select_node_dependencies,
+	AX_OT_select_group_inputs,
+	AX_OT_select_unused_nodes,
+
 	AX_OT_set_node_color,
 	AX_OT_reset_node_color,
 	AX_OT_compare,
-	AX_OT_node_flow,
-	AX_OT_unused_nodes,
-	AX_OT_find_inputs,
 	AX_OT_center_nodes,
 	AX_OT_nodes_to_grid,
 	AX_OT_hide_group_inputs,
@@ -131,7 +133,6 @@ classes = (
 	AX_OT_locate_vertices,
 	AX_OT_duplicates_to_instances,
 	AX_OT_cloth_vert_mass,
-	AX_OT_set_auto_smooth,
 	AX_OT_obj_backup,
 
 	AX_PT_versioning,
@@ -143,7 +144,7 @@ classes = (
 	AX_PT_utility_3d,
 	
 	AX_PT_node_tools,
-	AX_PT_node_group,
+	# AX_PT_node_group,
 	AX_PT_optimization,
 	AX_PT_utility_node,
 

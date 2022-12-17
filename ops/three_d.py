@@ -191,42 +191,6 @@ class AX_OT_cloth_vert_mass(bpy.types.Operator):
 		layout = self.layout
 		layout.prop(self, "obj_mass")
 
-class AX_OT_set_auto_smooth(bpy.types.Operator):
-	
-	bl_idname = "ax.set_auto_smooth"
-	bl_label = "Set Auto Smooth"
-	bl_description = ""
-	bl_options = {'REGISTER', 'UNDO'}
-
-	# TODO poll (only in obj right now) mesh active
-
-	angle: bpy.props.FloatProperty(
-		name = "Angle",
-		min = 0.0, default = 0.523598775598, max = 3.141592653589,
-		subtype = 'ANGLE',
-		unit = 'ROTATION'
-	)
-
-	def execute(self, context):
-
-		mesh = context.object.data
-
-		for polygon in mesh.polygons:
-			polygon.use_smooth = True
-
-		mesh.use_auto_smooth = True
-		mesh.auto_smooth_angle = self.angle
-		
-		return {'FINISHED'}
-	
-	def draw(self, context):
-		
-		layout = self.layout
-		# layout.use_property_split = True
-		# layout.use_property_decorate = False
-		col = layout.column(align = True)
-		col.prop(self, "angle")
-
 class AX_OT_hybrid_subdiv(bpy.types.Operator):
 
 	bl_idname = "ax.hybrid_subdiv"

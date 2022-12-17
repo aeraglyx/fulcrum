@@ -45,22 +45,22 @@ class AX_PT_physics(bpy.types.Panel):
 
 # --- NODE EDITOR ---
 
-class AX_PT_node_group(bpy.types.Panel):
+# class AX_PT_node_group(bpy.types.Panel):
 	
-	bl_space_type = "NODE_EDITOR"
-	bl_region_type = "UI"
-	bl_category = "Group"
-	bl_label = "Fulcrum"
+# 	bl_space_type = "NODE_EDITOR"
+# 	bl_region_type = "UI"
+# 	bl_category = "Group"
+# 	bl_label = "Fulcrum"
 
-	def draw(self, context):
+# 	def draw(self, context):
 
-		layout = self.layout
+# 		layout = self.layout
 
-		col = layout.column(align=True)
-		col.label(text="GN Defaults:")
-		row = col.row(align=True)
-		row.operator("ax.set_gn_defaults", text="Set")
-		row.operator("ax.reset_gn_defaults", text="Reset")
+# 		col = layout.column(align=True)
+# 		col.label(text="GN Defaults:")
+# 		row = col.row(align=True)
+# 		row.operator("ax.set_gn_defaults", text="Set")
+# 		row.operator("ax.reset_gn_defaults", text="Reset")
 		
 class AX_PT_node_tools(bpy.types.Panel):
 	
@@ -83,41 +83,30 @@ class AX_PT_node_tools(bpy.types.Panel):
 			col.operator("ax.randomize_node_color", icon='COLOR')
 		col.operator("ax.center_nodes", icon='ANCHOR_CENTER')
 		col.operator("ax.nodes_to_grid", icon='SNAP_GRID')
-		col.operator("ax.hide_group_inputs", icon='NODE')  # HIDE_ON
+		
+		col = layout.column(align=True)
+		col.operator("ax.hide_group_inputs", icon='HIDE_ON')
+
+		if context.scene.fulcrum.dev:
+			col = layout.column(align=True)
+			col.label(text="GN Defaults:")
+			row = col.row(align=True)
+			row.operator("ax.set_gn_defaults", text="Set")
+			row.operator("ax.reset_gn_defaults", text="Reset")
 
 		col = layout.column(align=True)
-		col.label(text="GN Defaults:")
+		col.label(text="Find:", icon='VIEWZOOM')  # COLOR
 		row = col.row(align=True)
-		row.operator("ax.set_gn_defaults", text="Set")
-		row.operator("ax.reset_gn_defaults", text="Reset")
-
-		# col = layout.column(align=True)
-		# col.operator("ax.find_inputs", icon='SEQUENCE_COLOR_04')  # icon = 'NODE'
-		# col.operator("ax.node_flow", icon='SEQUENCE_COLOR_05')  # icon = 'NODETREE'  # STROKE  ANIM_DATA  TRACKING
-		# col.operator("ax.unused_nodes", icon='SEQUENCE_COLOR_01')  # icon = 'PLUGIN'
+		row.operator("ax.select_node_inputs", text="Inputs")  # icon = 'NODE'
+		row.operator("ax.select_node_dependencies", text="Deps")  # icon = 'NODETREE'  # STROKE  ANIM_DATA  TRACKING
+		row = col.row(align=True)
+		row.operator("ax.select_group_inputs", text="Group Inputs")
+		row.operator("ax.select_unused_nodes", text="Unused")
 
 		col = layout.column(align=True)
-		col.label(text="Find:")  # COLOR
+		# col.label(text="Node Color:", icon='COLOR')  # COLOR  RESTRICT_COLOR_OFF  FILE_REFRESH
 		row = col.row(align=True)
-		row.operator("ax.find_inputs", text="Inputs")  # icon = 'NODE'
-		row.operator("ax.node_flow", text="Deps")  # icon = 'NODETREE'  # STROKE  ANIM_DATA  TRACKING
-		row.operator("ax.unused_nodes", text="Unused")  # icon = 'PLUGIN'
-
-		col = layout.column(align=True)
-		col.label(text="Node Size:")  # COLOR
-		row = col.row(align=True)
-		half = row.operator("ax.set_node_size", text="Def.")
-		half.size = 0.5
-		default = row.operator("ax.set_node_size", text="Def.")
-		default.size = 1.0
-		two = row.operator("ax.set_node_size", text="2x")
-		two.size = 2.0
-		four = row.operator("ax.set_node_size", text="4x")
-		four.size = 4.0
-
-		col = layout.column(align=True)
-		col.label(text="Node color:")  # COLOR  RESTRICT_COLOR_OFF  FILE_REFRESH
-		row = col.row(align=True)
+		row.operator("ax.reset_node_color", text="", icon='FILE_REFRESH')
 		grey = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_09')
 		grey.color = [0.25, 0.25, 0.25]
 		red = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_01')
@@ -134,9 +123,8 @@ class AX_PT_node_tools(bpy.types.Panel):
 		purple.color = [0.28, 0.26, 0.40]
 		pink = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_07')
 		pink.color = [0.41, 0.30, 0.40]
-		brown = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_08')
-		brown.color = [0.29, 0.25, 0.22]
-		col.operator("ax.reset_node_color", text="Reset", icon='FILE_REFRESH')
+		# brown = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_08')
+		# brown.color = [0.29, 0.25, 0.22]
 
 		col = layout.column(align=True)
 		col.prop(context.scene.fulcrum, 'use_node_handler')
@@ -144,9 +132,16 @@ class AX_PT_node_tools(bpy.types.Panel):
 			col.prop(context.scene.fulcrum, 'node_vis_type', text='')
 
 		col = layout.column(align=True)
+		col.label(text="Node Size:", icon='FIXED_SIZE')
 		row = col.row(align=True)
-		row.operator("ax.version_encode", text="Encode", icon='SYSTEM')
-		row.operator("ax.version_decode", text="Decode", icon='ZOOM_ALL')
+		half = row.operator("ax.set_node_size", text="0.5x")
+		half.size = 0.5
+		default = row.operator("ax.set_node_size", text="Def.")
+		default.size = 1.0
+		two = row.operator("ax.set_node_size", text="2x")
+		two.size = 2.0
+		four = row.operator("ax.set_node_size", text="4x")
+		four.size = 4.0
 		
 		# col = layout.column(align=True)
 		# row = col.row(align=True)
@@ -156,7 +151,7 @@ class AX_PT_node_tools(bpy.types.Panel):
 		if context.area.ui_type == 'ShaderNodeTree':
 			if context.space_data.shader_type == 'OBJECT':
 				col = layout.column(align=True)
-				col.label(text="Texture name to:", icon='TEXTURE')
+				col.label(text="Texture Name to:", icon='TEXTURE')
 				row = col.row(align=True)
 				mat = row.operator("ax.tex_to_name", text="Mat")  # NODE_MATERIAL
 				mat.mat = True
@@ -167,6 +162,12 @@ class AX_PT_node_tools(bpy.types.Panel):
 				both = row.operator("ax.tex_to_name", text="Both")
 				both.mat = True
 				both.obj = True
+
+		if context.scene.fulcrum.dev:
+			col = layout.column(align=True)
+			row = col.row(align=True)
+			row.operator("ax.version_encode", text="Encode", icon='SYSTEM')
+			row.operator("ax.version_decode", text="Decode", icon='ZOOM_ALL')
 		
 		if context.area.ui_type == 'CompositorNodeTree':
 			layout.operator("ax.set_render_passes", icon='NODE_COMPOSITING')
@@ -177,6 +178,7 @@ class AX_PT_optimization(bpy.types.Panel):
 	bl_region_type = "UI"
 	bl_category = "Fulcrum"
 	bl_label = "Optimization"
+	bl_options = {'DEFAULT_CLOSED'}
 	
 	@classmethod
 	def poll(cls, context):
@@ -321,7 +323,6 @@ class AX_PT_3d_stuff(bpy.types.Panel):
 		col.operator("ax.duplicates_to_instances", icon='DUPLICATE')
 		
 		col = layout.column(align=True)
-		col.operator("ax.set_auto_smooth", icon='MATSHADERBALL')
 		col.operator("ax.hybrid_subdiv", icon='MOD_SUBSURF')
 		
 		if context.scene.fulcrum.dev:

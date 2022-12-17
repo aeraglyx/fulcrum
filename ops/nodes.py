@@ -6,110 +6,7 @@ import itertools
 from ..functions import *
 
 
-class AX_OT_find_inputs(bpy.types.Operator):
-	
-	bl_idname = "ax.find_inputs"
-	bl_label = "Find Inputs"
-	bl_description = "Show all nodes used by the selected nodes"
-	
-	@classmethod
-	def poll(cls, context):
-		return hasattr(context, "selected_nodes")
 
-	def execute(self, context):
-
-		nodes = bpy.context.space_data.edit_tree.nodes
-		selected = context.selected_nodes
-
-		clear_node_color(nodes)
-		
-		nodes_out = []
-		def get_input_node(input):
-			for link in input.links:
-				node = link.from_node
-				if node.type == 'REROUTE':
-					get_input_node(node.inputs[0])
-				elif not node.mute:
-					nodes_out.append(node)
-		
-		for node_orig in selected:
-			for input in (x for x in node_orig.inputs if x.enabled):
-				get_input_node(input)
-
-		color_nodes(nodes_out, [0.3, 0.6, 0.3])
-		
-		return {'FINISHED'}
-
-class AX_OT_node_flow(bpy.types.Operator):
-	
-	bl_idname = "ax.node_flow"
-	bl_label = "Dependencies"
-	bl_description = "Show all nodes used by the selected nodes"
-	
-	@classmethod
-	def poll(cls, context):
-		return hasattr(context, "selected_nodes")
-
-	def execute(self, context):
-
-		nodes = context.space_data.edit_tree.nodes
-		selected = context.selected_nodes
-		
-		clear_node_color(nodes)
-
-		nodes_out = []
-		def func(node_current):
-			for input in (x for x in node_current.inputs if x.enabled):
-				for link in input.links: # TODO links plural ? link limit
-					node = link.from_node
-					if node not in nodes_out:
-						nodes_out.append(node)
-						func(node)
-		
-		for node in selected:
-			func(node)
-		
-		color_nodes(nodes_out, [0.2, 0.45, 0.6])
-
-		return {'FINISHED'}
-
-class AX_OT_unused_nodes(bpy.types.Operator):
-	
-	bl_idname = "ax.unused_nodes"
-	bl_label = "Unused Nodes"
-	bl_description = "Show all nodes used by the selected nodes"
-	
-	# @classmethod
-	# def poll(cls, context):
-	#     return bool(context.selected_nodes)
-
-	# TODO make it work for inside of node groups
-
-	def execute(self, context):
-
-		tree = context.space_data.edit_tree  # context.active_node.id_data
-		nodes = tree.nodes
-		
-		clear_node_color(nodes)
-
-		used = set()
-		def func(node_current):
-			used.add(node_current)
-			used.add(node_current.parent)
-			for input in (x for x in node_current.inputs if x.enabled):  # TODO muted nodes and muted links
-				for link in input.links:
-					func(link.from_node)
-		
-		output_nodes = get_output_nodes(context)
-		for output_node in output_nodes:
-			func(output_node)
-		
-		# TODO don't delete viewer (geo, shader, ...) - check if connected to used node, otherwise yeet
-		unused = [node for node in nodes if node not in used]
-
-		color_nodes(unused, [0.65, 0.29, 0.32])
-
-		return {'FINISHED'}
 
 class AX_OT_align_nodes(bpy.types.Operator):
 
@@ -469,6 +366,225 @@ class AX_OT_align_nodes_v3(bpy.types.Operator):
 		layout.prop(self, "repulsion")
 		layout.prop(self, "angle")
 
+class AX_OT_center_nodes(bpy.types.Operator):
+	
+	bl_idname = "ax.center_nodes"
+	bl_label = "Center Nodes"
+	bl_description = ""
+	
+	@classmethod
+	def poll(cls, context):
+		return hasattr(context, "selected_nodes")
+
+	def execute(self, context):
+
+		nodes = context.space_data.edit_tree.nodes
+		# FIXME takes nodes inside groups as well (does it?)
+
+		node_center = mathutils.Vector((0, 0))
+		n = 0
+		for node in nodes:
+			if node.type == 'FRAME' or node.type == 'REROUTE':
+				continue
+			node_center += node.location + node.dimensions * mathutils.Vector((0.5, -0.5))
+			n += 1
+		
+		node_center /= n
+
+		for node in nodes:
+			if node.type == 'FRAME':  # TODO move frames, not their children
+				continue
+			node.location -= node_center
+		
+		bpy.ops.node.view_all()
+		bpy.ops.node.view_all()
+
+		return {'FINISHED'}
+
+class AX_OT_nodes_to_grid(bpy.types.Operator):
+	
+	bl_idname = "ax.nodes_to_grid"
+	bl_label = "Nodes to Grid"
+	bl_description = ""
+	
+	@classmethod
+	def poll(cls, context):
+		return hasattr(context, "selected_nodes")
+
+	def execute(self, context):
+		selected = context.selected_nodes
+		for node in selected:
+			node.location.x = int(node.location.x / 10) * 10
+			node.location.y = int(node.location.y / 10) * 10
+		return {'FINISHED'}
+
+class AX_OT_hide_group_inputs(bpy.types.Operator):
+	
+	bl_idname = "ax.hide_group_inputs"
+	bl_label = "Hide Group Inputs"
+	bl_description = ""
+	
+	# @classmethod
+	# def poll(cls, context):
+	# 	return hasattr(context, "selected_nodes")
+
+	def execute(self, context):
+		nodes = context.space_data.edit_tree.nodes
+		for node in nodes:
+			if node.type == 'GROUP_INPUT':
+				for socket in node.outputs:
+					if socket.enabled and not socket.is_linked:
+						socket.hide = True
+		return {'FINISHED'}
+
+
+
+
+class AX_OT_select_node_inputs(bpy.types.Operator):
+	
+	bl_idname = "ax.select_node_inputs"
+	bl_label = "Select Node Inputs"
+	bl_description = "Show all nodes used by the selected nodes"
+	
+	@classmethod
+	def poll(cls, context):
+		return hasattr(context, "selected_nodes")
+
+	def execute(self, context):
+
+		nodes = bpy.context.space_data.edit_tree.nodes
+		selected = context.selected_nodes
+
+		clear_node_color(nodes)
+		
+		nodes_out = []
+		def get_input_node(input):
+			for link in input.links:
+				node = link.from_node
+				if node.type == 'REROUTE':
+					get_input_node(node.inputs[0])
+				elif not node.mute:
+					nodes_out.append(node)
+		
+		for node_orig in selected:
+			for input in (x for x in node_orig.inputs if x.enabled):
+				get_input_node(input)
+
+		for node in nodes:
+			if node in nodes_out:
+				node.select = True
+			else:
+				node.select = False
+		
+		bpy.ops.node.view_selected()
+		
+		return {'FINISHED'}
+
+class AX_OT_select_node_dependencies(bpy.types.Operator):
+	
+	bl_idname = "ax.select_node_dependencies"
+	bl_label = "Select Node Dependencies"
+	bl_description = "Show all nodes used by the selected nodes"
+	
+	@classmethod
+	def poll(cls, context):
+		return hasattr(context, "selected_nodes")
+
+	def execute(self, context):
+
+		nodes = context.space_data.edit_tree.nodes
+		selected = context.selected_nodes
+		
+		clear_node_color(nodes)
+
+		nodes_out = []
+		def func(node_current):
+			for input in (x for x in node_current.inputs if x.enabled):
+				for link in input.links: # TODO links plural ? link limit
+					node = link.from_node
+					if node not in nodes_out:
+						nodes_out.append(node)
+						func(node)
+		
+		for node in selected:
+			func(node)
+		
+		for node in nodes:
+			if node in nodes_out:
+				node.select = True
+			else:
+				node.select = False
+		
+		bpy.ops.node.view_selected()
+
+		return {'FINISHED'}
+
+class AX_OT_select_group_inputs(bpy.types.Operator):
+	
+	bl_idname = "ax.select_group_inputs"
+	bl_label = "Select Group Inputs"
+	bl_description = ""
+
+	def execute(self, context):
+		
+		nodes = context.space_data.edit_tree.nodes
+		for node in nodes:
+			if node.type == 'GROUP_INPUT':
+				node.select = True
+			else:
+				node.select = False
+		
+		bpy.ops.node.view_selected()
+
+		return {'FINISHED'}
+
+class AX_OT_select_unused_nodes(bpy.types.Operator):
+	
+	bl_idname = "ax.select_unused_nodes"
+	bl_label = "Select Unused Nodes"
+	bl_description = "Show all nodes used by the selected nodes"
+	
+	# @classmethod
+	# def poll(cls, context):
+	#     return bool(context.selected_nodes)
+
+	# TODO make it work for inside of node groups
+
+	def execute(self, context):
+
+		tree = context.space_data.edit_tree  # context.active_node.id_data
+		nodes = tree.nodes
+		
+		clear_node_color(nodes)
+
+		used = set()
+		def func(node_current):
+			used.add(node_current)
+			used.add(node_current.parent)
+			for input in (x for x in node_current.inputs if x.enabled):  # TODO muted nodes and muted links
+				for link in input.links:
+					func(link.from_node)
+		
+		output_nodes = get_output_nodes(context)
+		for output_node in output_nodes:
+			func(output_node)
+		
+		# TODO don't delete viewer (geo, shader, ...) - check if connected to used node, otherwise yeet
+		# unused = [node for node in nodes if node not in used]
+
+		for node in nodes:
+			if node in used:
+				node.select = False
+			else:
+				node.select = True
+
+		bpy.ops.node.view_selected()
+
+		return {'FINISHED'}
+
+
+
+
 class AX_OT_randomize_node_color(bpy.types.Operator):
 
 	bl_idname = "ax.randomize_node_color"
@@ -608,57 +724,6 @@ class AX_OT_color_node_flow(bpy.types.Operator):
 		layout.prop(self, "repulsion")
 		layout.prop(self, "angle")
 
-class AX_OT_nodes_to_grid(bpy.types.Operator):
-	
-	bl_idname = "ax.nodes_to_grid"
-	bl_label = "Nodes to Grid"
-	bl_description = ""
-	
-	@classmethod
-	def poll(cls, context):
-		return hasattr(context, "selected_nodes")
-
-	def execute(self, context):
-		selected = context.selected_nodes
-		for node in selected:
-			node.location.x = int(node.location.x / 10) * 10
-			node.location.y = int(node.location.y / 10) * 10
-		return {'FINISHED'}
-
-class AX_OT_center_nodes(bpy.types.Operator):
-	
-	bl_idname = "ax.center_nodes"
-	bl_label = "Center Nodes"
-	bl_description = ""
-	
-	@classmethod
-	def poll(cls, context):
-		return hasattr(context, "selected_nodes")
-
-	def execute(self, context):
-
-		nodes = context.space_data.edit_tree.nodes
-		# FIXME takes nodes inside groups as well (does it?)
-
-		node_center = mathutils.Vector((0, 0))
-		n = 0
-		for node in nodes:
-			if node.type == 'FRAME' or node.type == 'REROUTE':
-				continue
-			node_center += node.location + node.dimensions * mathutils.Vector((0.5, -0.5))
-			n += 1
-		
-		node_center /= n
-
-		for node in nodes:
-			if node.type == 'FRAME':  # TODO move frames, not their children
-				continue
-			node.location -= node_center
-		
-		bpy.ops.node.view_all()
-
-		return {'FINISHED'}
-
 class AX_OT_add_todo_note(bpy.types.Operator):
 	
 	bl_idname = "ax.add_todo_note"
@@ -700,26 +765,6 @@ class AX_OT_add_todo_note(bpy.types.Operator):
 
 		col = layout.column(align=True)
 		col.prop(self, "note")
-
-class AX_OT_hide_group_inputs(bpy.types.Operator):
-	
-	bl_idname = "ax.hide_group_inputs"
-	bl_label = "Hide Group Inputs"
-	bl_description = ""
-	
-	# @classmethod
-	# def poll(cls, context):
-	# 	return hasattr(context, "selected_nodes")
-
-	def execute(self, context):
-		nodes = context.space_data.edit_tree.nodes
-		# print(context.space_data.edit_tree.name)
-		for node in nodes:
-			if node.type == 'GROUP_INPUT':
-				for socket in node.outputs:
-					if socket.enabled and not socket.is_linked:
-						socket.hide = True
-		return {'FINISHED'}
 
 class AX_OT_tex_to_name(bpy.types.Operator):
 	
@@ -763,26 +808,8 @@ class AX_OT_tex_to_name(bpy.types.Operator):
 		layout.prop(self, "mat")
 		layout.prop(self, "obj")
 
-class AX_OT_reset_node_color(bpy.types.Operator):
-	
-	""" Reset custom node color """
-	
-	bl_idname = "ax.reset_node_color"
-	bl_label = "Reset Node Color"
-	bl_description = "Reset custom node color"
-	
-	@classmethod
-	def poll(cls, context):
-		return context.area.type == 'NODE_EDITOR'
 
-	def execute(self, context):
-		
-		nodes = context.space_data.edit_tree.nodes  # context.active_node.id_data.nodes
-		for node in nodes:
-			if node.bl_idname != 'NodeFrame':
-				node.use_custom_color = False
-		
-		return {'FINISHED'}
+
 
 class AX_OT_set_node_color(bpy.types.Operator):
 	
@@ -809,6 +836,30 @@ class AX_OT_set_node_color(bpy.types.Operator):
 			node.color = self.color
 
 		return {'FINISHED'}
+
+class AX_OT_reset_node_color(bpy.types.Operator):
+	
+	""" Reset custom node color """
+	
+	bl_idname = "ax.reset_node_color"
+	bl_label = "Reset Node Color"
+	bl_description = "Reset custom node color"
+	
+	@classmethod
+	def poll(cls, context):
+		return context.area.type == 'NODE_EDITOR'
+
+	def execute(self, context):
+		
+		# nodes = context.space_data.edit_tree.nodes  # context.active_node.id_data.nodes
+		for node in context.selected_nodes:
+			# if node.bl_idname != 'NodeFrame':
+			node.use_custom_color = False
+		
+		return {'FINISHED'}
+
+
+
 
 class AX_OT_set_gn_defaults(bpy.types.Operator):
 	

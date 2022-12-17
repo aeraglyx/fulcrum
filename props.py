@@ -4,7 +4,7 @@ class my_properties(bpy.types.PropertyGroup):
 
 
 	dev: bpy.props.BoolProperty(
-		name='Developer Extras',
+		name='More Stuff',
 		default=True,
 	)
 	use_node_handler: bpy.props.BoolProperty(
