@@ -165,7 +165,6 @@ class AX_OT_isometric_setup(bpy.types.Operator):
 		col.prop(self, "distance")
 
 from bpy_extras.io_utils import ImportHelper
-from bpy.types import Operator
 
 class AX_OT_projection_setup(bpy.types.Operator, ImportHelper):
 
@@ -288,33 +287,43 @@ class AX_OT_projection_setup(bpy.types.Operator, ImportHelper):
 class AX_OT_frame_range_from_cam(bpy.types.Operator):
 	
 	bl_idname = "ax.frame_range_from_cam"
-	bl_label = "Frame Range from Camera"
-	bl_description = "Automatically set scene frame range from scene's camera. Expected format blabla_startframe_endframe"
+	bl_label = "Frame Range from Cameras"
+	bl_description = "Set scene frame range from selected cameras. Expected format blabla_startframe_endframe"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
 	def poll(cls, context):
 		# TODO if camera is parented inside active object ?
-		return context.object.type == 'CAMERA' or context.scene.camera  # BUG
+		return context.selected_objects or context.scene.camera
 
 	def execute(self, context):
+		
+		def get_cams():
+			# cam_obj = context.scene.camera
+			cams = [obj for obj in context.selected_objects if obj.type == 'CAMERA']
+			return cams
 
-		def get_min_max_frame(cam):
+		def get_cam_min_max(cam):
 			min_frame = int(cam.name.split("_")[-2])
 			max_frame = int(cam.name.split("_")[-1])
 			return min_frame, max_frame
 		
-		if context.object.type == 'CAMERA':
-			cam_obj = context.object
-			context.scene.camera = cam_obj
-		else:
-			cam_obj = context.scene.camera
-		
-		try:
-			min_frame, max_frame = get_min_max_frame(cam_obj)
-		except:
-			self.report({'WARNING'}, f"Expected format: blabla_startframe_endframe")
-			return {'CANCELLED'}
+		cams = get_cams()
+
+		if len(cams) == 1:
+			context.scene.camera = cams[0]
+
+		min_frame = max_frame = None
+		for cam in cams:
+			try:
+				min_cam, max_cam = get_cam_min_max(cam)
+			except:
+				self.report({'WARNING'}, f"Expected format: blabla_startframe_endframe")
+				return {'CANCELLED'}
+			if min_frame is None or min_cam < min_frame:
+				min_frame = min_cam
+			if max_frame is None or max_cam > max_frame:
+				max_frame = max_cam
 
 		if max_frame < min_frame:
 			# ERROR WARNING ERROR_INVALID_INPUT
@@ -346,11 +355,11 @@ class AX_OT_set_resolution(bpy.types.Operator):
 	
 	bl_idname = "ax.set_resolution"
 	bl_label = "Set Resolution"
-	bl_description = ""
+	bl_description = "Changes resolution proportionally"
 	bl_options = {'REGISTER', 'UNDO'}
 	
 	width: bpy.props.IntProperty(
-		name = "Aspect Ratio",
+		name = "Width",
 		default = 1920,
 	)
 
@@ -368,7 +377,7 @@ class AX_OT_set_aspect_ratio(bpy.types.Operator):
 	
 	bl_idname = "ax.set_aspect_ratio"
 	bl_label = "Set Aspect Ratio"
-	bl_description = ""
+	bl_description = "Sets aspect ratio while keeping Resolution X the same"
 	bl_options = {'REGISTER', 'UNDO'}
 	
 	aspect_ratio: bpy.props.FloatProperty(
@@ -388,7 +397,7 @@ class AX_OT_passepartout(bpy.types.Operator):
 	
 	bl_idname = "ax.passepartout"
 	bl_label = "Set Passepartout"
-	bl_description = ""
+	bl_description = "Sets passepartout opacity"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	@classmethod
@@ -406,7 +415,6 @@ class AX_OT_passepartout(bpy.types.Operator):
 
 		cams = [cam for cam in bpy.data.objects if cam.type == 'CAMERA']  # and cam.name.startswith("cam_")
 		
-		# TODO switch if for all cams or active?
 		for cam in cams:
 			cam.data.passepartout_alpha = self.alpha
 		

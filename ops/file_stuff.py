@@ -105,7 +105,7 @@ class AX_OT_go_to_latest_version(bpy.types.Operator):
 class AX_OT_open_blend_dir(bpy.types.Operator):
 	
 	bl_idname = "ax.open_blend_dir"
-	bl_label = "Find .blend file"
+	bl_label = "Find .blend File"
 	bl_description = "Opens file explorer with the current Blender file selected"
 
 	@classmethod
@@ -120,7 +120,7 @@ class AX_OT_open_blend_dir(bpy.types.Operator):
 class AX_OT_open_script_dir(bpy.types.Operator):
 	
 	bl_idname = "ax.open_script_dir"
-	bl_label = "Open Script Directory"
+	bl_label = "Find Script Directory"
 	bl_description = "Opens folder with addons and themes"
 
 	def execute(self, context):

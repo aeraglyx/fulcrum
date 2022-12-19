@@ -4,7 +4,7 @@ bl_info = {
 	"description": "All kinds of tools",
 	"blender": (3, 4, 0),
 	"version": (0, 1, 14),
-	"location": "Everywhere",
+	"location": "Everywhere. Mostly in node editor and 3D viewport.",
 	"doc_url": "https://github.com/aeraglyx/fulcrum",
 	"category": 'User Interface',
 	"support": 'COMMUNITY'
@@ -60,7 +60,7 @@ from .ops.camera import (
 	AX_OT_passepartout)
 from .ops.paint import AX_OT_set_paint_brush, AX_OT_set_weight_brush
 from .ops.compare import AX_OT_compare, AX_OT_benchmark
-from .props import my_properties
+from .props import fulcrum_props
 from .ops.copy_pasta import AX_OT_copy_nodes, AX_OT_paste_nodes
 from .ui import (
 	AX_PT_optimization,
@@ -70,16 +70,17 @@ from .ui import (
 	AX_PT_render,
 	AX_PT_data,
 	AX_PT_physics,
-	AX_PT_versioning,
+	# AX_PT_versioning,
 	AX_PT_ease_of_access,
 	AX_PT_paint,
 	AX_PT_utility_3d,
 	AX_PT_camera,
 	AX_PT_3d_stuff,
-	AX_PT_3d_axis_selection)
+	AX_PT_3d_axis_selection,
+	draw_topbar)
 
 classes = (
-	my_properties,
+	fulcrum_props,
 	
 	AX_OT_benchmark,
 	AX_OT_anim_time_limit,
@@ -135,11 +136,11 @@ classes = (
 	AX_OT_cloth_vert_mass,
 	AX_OT_obj_backup,
 
-	AX_PT_versioning,
+	# AX_PT_versioning,
 	AX_PT_ease_of_access,
 	AX_PT_3d_stuff,
-	AX_PT_3d_axis_selection,
 	AX_PT_camera,
+	AX_PT_3d_axis_selection,
 	AX_PT_paint,
 	AX_PT_utility_3d,
 	
@@ -217,6 +218,8 @@ def node_color_levels():
 #		# bpy.context.preferences.themes[0].node_editor.geometry_node
 # 		node.use_custom_color = True
 # 		node.color = color
+
+
 	
 
 @persistent
@@ -238,7 +241,8 @@ def ax_depsgraph_handler(scene):
 def register():
 	for cls in classes:
 		bpy.utils.register_class(cls)
-	bpy.types.Scene.fulcrum = bpy.props.PointerProperty(type=my_properties)
+	bpy.types.Scene.fulcrum = bpy.props.PointerProperty(type=fulcrum_props)
+	bpy.types.TOPBAR_HT_upper_bar.append(draw_topbar)
 	# bpy.types.Scene.use_node_handler = bpy.props.BoolProperty(
 	# 	name='Use Node Handler',
 	# 	default=False,
@@ -253,6 +257,7 @@ def unregister():
 		if handler.__name__ == 'ax_depsgraph_handler':
 			bpy.app.handlers.depsgraph_update_post.remove(handler)
 	# del bpy.types.Scene.use_node_handler
+	bpy.types.TOPBAR_HT_upper_bar.remove(draw_topbar)
 	for cls in classes:
 		bpy.utils.unregister_class(cls)
 	del bpy.types.Scene.fulcrum

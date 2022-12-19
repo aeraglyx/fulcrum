@@ -134,8 +134,6 @@ class AX_PT_node_tools(bpy.types.Panel):
 		col = layout.column(align=True)
 		col.label(text="Node Size:", icon='FIXED_SIZE')
 		row = col.row(align=True)
-		half = row.operator("ax.set_node_size", text="0.5x")
-		half.size = 0.5
 		default = row.operator("ax.set_node_size", text="Def.")
 		default.size = 1.0
 		two = row.operator("ax.set_node_size", text="2x")
@@ -188,14 +186,6 @@ class AX_PT_optimization(bpy.types.Panel):
 	def draw(self, context):
 		layout = self.layout
 		props = context.scene.fulcrum
-		# layout.prop(props, "engine")
-		# col = layout.column(align = True)
-		# col.prop(props, "frames")
-		# col.prop(props, "resolution")
-		# col.prop(props, "samples")
-		# layout.prop(props, "use_base")
-		# row_thicc = layout.row()
-		# row_thicc.scale_y = 1.4
 		row = layout.row()
 		row.operator("ax.compare", icon='NONE')  # SORTTIME TIME TEMP
 		col = layout.column(align=True)
@@ -211,41 +201,44 @@ class AX_PT_utility_node(bpy.types.Panel):
 
 	def draw(self, context):
 		layout = self.layout
+
 		col = layout.column(align=True)
-		col.operator("wm.console_toggle", icon='CONSOLE')
-		col.operator("ax.open_script_dir", icon='SCRIPT')
+		col.operator("ax.open_blend_dir", icon='FILE_BACKUP')
+		col.operator("ax.open_script_dir", icon='SCRIPT')  # FOLDER_REDIRECT  SCRIPT
+		
+		layout.operator("wm.console_toggle", icon='CONSOLE')
 
 
 
 # --- VIEW 3D ---
 
 from .ops.file_stuff import is_current_file_version
-class AX_PT_versioning(bpy.types.Panel):
-	
-	bl_space_type = "VIEW_3D"
-	bl_region_type = "UI"
-	bl_category = "Fulcrum"
-	bl_label = "FULCRUM"
 
-	def draw (self, context):
+def draw_topbar(self, context):
+
+	# red - 	SEQUENCE_COLOR_01
+	# orange - 	SEQUENCE_COLOR_02
+	# yellow - 	SEQUENCE_COLOR_03
+	# green - 	SEQUENCE_COLOR_04
+	# blue - 	SEQUENCE_COLOR_05
+	# purple - 	SEQUENCE_COLOR_06
+	# pink - 	SEQUENCE_COLOR_07
+
+	if context.region.alignment != 'RIGHT':
 		layout = self.layout
-		layout.prop(context.scene.fulcrum, 'dev')
 		if bpy.data.is_saved:
 			if is_current_file_version():
 				if bpy.data.is_dirty:
-					layout.label(text="Latest but not saved.", icon='SEQUENCE_COLOR_03')
+					layout.label(text="Latest but not saved.", icon='SEQUENCE_COLOR_07')
 				else:
-					layout.label(text="DON'T PANIC!", icon='SEQUENCE_COLOR_04')
+					layout.label(text="DON'T PANIC!", icon='SEQUENCE_COLOR_05')
 				# layout.operator("ax.go_to_latest_version", icon='SEQUENCE_COLOR_04')
 			else:
 				layout.label(text="Not the latest version!", icon='SEQUENCE_COLOR_01')
-				layout.operator("ax.go_to_latest_version", icon='LOOP_FORWARDS')
-			col = layout.column(align=True)
-			col.operator("ax.save_as_new_version", icon='DUPLICATE')
-			col.operator("ax.open_blend_dir", icon='FILE_BACKUP')
+				layout.operator("ax.go_to_latest_version", text="Go to Latest", icon='LOOP_FORWARDS')
+			layout.operator("ax.save_as_new_version", text="Save as New", icon='DUPLICATE')
 		else:
 			layout.label(text="File not saved!", icon='SEQUENCE_COLOR_01')
-		
 
 class AX_PT_ease_of_access(bpy.types.Panel):
 	
@@ -257,9 +250,9 @@ class AX_PT_ease_of_access(bpy.types.Panel):
 	def draw(self, context):
 		layout = self.layout
 		col = layout.column(align=True)
+		col.prop(context.scene.fulcrum, 'dev')
 		col.prop(context.scene.render, "use_motion_blur")
 		col.prop(context.scene.render, "film_transparent")
-		col.operator("ax.obj_backup", icon='DUPLICATE')
 
 		# layout.prop(context.scene.view_settings, "view_transform", text="")
 		# layout.prop(context.scene.tool_settings, "use_keyframe_insert_auto")
@@ -313,16 +306,15 @@ class AX_PT_3d_stuff(bpy.types.Panel):
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"
 	bl_category = "Fulcrum"
-	bl_label = "3D Stuff"
+	bl_label = "3D"
 
 	def draw(self, context):
 		
 		layout = self.layout
 		
 		col = layout.column(align=True)
-		col.operator("ax.duplicates_to_instances", icon='DUPLICATE')
-		
-		col = layout.column(align=True)
+		col.operator("ax.obj_backup", icon='DUPLICATE')
+		col.operator("ax.duplicates_to_instances", icon='MOD_INSTANCE')
 		col.operator("ax.hybrid_subdiv", icon='MOD_SUBSURF')
 		
 		if context.scene.fulcrum.dev:
@@ -330,43 +322,12 @@ class AX_PT_3d_stuff(bpy.types.Panel):
 			col.operator("ax.locate_vertex", icon='VERTEXSEL')
 			col.operator("ax.locate_vertices", icon='SNAP_VERTEX')
 
-class AX_PT_3d_axis_selection(bpy.types.Panel):
-	
-	bl_space_type = "VIEW_3D"
-	bl_region_type = "UI"
-	bl_category = "Fulcrum"
-	bl_label = "Axis Selection"
-
-	def draw(self, context):
-		
-		layout = self.layout
-
-		keymap_items = bpy.data.window_managers["WinMan"].keyconfigs["Blender user"].keymaps['3D View'].keymap_items
-
-		for item in keymap_items:
-			if item.idname == 'transform.translate' and item.type == 'G':
-				transform = item
-				break
-		col = layout.column(align=True)
-		col.label(text="Translation:")
-		row = col.row(align=True)
-		row.prop(transform.properties, "constraint_axis", text="", toggle=True, slider=True)
-
-		for item in keymap_items:
-			if item.idname == 'transform.rotate' and item.type == 'R':
-				transform = item
-				break
-		col = layout.column(align=True)
-		col.label(text="Rotation:")
-		row = col.row(align=True)
-		row.prop(transform.properties, "constraint_axis", text="", toggle=True, slider=True)
-
 class AX_PT_camera(bpy.types.Panel):
 	
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"
 	bl_category = "Fulcrum"
-	bl_label = "Camera Stuff"
+	bl_label = "Camera"
 
 	def draw(self, context):
 
@@ -376,7 +337,6 @@ class AX_PT_camera(bpy.types.Panel):
 		
 		col = layout.column(align=True)
 		col.operator("ax.isometric_setup", icon='FILE_3D')  # VIEW_ORTHO  FILE_3D
-		# maybe 2 buttons, one with "alignment" 0.0, one with 1.0
 		col.operator("ax.dof_setup", icon='CAMERA_DATA')
 		col.operator("ax.projection_setup", icon='MOD_UVPROJECT')  # STICKY_UVS_LOC  UV  MOD_UVPROJECT  IMAGE_PLANE
 
@@ -391,6 +351,38 @@ class AX_PT_camera(bpy.types.Panel):
 		passepartout_full = row.operator("ax.passepartout", text="Full")
 		passepartout_full.alpha = 1.0
 
+class AX_PT_3d_axis_selection(bpy.types.Panel):
+	
+	bl_space_type = "VIEW_3D"
+	bl_region_type = "UI"
+	bl_category = "Fulcrum"
+	bl_label = "Axis Selection"
+	bl_options = {'DEFAULT_CLOSED'}
+
+	def draw(self, context):
+		
+		layout = self.layout
+
+		keymap_items = bpy.data.window_managers["WinMan"].keyconfigs["Blender user"].keymaps['3D View'].keymap_items
+
+		for item in keymap_items:
+			if item.idname == 'transform.translate' and item.type == 'G':
+				transform = item
+				break
+		col = layout.column(align=True)
+		col.label(text="Translation:")  # CON_LOCLIKE
+		row = col.row(align=True)
+		row.prop(transform.properties, "constraint_axis", text="", toggle=True, slider=True)
+
+		for item in keymap_items:
+			if item.idname == 'transform.rotate' and item.type == 'R':
+				transform = item
+				break
+		col = layout.column(align=True)
+		col.label(text="Rotation:")  # CON_ROTLIKE
+		row = col.row(align=True)
+		row.prop(transform.properties, "constraint_axis", text="", toggle=True, slider=True)
+
 class AX_PT_utility_3d(bpy.types.Panel):
 	
 	bl_space_type = "VIEW_3D"
@@ -400,6 +392,9 @@ class AX_PT_utility_3d(bpy.types.Panel):
 
 	def draw (self, context):
 		layout = self.layout
+		
 		col = layout.column(align=True)
-		col.operator("wm.console_toggle", icon='CONSOLE')
+		col.operator("ax.open_blend_dir", icon='FILE_BACKUP')
 		col.operator("ax.open_script_dir", icon='SCRIPT')  # FOLDER_REDIRECT  SCRIPT
+		
+		layout.operator("wm.console_toggle", icon='CONSOLE')

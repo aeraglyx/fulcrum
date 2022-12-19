@@ -1,6 +1,6 @@
 import bpy
 
-class my_properties(bpy.types.PropertyGroup):
+class fulcrum_props(bpy.types.PropertyGroup):
 
 
 	dev: bpy.props.BoolProperty(
