@@ -430,3 +430,35 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 		col.prop(self, "crypto_asset")
 		col.prop(self, "crypto_material")
 		col.prop(self, "crypto_object")
+
+
+
+from bpy_extras.io_utils import ImportHelper
+
+class AX_OT_set_output_directory(bpy.types.Operator, ImportHelper):
+
+	bl_idname = "ax.set_output_directory"
+	bl_label = "Set Output Directory"
+	bl_description = "..."
+	bl_options = {'REGISTER', 'UNDO'}
+
+	# https://docs.blender.org/api/current/bpy.types.FileSelectParams.html
+
+	# filter_glob: bpy.props.StringProperty(
+	# 	default = "*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.bmp",
+	# 	options = {'HIDDEN'}
+	# )
+
+	def execute(self, context):
+
+		chosen_dir = os.path.split(self.filepath)[0]
+
+		output_filename = os.path.split(context.scene.render.filepath)[1]
+		context.scene.render.filepath = os.path.join(chosen_dir, output_filename)
+
+		nodes = [node for node in context.scene.node_tree.nodes if node.type == 'OUTPUT_FILE']
+		for node in nodes:
+			node_filename = os.path.split(node.base_path)[1]
+			node.base_path = os.path.join(chosen_dir, node_filename)
+
+		return {'FINISHED'}
