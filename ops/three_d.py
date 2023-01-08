@@ -313,16 +313,16 @@ class AX_OT_duplicates_to_instances(bpy.types.Operator):
 
 		def same_mesh(mesh_1, mesh_2):  # TODO make more robust
 			
-			n = 64
 			size = len(mesh_1.vertices)
 			if size != len(mesh_2.vertices):
 				return False
 			
 			num_list = range(0, size)
+			n = 64
 			if size > n:
 				num_list = sorted(random.sample(num_list, n))
-			for n in num_list:
-				if mesh_1.vertices[n].co != mesh_2.vertices[n].co:
+			for i in num_list:
+				if mesh_1.vertices[i].co != mesh_2.vertices[i].co:
 					return False
 			
 			if set(mesh_1.materials) != set(mesh_2.materials):
@@ -356,7 +356,7 @@ class AX_OT_duplicates_to_instances(bpy.types.Operator):
 		purge_meshes()
 		n2 = len(bpy.data.meshes)
 		
-		self.report({'INFO'}, f"{n1} meshes reduced to {n2} unique mesh{'' if n2 == 1 else 'es'}.")
+		self.report({'INFO'}, f"{n1 - n2} mesh{'' if n2 == 1 else 'es'} deleted.")
 
 		return {'FINISHED'}
 
