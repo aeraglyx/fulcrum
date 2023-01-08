@@ -171,7 +171,7 @@ def get_output_nodes(context):
 		if tree.type == 'TEXTURE':
 			output_nodes = (node for node in nodes if node.bl_idname == 'TextureNodeTree')  # doesn't have active outputs  # 'TextureNodeTree'
 		if tree.type == 'COMPOSITING':  # 'COMPOSITE'
-			output_nodes = (node for node in nodes if node.bl_idname == 'CompositorNodeTree')  # well yes but actually no ^  # 'CompositorNodeTree'
+			output_nodes = (node for node in nodes if node.bl_idname in ['CompositorNodeTree', 'CompositorNodeOutputFile'])  # well yes but actually no ^  # 'CompositorNodeTree'
 	else:
 		output_nodes = (node for node in nodes if node.bl_idname == 'NodeGroupOutput')
 	return output_nodes

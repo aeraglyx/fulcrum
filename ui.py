@@ -76,13 +76,15 @@ class AX_PT_node_tools(bpy.types.Panel):
 		layout.prop(context.scene.fulcrum, 'dev')
 
 		col = layout.column(align=True)
-		col.operator("ax.align_nodes", icon='ALIGN_CENTER')
+		col.label(text="Node Alignment:")
+		row = col.row(align=True)
+		row.operator("ax.align_nodes", text="Auto")
+		row.operator("ax.center_nodes", text="Center")
+		row.operator("ax.nodes_to_grid", text="Grid")
 		if context.scene.fulcrum.dev:
 			col.operator("ax.align_nodes_v2", icon='ALIGN_CENTER')
 			col.operator("ax.color_node_flow", icon='COLOR')
 			col.operator("ax.randomize_node_color", icon='COLOR')
-		col.operator("ax.center_nodes", icon='ANCHOR_CENTER')
-		col.operator("ax.nodes_to_grid", icon='SNAP_GRID')
 		
 		col = layout.column(align=True)
 		col.operator("ax.hide_group_inputs", icon='HIDE_ON')
@@ -93,15 +95,6 @@ class AX_PT_node_tools(bpy.types.Panel):
 			row = col.row(align=True)
 			row.operator("ax.set_gn_defaults", text="Set")
 			row.operator("ax.reset_gn_defaults", text="Reset")
-
-		col = layout.column(align=True)
-		col.label(text="Find:", icon='VIEWZOOM')  # COLOR
-		row = col.row(align=True)
-		row.operator("ax.select_node_inputs", text="Inputs")  # icon = 'NODE'
-		row.operator("ax.select_node_dependencies", text="Deps")  # icon = 'NODETREE'  # STROKE  ANIM_DATA  TRACKING
-		row = col.row(align=True)
-		row.operator("ax.select_group_inputs", text="Group Inputs")
-		row.operator("ax.select_unused_nodes", text="Unused")
 
 		col = layout.column(align=True)
 		# col.label(text="Node Color:", icon='COLOR')  # COLOR  RESTRICT_COLOR_OFF  FILE_REFRESH
@@ -125,6 +118,15 @@ class AX_PT_node_tools(bpy.types.Panel):
 		pink.color = [0.41, 0.30, 0.40]
 		# brown = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_08')
 		# brown.color = [0.29, 0.25, 0.22]
+
+		col = layout.column(align=True)
+		col.label(text="Find:", icon='VIEWZOOM')  # COLOR
+		row = col.row(align=True)
+		row.operator("ax.select_node_inputs", text="Inputs")  # icon = 'NODE'
+		row.operator("ax.select_node_dependencies", text="Deps")  # icon = 'NODETREE'  # STROKE  ANIM_DATA  TRACKING
+		row = col.row(align=True)
+		row.operator("ax.select_group_inputs", text="Group Inputs")
+		row.operator("ax.select_unused_nodes", text="Unused")
 
 		if context.scene.fulcrum.dev:
 			col = layout.column(align=True)
@@ -268,7 +270,6 @@ class AX_PT_ease_of_access(bpy.types.Panel):
 		col.prop(context.scene.fulcrum, 'dev')
 		col.prop(context.scene.render, "use_motion_blur")
 		col.prop(context.scene.render, "film_transparent")
-		col.operator("ax.set_output_directory", icon='FILE_FOLDER')
 
 		# layout.prop(context.scene.view_settings, "view_transform", text="")
 		# layout.prop(context.scene.tool_settings, "use_keyframe_insert_auto")
