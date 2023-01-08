@@ -126,10 +126,11 @@ class AX_PT_node_tools(bpy.types.Panel):
 		# brown = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_08')
 		# brown.color = [0.29, 0.25, 0.22]
 
-		col = layout.column(align=True)
-		col.prop(context.scene.fulcrum, 'use_node_handler')
-		if context.scene.fulcrum.use_node_handler:
-			col.prop(context.scene.fulcrum, 'node_vis_type', text='')
+		if context.scene.fulcrum.dev:
+			col = layout.column(align=True)
+			col.prop(context.scene.fulcrum, 'use_node_handler')
+			if context.scene.fulcrum.use_node_handler:
+				col.prop(context.scene.fulcrum, 'node_vis_type', text='')
 
 		col = layout.column(align=True)
 		col.label(text="Node Size:", icon='FIXED_SIZE')
@@ -167,8 +168,23 @@ class AX_PT_node_tools(bpy.types.Panel):
 			row.operator("ax.version_encode", text="Encode", icon='SYSTEM')
 			row.operator("ax.version_decode", text="Decode", icon='ZOOM_ALL')
 		
-		if context.area.ui_type == 'CompositorNodeTree':
-			layout.operator("ax.set_render_passes", icon='NODE_COMPOSITING')
+class AX_PT_compositor(bpy.types.Panel):
+	
+	bl_space_type = "NODE_EDITOR"
+	bl_region_type = "UI"
+	bl_category = "Fulcrum"
+	bl_label = "Compositor"
+	
+	@classmethod
+	def poll(cls, context):
+		return context.space_data.tree_type == 'CompositorNodeTree'
+
+	def draw(self, context):
+		layout = self.layout
+		# props = context.scene.fulcrum
+		col = layout.column(align=True)
+		col.operator("ax.set_output_directory", icon='FILE_FOLDER')
+		col.operator("ax.set_render_passes", icon='NODE_COMPOSITING')
 		
 class AX_PT_optimization(bpy.types.Panel):
 	
@@ -180,8 +196,7 @@ class AX_PT_optimization(bpy.types.Panel):
 	
 	@classmethod
 	def poll(cls, context):
-		in_shader_editor = context.space_data.tree_type == 'ShaderNodeTree'
-		return in_shader_editor
+		return context.space_data.tree_type == 'ShaderNodeTree'
 
 	def draw(self, context):
 		layout = self.layout
@@ -253,6 +268,7 @@ class AX_PT_ease_of_access(bpy.types.Panel):
 		col.prop(context.scene.fulcrum, 'dev')
 		col.prop(context.scene.render, "use_motion_blur")
 		col.prop(context.scene.render, "film_transparent")
+		col.operator("ax.set_output_directory", icon='FILE_FOLDER')
 
 		# layout.prop(context.scene.view_settings, "view_transform", text="")
 		# layout.prop(context.scene.tool_settings, "use_keyframe_insert_auto")
@@ -315,7 +331,7 @@ class AX_PT_3d_stuff(bpy.types.Panel):
 		col = layout.column(align=True)
 		col.operator("ax.obj_backup", icon='DUPLICATE')
 		col.operator("ax.duplicates_to_instances", icon='MOD_INSTANCE')
-		col.operator("ax.hybrid_subdiv", icon='MOD_SUBSURF')
+		# col.operator("ax.hybrid_subdiv", icon='MOD_SUBSURF')
 		
 		if context.scene.fulcrum.dev:
 			col = layout.column(align=True)

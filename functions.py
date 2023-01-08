@@ -52,7 +52,7 @@ def clear_node_color(nodes):
 def get_node_name(node):
 	"""Get node name that is visible to user"""
 	# label > prop. name > name
-	if bool(node.label):
+	if node.label:
 		return node.label
 	elif hasattr(node, "node_tree"):
 		return node.node_tree.name
@@ -68,6 +68,8 @@ def node_width(node):
 def node_height(node):
 	if node.type == 'REROUTE':
 		return 0
+	if node.hide == True:
+		return 32
 	return node.dimensions[1] * node.width / node.dimensions[0]
 
 def node_size(node):

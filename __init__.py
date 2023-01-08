@@ -21,7 +21,8 @@ from .ops.file_stuff import (
 from .ops.render import (
 	AX_OT_set_render_passes,
 	AX_OT_anim_time_limit,
-	AX_OT_render_to_new_slot)
+	AX_OT_render_to_new_slot,
+	AX_OT_set_output_directory)
 from .ops.nodes import (
 	AX_OT_select_node_inputs,
 	AX_OT_select_node_dependencies,
@@ -65,6 +66,7 @@ from .ops.copy_pasta import AX_OT_copy_nodes, AX_OT_paste_nodes
 from .ui import (
 	AX_PT_optimization,
 	AX_PT_node_tools,
+	AX_PT_compositor,
 	# AX_PT_node_group,
 	AX_PT_utility_node,
 	AX_PT_render,
@@ -120,6 +122,7 @@ classes = (
 
 	AX_OT_render_to_new_slot,
 	AX_OT_set_render_passes,
+	AX_OT_set_output_directory,
 
 	AX_OT_dof_setup,
 	AX_OT_isometric_setup,
@@ -145,6 +148,7 @@ classes = (
 	AX_PT_utility_3d,
 	
 	AX_PT_node_tools,
+	AX_PT_compositor,
 	# AX_PT_node_group,
 	AX_PT_optimization,
 	AX_PT_utility_node,

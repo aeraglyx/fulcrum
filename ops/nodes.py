@@ -38,8 +38,10 @@ class AX_OT_align_nodes(bpy.types.Operator):
 		# 	nodes = context.scene.node_tree.nodes
 		# print(context.space_data)
 		# print(context.space_data.type)
-
-		nodes = context.space_data.edit_tree.nodes  # BUG doesn't work in compositor
+		if context.space_data.tree_type == 'CompositorNodeTree':
+			nodes = context.scene.node_tree.nodes
+		else:
+			nodes = context.space_data.edit_tree.nodes  # BUG doesn't work in compositor
 		# bpy.context.space_data.edit_tree
 		# nodes = context.active_node.id_data.nodes
 		levels = {node:0 for node in nodes}

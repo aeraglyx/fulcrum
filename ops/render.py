@@ -456,6 +456,9 @@ class AX_OT_set_output_directory(bpy.types.Operator, ImportHelper):
 		output_filename = os.path.split(context.scene.render.filepath)[1]
 		context.scene.render.filepath = os.path.join(chosen_dir, output_filename)
 
+		if not context.scene.node_tree:
+			return {'FINISHED'}
+
 		nodes = [node for node in context.scene.node_tree.nodes if node.type == 'OUTPUT_FILE']
 		for node in nodes:
 			node_filename = os.path.split(node.base_path)[1]
