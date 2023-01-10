@@ -1,6 +1,41 @@
 import bpy
 
 
+
+
+# --- TOPBAR ---
+
+from .ops.file_stuff import is_current_file_version
+
+def draw_topbar(self, context):
+
+	# red - 	SEQUENCE_COLOR_01
+	# orange - 	SEQUENCE_COLOR_02
+	# yellow - 	SEQUENCE_COLOR_03
+	# green - 	SEQUENCE_COLOR_04
+	# blue - 	SEQUENCE_COLOR_05
+	# purple - 	SEQUENCE_COLOR_06
+	# pink - 	SEQUENCE_COLOR_07
+
+	if context.region.alignment != 'RIGHT':
+		layout = self.layout
+		if bpy.data.is_saved:
+			if is_current_file_version():
+				if bpy.data.is_dirty:
+					layout.label(text="Latest but not saved.", icon='SEQUENCE_COLOR_07')
+				else:
+					layout.label(text="DON'T PANIC!", icon='SEQUENCE_COLOR_05')
+				# layout.operator("ax.go_to_latest_version", icon='SEQUENCE_COLOR_04')
+			else:
+				layout.label(text="Not the latest version!", icon='SEQUENCE_COLOR_01')
+				layout.operator("ax.go_to_latest_version", text="Go to Latest", icon='LOOP_FORWARDS')
+			layout.operator("ax.save_as_new_version", text="Save as New", icon='DUPLICATE')
+		else:
+			layout.label(text="File not saved!", icon='SEQUENCE_COLOR_01')
+
+
+
+
 # --- PROPERTIES ---
 
 class AX_PT_render(bpy.types.Panel):
@@ -227,35 +262,8 @@ class AX_PT_utility_node(bpy.types.Panel):
 
 
 
+
 # --- VIEW 3D ---
-
-from .ops.file_stuff import is_current_file_version
-
-def draw_topbar(self, context):
-
-	# red - 	SEQUENCE_COLOR_01
-	# orange - 	SEQUENCE_COLOR_02
-	# yellow - 	SEQUENCE_COLOR_03
-	# green - 	SEQUENCE_COLOR_04
-	# blue - 	SEQUENCE_COLOR_05
-	# purple - 	SEQUENCE_COLOR_06
-	# pink - 	SEQUENCE_COLOR_07
-
-	if context.region.alignment != 'RIGHT':
-		layout = self.layout
-		if bpy.data.is_saved:
-			if is_current_file_version():
-				if bpy.data.is_dirty:
-					layout.label(text="Latest but not saved.", icon='SEQUENCE_COLOR_07')
-				else:
-					layout.label(text="DON'T PANIC!", icon='SEQUENCE_COLOR_05')
-				# layout.operator("ax.go_to_latest_version", icon='SEQUENCE_COLOR_04')
-			else:
-				layout.label(text="Not the latest version!", icon='SEQUENCE_COLOR_01')
-				layout.operator("ax.go_to_latest_version", text="Go to Latest", icon='LOOP_FORWARDS')
-			layout.operator("ax.save_as_new_version", text="Save as New", icon='DUPLICATE')
-		else:
-			layout.label(text="File not saved!", icon='SEQUENCE_COLOR_01')
 
 class AX_PT_ease_of_access(bpy.types.Panel):
 	
@@ -270,53 +278,10 @@ class AX_PT_ease_of_access(bpy.types.Panel):
 		col.prop(context.scene.fulcrum, 'dev')
 		col.prop(context.scene.render, "use_motion_blur")
 		col.prop(context.scene.render, "film_transparent")
+		col.operator("ax.prepare_for_render", icon='RESTRICT_RENDER_OFF')
 
 		# layout.prop(context.scene.view_settings, "view_transform", text="")
 		# layout.prop(context.scene.tool_settings, "use_keyframe_insert_auto")
-
-class AX_PT_paint(bpy.types.Panel):
-	
-	bl_space_type = "VIEW_3D"
-	bl_region_type = "UI"
-	bl_category = "Fulcrum"
-	bl_label = "Paint"
-
-	@classmethod
-	def poll(cls, context):
-		weight = context.mode == 'PAINT_WEIGHT'
-		paint = context.mode == 'PAINT_VERTEX'
-		return weight or paint
-
-	def draw(self, context):
-		layout = self.layout
-		if bpy.context.mode == 'PAINT_VERTEX':
-			
-			col = layout.column(align=True)
-			row = col.row(align=True)
-			props = row.operator("ax.set_paint_brush", text="R", icon='NONE')
-			props.color = (1.0, 0.0, 0.0)
-			props = row.operator("ax.set_paint_brush", text="G", icon='NONE')
-			props.color = (0.0, 1.0, 0.0)
-			props = row.operator("ax.set_paint_brush", text="B", icon='NONE')
-			props.color = (0.0, 0.0, 1.0)
-
-			row = col.row(align=True)
-			props = row.operator("ax.set_paint_brush", text="Blegh", icon='NONE')
-			props.color = (0.0, 0.0, 0.0)
-			props = row.operator("ax.set_paint_brush", text="Grey", icon='NONE')
-			props.color = (0.5, 0.5, 0.5)
-			props = row.operator("ax.set_paint_brush", text="White", icon='NONE')
-			props.color = (1.0, 1.0, 1.0)
-
-		if bpy.context.mode == 'PAINT_WEIGHT':
-
-			row = layout.row(align=True)
-			props = row.operator("ax.set_weight_brush", text="0.0", icon='NONE')
-			props.weight = 0.0
-			props = row.operator("ax.set_weight_brush", text="0.5", icon='NONE')
-			props.weight = 0.5
-			props = row.operator("ax.set_weight_brush", text="1.0", icon='NONE')
-			props.weight = 1.0
 
 class AX_PT_3d_stuff(bpy.types.Panel):
 	
@@ -399,6 +364,50 @@ class AX_PT_3d_axis_selection(bpy.types.Panel):
 		col.label(text="Rotation:")  # CON_ROTLIKE
 		row = col.row(align=True)
 		row.prop(transform.properties, "constraint_axis", text="", toggle=True, slider=True)
+
+class AX_PT_paint(bpy.types.Panel):
+	
+	bl_space_type = "VIEW_3D"
+	bl_region_type = "UI"
+	bl_category = "Fulcrum"
+	bl_label = "Paint"
+
+	@classmethod
+	def poll(cls, context):
+		weight = context.mode == 'PAINT_WEIGHT'
+		paint = context.mode == 'PAINT_VERTEX'
+		return weight or paint
+
+	def draw(self, context):
+		layout = self.layout
+		if bpy.context.mode == 'PAINT_VERTEX':
+			
+			col = layout.column(align=True)
+			row = col.row(align=True)
+			props = row.operator("ax.set_paint_brush", text="R", icon='NONE')
+			props.color = (1.0, 0.0, 0.0)
+			props = row.operator("ax.set_paint_brush", text="G", icon='NONE')
+			props.color = (0.0, 1.0, 0.0)
+			props = row.operator("ax.set_paint_brush", text="B", icon='NONE')
+			props.color = (0.0, 0.0, 1.0)
+
+			row = col.row(align=True)
+			props = row.operator("ax.set_paint_brush", text="Blegh", icon='NONE')
+			props.color = (0.0, 0.0, 0.0)
+			props = row.operator("ax.set_paint_brush", text="Grey", icon='NONE')
+			props.color = (0.5, 0.5, 0.5)
+			props = row.operator("ax.set_paint_brush", text="White", icon='NONE')
+			props.color = (1.0, 1.0, 1.0)
+
+		if bpy.context.mode == 'PAINT_WEIGHT':
+
+			row = layout.row(align=True)
+			props = row.operator("ax.set_weight_brush", text="0.0", icon='NONE')
+			props.weight = 0.0
+			props = row.operator("ax.set_weight_brush", text="0.5", icon='NONE')
+			props.weight = 0.5
+			props = row.operator("ax.set_weight_brush", text="1.0", icon='NONE')
+			props.weight = 1.0
 
 class AX_PT_utility_3d(bpy.types.Panel):
 	

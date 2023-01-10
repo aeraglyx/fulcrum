@@ -465,3 +465,21 @@ class AX_OT_set_output_directory(bpy.types.Operator, ImportHelper):
 			node.base_path = os.path.join(chosen_dir, node_filename)
 
 		return {'FINISHED'}
+
+class AX_OT_prepare_for_render(bpy.types.Operator):
+
+	bl_idname = "ax.prepare_for_render"
+	bl_label = "Prepare for Render"
+	bl_description = "..."
+	bl_options = {'REGISTER', 'UNDO'}
+
+	def execute(self, context):
+
+		bpy.context.scene.render.use_compositing = True
+		bpy.context.scene.render.use_sequencer = False
+		bpy.context.scene.render.use_persistent_data = True
+		bpy.context.scene.render.use_border = False
+		
+		bpy.ops.file.make_paths_absolute()
+
+		return {'FINISHED'}
