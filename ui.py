@@ -134,7 +134,7 @@ class AX_PT_node_tools(bpy.types.Panel):
 		col = layout.column(align=True)
 		# col.label(text="Node Color:", icon='COLOR')  # COLOR  RESTRICT_COLOR_OFF  FILE_REFRESH
 		row = col.row(align=True)
-		row.operator("ax.reset_node_color", text="", icon='FILE_REFRESH')
+		row.operator("ax.reset_node_color", text="", icon='X')
 		grey = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_09')
 		grey.color = [0.25, 0.25, 0.25]
 		red = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_01')
@@ -220,8 +220,9 @@ class AX_PT_compositor(bpy.types.Panel):
 		layout = self.layout
 		# props = context.scene.fulcrum
 		col = layout.column(align=True)
-		col.operator("ax.set_output_directory", icon='FILE_FOLDER')
 		col.operator("ax.set_render_passes", icon='NODE_COMPOSITING')
+		col.operator("ax.set_output_directory", icon='FILE_FOLDER')
+		col.operator("ax.prepare_for_render", icon='RESTRICT_RENDER_OFF')
 		
 class AX_PT_optimization(bpy.types.Panel):
 	

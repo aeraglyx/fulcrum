@@ -479,6 +479,7 @@ class AX_OT_prepare_for_render(bpy.types.Operator):
 		bpy.context.scene.render.use_sequencer = False
 		bpy.context.scene.render.use_persistent_data = True
 		bpy.context.scene.render.use_border = False
+		bpy.context.scene.render.image_settings.file_format = 'PNG'
 		
 		bpy.ops.file.make_paths_absolute()
 
