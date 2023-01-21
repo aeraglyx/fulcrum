@@ -276,6 +276,7 @@ class AX_PT_ease_of_access(bpy.types.Panel):
 	def draw(self, context):
 		layout = self.layout
 		col = layout.column(align=True)
+		col.operator("ax.update_fulcrum", icon='FILE_REFRESH')
 		col.prop(context.scene.fulcrum, 'dev')
 		col.prop(context.scene.render, "use_motion_blur")
 		col.prop(context.scene.render, "film_transparent")

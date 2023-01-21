@@ -3,7 +3,7 @@ bl_info = {
 	"author": "Vladislav Macíček (Aeraglyx)",
 	"description": "All kinds of tools",
 	"blender": (3, 4, 0),
-	"version": (0, 1, 14),
+	"version": (0, 1, 15),
 	"location": "Everywhere. Mostly in node editor and 3D viewport.",
 	"doc_url": "https://github.com/aeraglyx/fulcrum",
 	"category": 'User Interface',
@@ -14,6 +14,7 @@ import bpy
 from bpy.app.handlers import persistent
 
 from .ops.file_stuff import (
+	AX_OT_update_fulcrum,
 	AX_OT_save_as_new_version,
 	AX_OT_go_to_latest_version,
 	AX_OT_open_script_dir,
@@ -91,6 +92,7 @@ classes = (
 	AX_OT_set_paint_brush,
 	AX_OT_set_weight_brush,
 
+	AX_OT_update_fulcrum,
 	AX_OT_open_script_dir,
 	AX_OT_open_blend_dir,
 	AX_OT_save_as_new_version,

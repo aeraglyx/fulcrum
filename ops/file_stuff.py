@@ -127,3 +127,47 @@ class AX_OT_open_script_dir(bpy.types.Operator):
 		path = bpy.utils.script_path_user()
 		os.startfile(path)
 		return {'FINISHED'}
+
+
+
+
+
+
+# import subprocess
+# import sys
+# import os
+
+# python_exe = os.path.join(sys.prefix, 'bin', 'python.exe')
+# subprocess.call([python_exe, "-m", "ensurepip"])
+# subprocess.call([python_exe, "-m", "pip", "install", "--upgrade", "pip"])
+# subprocess.call([python_exe, "-m", "pip", "install", "urllib"])
+
+import requests, zipfile, io
+
+class AX_OT_update_fulcrum(bpy.types.Operator):
+	
+	bl_idname = "ax.update_fulcrum"
+	bl_label = "Update Fulcrum (WIP)"
+	bl_description = "Update this addon if any updates are available. Blender restart needed"
+
+	# @classmethod
+	# def poll(cls, context):
+	# 	return bpy.data.is_saved
+
+	def execute(self, context):
+		repo_download_link = "https://github.com/aeraglyx/fulcrum/archive/refs/heads/master.zip"
+		fulcrum_path = os.path.join(bpy.utils.script_path_user(), "addons", "fulcrum2")
+		# print(f"fulcrum_path = {fulcrum_path}")
+		# r = requests.get(repo_download_link)
+		# print(f"contents = {r.content}")
+		# open(os.path.join(fulcrum_path, "fulcrum.zip"), "x").write(r.content)
+
+
+		r = requests.get(repo_download_link)
+		z = zipfile.ZipFile(io.BytesIO(r.content))
+		z.extractall(fulcrum_path)
+
+		# with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
+		# 	zip_ref.extractall(fulcrum_path)
+		
+		return {'FINISHED'}
