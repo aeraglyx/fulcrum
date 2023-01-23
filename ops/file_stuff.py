@@ -166,5 +166,6 @@ class AX_OT_update_fulcrum(bpy.types.Operator):
 		new_version = get_addon_version("Fulcrum")
 
 		self.report({'INFO'}, f"Updated from {old_version} to {new_version}. Blender restart needed.")
+		bpy.ops.script.reload()
 		
 		return {'FINISHED'}

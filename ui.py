@@ -96,6 +96,20 @@ class AX_PT_physics(bpy.types.Panel):
 # 		row = col.row(align=True)
 # 		row.operator("ax.set_gn_defaults", text="Set")
 # 		row.operator("ax.reset_gn_defaults", text="Reset")
+
+class AX_PT_fulcrum_node(bpy.types.Panel):
+	
+	bl_space_type = "NODE_EDITOR"
+	bl_region_type = "UI"
+	bl_category = "Fulcrum"
+	bl_label = "FULCRUM"
+	bl_options = {'DEFAULT_CLOSED'}
+
+	def draw(self, context):
+		layout = self.layout
+		col = layout.column(align=True)
+		col.operator("ax.update_fulcrum", text="Update", icon='FILE_REFRESH')
+		col.prop(context.scene.fulcrum, 'dev')
 		
 class AX_PT_node_tools(bpy.types.Panel):
 	
@@ -107,8 +121,6 @@ class AX_PT_node_tools(bpy.types.Panel):
 	def draw(self, context):
 
 		layout = self.layout
-
-		layout.prop(context.scene.fulcrum, 'dev')
 
 		col = layout.column(align=True)
 		col.label(text="Node Alignment:")
@@ -130,9 +142,9 @@ class AX_PT_node_tools(bpy.types.Panel):
 			row = col.row(align=True)
 			row.operator("ax.set_gn_defaults", text="Set")
 			row.operator("ax.reset_gn_defaults", text="Reset")
-
+		
 		col = layout.column(align=True)
-		# col.label(text="Node Color:", icon='COLOR')  # COLOR  RESTRICT_COLOR_OFF  FILE_REFRESH
+		col.label(text="Color:")
 		row = col.row(align=True)
 		row.operator("ax.reset_node_color", text="", icon='X')
 		grey = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_09')
@@ -153,9 +165,20 @@ class AX_PT_node_tools(bpy.types.Panel):
 		pink.color = [0.41, 0.30, 0.40]
 		# brown = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_08')
 		# brown.color = [0.29, 0.25, 0.22]
+		
+		col = layout.column(align=True)
+		col.label(text="Size:")
+		# col.label(text="Node Color:", icon='COLOR')  # COLOR  RESTRICT_COLOR_OFF  FILE_REFRESH
+		row = col.row(align=True)
+		default = row.operator("ax.set_node_size", text="Def.")
+		default.size = 1.0
+		two = row.operator("ax.set_node_size", text="2x")
+		two.size = 2.0
+		four = row.operator("ax.set_node_size", text="4x")
+		four.size = 4.0
 
 		col = layout.column(align=True)
-		col.label(text="Find:", icon='VIEWZOOM')  # COLOR
+		col.label(text="Find:")  # COLOR
 		row = col.row(align=True)
 		row.operator("ax.select_node_inputs", text="Inputs")  # icon = 'NODE'
 		row.operator("ax.select_node_dependencies", text="Deps")  # icon = 'NODETREE'  # STROKE  ANIM_DATA  TRACKING
@@ -169,15 +192,8 @@ class AX_PT_node_tools(bpy.types.Panel):
 			if context.scene.fulcrum.use_node_handler:
 				col.prop(context.scene.fulcrum, 'node_vis_type', text='')
 
-		col = layout.column(align=True)
-		col.label(text="Node Size:", icon='FIXED_SIZE')
-		row = col.row(align=True)
-		default = row.operator("ax.set_node_size", text="Def.")
-		default.size = 1.0
-		two = row.operator("ax.set_node_size", text="2x")
-		two.size = 2.0
-		four = row.operator("ax.set_node_size", text="4x")
-		four.size = 4.0
+		# col = layout.column(align=True)
+		# col.label(text="Node Size:", icon='FIXED_SIZE')
 		
 		# col = layout.column(align=True)
 		# row = col.row(align=True)
@@ -222,6 +238,9 @@ class AX_PT_compositor(bpy.types.Panel):
 		col.operator("ax.set_render_passes", icon='NODE_COMPOSITING')
 		col.operator("ax.set_output_directory", icon='FILE_FOLDER')
 		col.operator("ax.compositor_increment_version", icon='TRIA_UP')
+		# row = col.row(align=True)
+		# row.operator("ax.compositor_increment_version", text="Ver. Down", icon='TRIA_DOWN')
+		# row.operator("ax.compositor_increment_version", text="Ver. Up", icon='TRIA_UP')
 		col = layout.column(align=True)
 		col.operator("ax.prepare_for_render", icon='RESTRICT_RENDER_OFF')
 		
@@ -243,8 +262,8 @@ class AX_PT_optimization(bpy.types.Panel):
 		row = layout.row()
 		row.operator("ax.compare", icon='NONE')  # SORTTIME TIME TEMP
 		col = layout.column(align=True)
-		col.label(text = f"Ratio: {props.result:.3f}", icon='SETTINGS')  # UV_SYNC_SELECT CONSTRAINT SETTINGS
-		col.label(text = f"Confidence: {props.confidence*100:.0f}%", icon='RNDCURVE')  # INDIRECT_ONLY_ON RNDCURVE
+		col.label(text=f"Ratio: {props.result:.3f}", icon='SETTINGS')  # UV_SYNC_SELECT CONSTRAINT SETTINGS
+		col.label(text=f"Confidence: {props.confidence*100:.0f}%", icon='RNDCURVE')  # INDIRECT_ONLY_ON RNDCURVE
 
 class AX_PT_utility_node(bpy.types.Panel):
 	
@@ -267,6 +286,20 @@ class AX_PT_utility_node(bpy.types.Panel):
 
 # --- VIEW 3D ---
 
+class AX_PT_fulcrum_3d(bpy.types.Panel):
+	
+	bl_space_type = "VIEW_3D"
+	bl_region_type = "UI"
+	bl_category = "Fulcrum"
+	bl_label = "FULCRUM"
+	bl_options = {'DEFAULT_CLOSED'}
+
+	def draw(self, context):
+		layout = self.layout
+		col = layout.column(align=True)
+		col.operator("ax.update_fulcrum", text="Update", icon='FILE_REFRESH')
+		col.prop(context.scene.fulcrum, 'dev')
+
 class AX_PT_ease_of_access(bpy.types.Panel):
 	
 	bl_space_type = "VIEW_3D"
@@ -277,8 +310,8 @@ class AX_PT_ease_of_access(bpy.types.Panel):
 	def draw(self, context):
 		layout = self.layout
 		col = layout.column(align=True)
-		col.prop(context.scene.fulcrum, 'dev')
-		col.operator("ax.update_fulcrum", icon='FILE_REFRESH')
+		# col.prop(context.scene.fulcrum, 'dev')
+		# col.operator("ax.update_fulcrum", icon='FILE_REFRESH')
 		col.operator("ax.prepare_for_render", icon='RESTRICT_RENDER_OFF')
 		# col.prop(context.scene.render, "use_motion_blur")
 		# col.prop(context.scene.render, "film_transparent")
