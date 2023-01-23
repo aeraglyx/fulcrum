@@ -141,10 +141,6 @@ class AX_OT_update_fulcrum(bpy.types.Operator):
 	bl_label = "Update Fulcrum"
 	bl_description = "Update this addon. Blender will need to be restarted"
 
-	# @classmethod
-	# def poll(cls, context):
-	# 	return bpy.data.is_saved
-
 	def execute(self, context):
 		repo_download_link = "https://github.com/aeraglyx/fulcrum/archive/refs/heads/master.zip"
 		fulcrum_path = os.path.join(bpy.utils.script_path_user(), "addons", "fulcrum")
