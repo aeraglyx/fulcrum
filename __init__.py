@@ -3,7 +3,7 @@ bl_info = {
 	"author": "Vladislav Macíček (Aeraglyx)",
 	"description": "All kinds of tools",
 	"blender": (3, 4, 0),
-	"version": (0, 1, 15),
+	"version": (0, 1, 16),
 	"location": "Everywhere. Mostly in node editor and 3D viewport.",
 	"doc_url": "https://github.com/aeraglyx/fulcrum",
 	"category": 'User Interface',
@@ -24,7 +24,8 @@ from .ops.render import (
 	AX_OT_anim_time_limit,
 	AX_OT_render_to_new_slot,
 	AX_OT_set_output_directory,
-	AX_OT_prepare_for_render)
+	AX_OT_prepare_for_render,
+	AX_OT_compositor_increment_version)
 from .ops.nodes import (
 	AX_OT_select_node_inputs,
 	AX_OT_select_node_dependencies,
@@ -127,6 +128,7 @@ classes = (
 	AX_OT_set_render_passes,
 	AX_OT_set_output_directory,
 	AX_OT_prepare_for_render,
+	AX_OT_compositor_increment_version,
 
 	AX_OT_dof_setup,
 	AX_OT_isometric_setup,

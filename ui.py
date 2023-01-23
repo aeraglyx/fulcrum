@@ -218,10 +218,11 @@ class AX_PT_compositor(bpy.types.Panel):
 
 	def draw(self, context):
 		layout = self.layout
-		# props = context.scene.fulcrum
 		col = layout.column(align=True)
 		col.operator("ax.set_render_passes", icon='NODE_COMPOSITING')
 		col.operator("ax.set_output_directory", icon='FILE_FOLDER')
+		col.operator("ax.compositor_increment_version", icon='TRIA_UP')
+		col = layout.column(align=True)
 		col.operator("ax.prepare_for_render", icon='RESTRICT_RENDER_OFF')
 		
 class AX_PT_optimization(bpy.types.Panel):

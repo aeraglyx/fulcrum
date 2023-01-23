@@ -2,6 +2,7 @@ import bpy
 import os
 import re
 import subprocess
+from ..functions import *
 # import string
 
 def get_name_and_version(name):
@@ -53,16 +54,6 @@ def is_current_file_version():
 	current_version = get_name_and_version(name)[1]
 	newest_version = get_newest_version()
 	return current_version == newest_version
-
-def version_up(name):
-	# if it doesn't have a version, add it
-	if not name[-1].isdigit():
-		return name + "_v02"  # v001 or v002 ?
-	# otherwise increment by 1
-	base_name = re.sub("\d+$", "", name)
-	v = re.search("\d+$", name).group()
-	new_v = str(int(v) + 1).zfill(len(v))
-	return base_name + new_v
 
 
 
@@ -142,13 +133,13 @@ class AX_OT_open_script_dir(bpy.types.Operator):
 # subprocess.call([python_exe, "-m", "pip", "install", "--upgrade", "pip"])
 # subprocess.call([python_exe, "-m", "pip", "install", "urllib"])
 
-import requests, zipfile, io
+import requests, zipfile, io, shutil, addon_utils
 
 class AX_OT_update_fulcrum(bpy.types.Operator):
 	
 	bl_idname = "ax.update_fulcrum"
-	bl_label = "Update Fulcrum (WIP)"
-	bl_description = "Update this addon if any updates are available. Blender restart needed"
+	bl_label = "Update Fulcrum"
+	bl_description = "Update this addon. Blender will need to be restarted"
 
 	# @classmethod
 	# def poll(cls, context):
@@ -156,18 +147,28 @@ class AX_OT_update_fulcrum(bpy.types.Operator):
 
 	def execute(self, context):
 		repo_download_link = "https://github.com/aeraglyx/fulcrum/archive/refs/heads/master.zip"
-		fulcrum_path = os.path.join(bpy.utils.script_path_user(), "addons", "fulcrum2")
-		# print(f"fulcrum_path = {fulcrum_path}")
-		# r = requests.get(repo_download_link)
-		# print(f"contents = {r.content}")
-		# open(os.path.join(fulcrum_path, "fulcrum.zip"), "x").write(r.content)
+		fulcrum_path = os.path.join(bpy.utils.script_path_user(), "addons", "fulcrum")
+		nested_path = os.path.join(fulcrum_path, "fulcrum-master")
+		
+		old_version = get_addon_version("Fulcrum")
 
+		shutil.rmtree(fulcrum_path, ignore_errors=True)
 
+		# with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
+		# 	zip_ref.extractall(fulcrum_path)
 		r = requests.get(repo_download_link)
 		z = zipfile.ZipFile(io.BytesIO(r.content))
 		z.extractall(fulcrum_path)
 
-		# with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
-		# 	zip_ref.extractall(fulcrum_path)
+		for filename in os.listdir(nested_path):
+			src = os.path.join(nested_path, filename)
+			dst = os.path.join(fulcrum_path, filename)
+			shutil.move(src, dst)
+		
+		os.rmdir(nested_path)
+
+		new_version = get_addon_version("Fulcrum")
+
+		self.report({'INFO'}, f"Updated from {old_version} to {new_version}. Blender restart needed.")
 		
 		return {'FINISHED'}

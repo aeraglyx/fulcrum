@@ -175,3 +175,18 @@ def get_output_nodes(context):
 	else:
 		output_nodes = (node for node in nodes if node.bl_idname == 'NodeGroupOutput')
 	return output_nodes
+
+def version_up(name):
+	# if it doesn't have a version, add it
+	if not name[-1].isdigit():
+		return name + "_v02"  # v001 or v002 ?
+	# otherwise increment by 1
+	old_name = re.sub("\d+$", "", name)
+	old_v = re.search("\d+$", name).group()
+	new_v = str(int(old_v) + 1).zfill(len(old_v))
+	return old_name + new_v
+
+import addon_utils
+def get_addon_version(addon_name):
+	old_version = [addon.bl_info.get('version', (-1,-1,-1)) for addon in addon_utils.modules() if addon.bl_info['name'] == addon_name][0]
+	return ".".join(map(str, old_version))

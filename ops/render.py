@@ -1,5 +1,7 @@
 import bpy
 import os
+from ..functions import version_up
+import re
 
 
 class AX_OT_anim_time_limit(bpy.types.Operator):
@@ -439,22 +441,24 @@ class AX_OT_set_output_directory(bpy.types.Operator, ImportHelper):
 
 	bl_idname = "ax.set_output_directory"
 	bl_label = "Set Output Directory"
-	bl_description = "..."
+	bl_description = "Change path in Output Properties and all File Output nodes"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	# https://docs.blender.org/api/current/bpy.types.FileSelectParams.html
 
-	# filter_glob: bpy.props.StringProperty(
-	# 	default = "*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.bmp",
-	# 	options = {'HIDDEN'}
-	# )
+	filepath = bpy.props.StringProperty(
+		name="File Path",
+		description="File path",
+		maxlen= 1024
+	)
 
 	def execute(self, context):
 
-		chosen_dir = os.path.split(self.filepath)[0]
+		old_name = os.path.split(context.scene.render.filepath)[1]
+		new_dir, input_name = os.path.split(self.filepath)
 
-		output_filename = os.path.split(context.scene.render.filepath)[1]
-		context.scene.render.filepath = os.path.join(chosen_dir, output_filename)
+		new_name = input_name if input_name else old_name
+		context.scene.render.filepath = os.path.join(new_dir, new_name)
 
 		if not context.scene.node_tree:
 			return {'FINISHED'}
@@ -462,14 +466,41 @@ class AX_OT_set_output_directory(bpy.types.Operator, ImportHelper):
 		nodes = [node for node in context.scene.node_tree.nodes if node.type == 'OUTPUT_FILE']
 		for node in nodes:
 			node_filename = os.path.split(node.base_path)[1]
-			node.base_path = os.path.join(chosen_dir, node_filename)
+			node.base_path = os.path.join(new_dir, node_filename)
+
+		return {'FINISHED'}
+
+	def invoke(self, context, event):
+
+		self.filepath = context.scene.render.filepath
+		wm = context.window_manager.fileselect_add(self)
+		return {'RUNNING_MODAL'}
+
+class AX_OT_compositor_increment_version(bpy.types.Operator):
+
+	bl_idname = "ax.compositor_increment_version"
+	bl_label = "Increment Version"
+	bl_description = "Change filename for all File Output nodes"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	def execute(self, context):
+
+		if not context.scene.node_tree:
+			return {'FINISHED'}
+
+		nodes = [node for node in context.scene.node_tree.nodes if node.type == 'OUTPUT_FILE']
+		for node in nodes:
+			node_path, node_filename = os.path.split(node.base_path)
+			node_filename = re.sub("_+$", "", node_filename)
+			node.base_path = os.path.join(node_path, version_up(node_filename) + "_")
+		# FIXME make sure all nodes have the same version
 
 		return {'FINISHED'}
 
 class AX_OT_prepare_for_render(bpy.types.Operator):
 
 	bl_idname = "ax.prepare_for_render"
-	bl_label = "Prepare for Render"
+	bl_label = "Prep for Beaming"
 	bl_description = "..."
 	bl_options = {'REGISTER', 'UNDO'}
 
