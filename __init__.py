@@ -263,25 +263,17 @@ def register():
 		bpy.utils.register_class(cls)
 	bpy.types.Scene.fulcrum = bpy.props.PointerProperty(type=fulcrum_props)
 	bpy.types.TOPBAR_HT_upper_bar.append(draw_topbar)
-	# bpy.types.Scene.use_node_handler = bpy.props.BoolProperty(
-	# 	name='Use Node Handler',
-	# 	default=False,
-	# )
-	bpy.app.handlers.depsgraph_update_post.append(ax_depsgraph_handler)
+	# bpy.app.handlers.depsgraph_update_post.append(ax_depsgraph_handler)
 	bpy.app.handlers.load_post.append(set_restart_needed_flag)
 	
 	print("FULCRUM registered")
 
 def unregister():
 
-	for handler in bpy.app.handlers.render_complete:
-		if handler.__name__ == 'ax_depsgraph_handler':
-			bpy.app.handlers.depsgraph_update_post.remove(handler)
 	for handler in bpy.app.handlers.load_post:
 		if handler.__name__ == 'set_restart_needed_flag':
 			bpy.app.handlers.load_post.remove(handler)
 		
-	# del bpy.types.Scene.use_node_handler
 	bpy.types.TOPBAR_HT_upper_bar.remove(draw_topbar)
 	for cls in classes:
 		bpy.utils.unregister_class(cls)

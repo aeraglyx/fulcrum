@@ -167,6 +167,6 @@ class AX_OT_update_fulcrum(bpy.types.Operator):
 
 		context.scene.fulcrum.restart_needed = True
 		self.report({'INFO'}, f"Updated from {old_version} to {new_version}. Blender restart needed.")
-		bpy.ops.script.reload()
+		# bpy.ops.script.reload()
 
 		return {'FINISHED'}
