@@ -107,9 +107,11 @@ class AX_PT_fulcrum_node(bpy.types.Panel):
 
 	def draw(self, context):
 		layout = self.layout
-		col = layout.column(align=True)
-		col.operator("ax.update_fulcrum", text="Update", icon='FILE_REFRESH')
-		col.prop(context.scene.fulcrum, 'dev')
+		# col = layout.column(align=True)
+		layout.operator("ax.update_fulcrum", text="Update", icon='FILE_REFRESH')
+		if context.scene.fulcrum.restart_needed:
+			layout.label(text="Blender restart needed.", icon='SEQUENCE_COLOR_07')
+		# col.prop(context.scene.fulcrum, 'dev')
 		
 class AX_PT_node_tools(bpy.types.Panel):
 	
@@ -123,28 +125,7 @@ class AX_PT_node_tools(bpy.types.Panel):
 		layout = self.layout
 
 		col = layout.column(align=True)
-		col.label(text="Node Alignment:")
-		row = col.row(align=True)
-		row.operator("ax.align_nodes", text="Auto")
-		row.operator("ax.center_nodes", text="Center")
-		row.operator("ax.nodes_to_grid", text="Grid")
-		if context.scene.fulcrum.dev:
-			col.operator("ax.align_nodes_v2", icon='ALIGN_CENTER')
-			col.operator("ax.color_node_flow", icon='COLOR')
-			col.operator("ax.randomize_node_color", icon='COLOR')
-		
-		col = layout.column(align=True)
-		col.operator("ax.hide_group_inputs", icon='HIDE_ON')
-
-		if context.scene.fulcrum.dev:
-			col = layout.column(align=True)
-			col.label(text="GN Defaults:")
-			row = col.row(align=True)
-			row.operator("ax.set_gn_defaults", text="Set")
-			row.operator("ax.reset_gn_defaults", text="Reset")
-		
-		col = layout.column(align=True)
-		col.label(text="Color:")
+		col.label(text="Color:", icon='COLOR')
 		row = col.row(align=True)
 		row.operator("ax.reset_node_color", text="", icon='X')
 		grey = row.operator("ax.set_node_color", text="", icon='SEQUENCE_COLOR_09')
@@ -167,8 +148,7 @@ class AX_PT_node_tools(bpy.types.Panel):
 		# brown.color = [0.29, 0.25, 0.22]
 		
 		col = layout.column(align=True)
-		col.label(text="Size:")
-		# col.label(text="Node Color:", icon='COLOR')  # COLOR  RESTRICT_COLOR_OFF  FILE_REFRESH
+		col.label(text="Size:", icon='FIXED_SIZE')
 		row = col.row(align=True)
 		default = row.operator("ax.set_node_size", text="Def.")
 		default.size = 1.0
@@ -178,13 +158,24 @@ class AX_PT_node_tools(bpy.types.Panel):
 		four.size = 4.0
 
 		col = layout.column(align=True)
-		col.label(text="Find:")  # COLOR
+		col.label(text="Alignment:", icon='ALIGN_CENTER')
 		row = col.row(align=True)
-		row.operator("ax.select_node_inputs", text="Inputs")  # icon = 'NODE'
-		row.operator("ax.select_node_dependencies", text="Deps")  # icon = 'NODETREE'  # STROKE  ANIM_DATA  TRACKING
-		row = col.row(align=True)
-		row.operator("ax.select_group_inputs", text="Group Inputs")
-		row.operator("ax.select_unused_nodes", text="Unused")
+		row.operator("ax.align_nodes", text="Auto")
+		row.operator("ax.center_nodes", text="Center")
+		row.operator("ax.nodes_to_grid", text="Grid")
+		if context.scene.fulcrum.dev:
+			col.operator("ax.align_nodes_v2", icon='ALIGN_CENTER')
+			col.operator("ax.color_node_flow", icon='COLOR')
+			col.operator("ax.randomize_node_color", icon='COLOR')
+
+		# col = layout.column(align=True)
+		# col.label(text="Find:", icon='VIEWZOOM')
+		# row = col.row(align=True)
+		# row.operator("ax.select_node_inputs", text="Inputs")
+		# row.operator("ax.select_node_dependencies", text="Deps")
+		# row = col.row(align=True)
+		# row.operator("ax.select_group_inputs", text="Group Inputs")
+		# row.operator("ax.select_unused_nodes", text="Unused")
 
 		if context.scene.fulcrum.dev:
 			col = layout.column(align=True)
@@ -220,7 +211,33 @@ class AX_PT_node_tools(bpy.types.Panel):
 			row = col.row(align=True)
 			row.operator("ax.version_encode", text="Encode", icon='SYSTEM')
 			row.operator("ax.version_decode", text="Decode", icon='ZOOM_ALL')
-		
+
+class AX_PT_node_group(bpy.types.Panel):
+	
+	bl_space_type = "NODE_EDITOR"
+	bl_region_type = "UI"
+	bl_category = "Fulcrum"
+	bl_label = "Group"
+
+	@classmethod
+	def poll(cls, context):
+		return True  # TODO
+
+	def draw(self, context):
+
+		layout = self.layout
+
+		col = layout.column(align=True)
+		col.operator("ax.hide_group_inputs", icon='HIDE_ON')
+		col.operator("ax.hide_group_inputs", text="(Remove Unused Inputs)", icon='REMOVE')
+
+		# TODO
+		# col = layout.column(align=True)
+		# col.label(text="Defaults:")
+		# row = col.row(align=True)
+		# row.operator("ax.set_gn_defaults", text="(Set Defaults)")
+		# row.operator("ax.reset_gn_defaults", text="(Reset Defaults)")
+
 class AX_PT_compositor(bpy.types.Panel):
 	
 	bl_space_type = "NODE_EDITOR"
@@ -243,7 +260,26 @@ class AX_PT_compositor(bpy.types.Panel):
 		# row.operator("ax.compositor_increment_version", text="Ver. Up", icon='TRIA_UP')
 		col = layout.column(align=True)
 		col.operator("ax.prepare_for_render", icon='RESTRICT_RENDER_OFF')
-		
+
+class AX_PT_find_nodes(bpy.types.Panel):
+	
+	bl_space_type = "NODE_EDITOR"
+	bl_region_type = "UI"
+	bl_category = "Fulcrum"
+	bl_label = "Find"
+	bl_options = {'DEFAULT_CLOSED'}
+
+	def draw(self, context):
+		layout = self.layout
+		col = layout.column(align=True)
+		# col.label(text="Find:", icon='VIEWZOOM')
+		row = col.row(align=True)
+		row.operator("ax.select_node_inputs", text="Inputs")
+		row.operator("ax.select_node_dependencies", text="Deps")
+		row = col.row(align=True)
+		row.operator("ax.select_group_inputs", text="Group Inputs")
+		row.operator("ax.select_unused_nodes", text="Unused")
+
 class AX_PT_optimization(bpy.types.Panel):
 	
 	bl_space_type = "NODE_EDITOR"
@@ -296,39 +332,22 @@ class AX_PT_fulcrum_3d(bpy.types.Panel):
 
 	def draw(self, context):
 		layout = self.layout
-		col = layout.column(align=True)
-		col.operator("ax.update_fulcrum", text="Update", icon='FILE_REFRESH')
-		col.prop(context.scene.fulcrum, 'dev')
-
-class AX_PT_ease_of_access(bpy.types.Panel):
-	
-	bl_space_type = "VIEW_3D"
-	bl_region_type = "UI"
-	bl_category = "Fulcrum"
-	bl_label = "Ease of Access"
-
-	def draw(self, context):
-		layout = self.layout
-		col = layout.column(align=True)
+		# col = layout.column(align=True)
+		layout.operator("ax.update_fulcrum", text="Update", icon='FILE_REFRESH')
 		# col.prop(context.scene.fulcrum, 'dev')
-		# col.operator("ax.update_fulcrum", icon='FILE_REFRESH')
-		col.operator("ax.prepare_for_render", icon='RESTRICT_RENDER_OFF')
-		# col.prop(context.scene.render, "use_motion_blur")
-		# col.prop(context.scene.render, "film_transparent")
-
-		# layout.prop(context.scene.view_settings, "view_transform", text="")
-		# layout.prop(context.scene.tool_settings, "use_keyframe_insert_auto")
 
 class AX_PT_3d_stuff(bpy.types.Panel):
 	
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"
 	bl_category = "Fulcrum"
-	bl_label = "3D"
+	bl_label = "Stuff"
 
 	def draw(self, context):
 		
 		layout = self.layout
+
+		layout.operator("ax.prepare_for_render", icon='RESTRICT_RENDER_OFF')
 		
 		col = layout.column(align=True)
 		col.operator("ax.obj_backup", icon='DUPLICATE')
