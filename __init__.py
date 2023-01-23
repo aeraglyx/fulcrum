@@ -251,6 +251,10 @@ def ax_depsgraph_handler(scene):
 				case 'LEVELS':
 					node_color_levels()
 		print(f"handler - {time.perf_counter() - start_time}")
+
+@persistent
+def restart_needed(scene):
+	use_node_handler = bpy.context.scene.fulcrum.restart_needed = False
 		
 
 
@@ -264,6 +268,7 @@ def register():
 	# 	default=False,
 	# )
 	bpy.app.handlers.depsgraph_update_post.append(ax_depsgraph_handler)
+	bpy.app.handlers.load_post.append(ax_depsgraph_handler)
 	
 	print("FULCRUM registered")
 
@@ -272,6 +277,10 @@ def unregister():
 	for handler in bpy.app.handlers.render_complete:
 		if handler.__name__ == 'ax_depsgraph_handler':
 			bpy.app.handlers.depsgraph_update_post.remove(handler)
+	for handler in bpy.app.handlers.load_post:
+		if handler.__name__ == 'restart_needed':
+			bpy.app.handlers.load_post.remove(handler)
+		
 	# del bpy.types.Scene.use_node_handler
 	bpy.types.TOPBAR_HT_upper_bar.remove(draw_topbar)
 	for cls in classes:
