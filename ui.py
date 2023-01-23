@@ -109,7 +109,7 @@ class AX_PT_fulcrum_node(bpy.types.Panel):
 		layout = self.layout
 		# col = layout.column(align=True)
 		layout.operator("ax.update_fulcrum", text="Update", icon='FILE_REFRESH')
-		if context.wm.restart_needed:
+		if context.window_manager.restart_needed:
 			layout.label(text="Blender restart needed.", icon='SEQUENCE_COLOR_07')
 		# col.prop(context.scene.fulcrum, 'dev')
 		
