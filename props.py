@@ -10,6 +10,7 @@ class fulcrum_props(bpy.types.PropertyGroup):
 	restart_needed: bpy.props.BoolProperty(
 		name='Restart Needed',
 		default=False,
+		options={'SKIP_SAVE'}
 	)
 	use_node_handler: bpy.props.BoolProperty(
 		name='Node Visualizer',
