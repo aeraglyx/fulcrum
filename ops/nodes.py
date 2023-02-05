@@ -420,6 +420,9 @@ class AX_OT_nodes_to_grid(bpy.types.Operator):
 			node.location.y = int(node.location.y / 10) * 10
 		return {'FINISHED'}
 
+
+
+
 class AX_OT_hide_group_inputs(bpy.types.Operator):
 	
 	bl_idname = "ax.hide_group_inputs"
@@ -437,6 +440,34 @@ class AX_OT_hide_group_inputs(bpy.types.Operator):
 				for socket in node.outputs:
 					if socket.enabled and not socket.is_linked:
 						socket.hide = True
+		return {'FINISHED'}
+
+class AX_OT_remove_unused_group_inputs(bpy.types.Operator):
+	
+	bl_idname = "ax.remove_unused_group_inputs"
+	bl_label = "Remove Unused Group Inputs"
+	bl_description = ""
+	
+	# @classmethod
+	# def poll(cls, context):
+	# 	return hasattr(context, "selected_nodes")
+
+	def execute(self, context):
+		
+		nodes = context.space_data.edit_tree.nodes
+		group = nodes.id_data
+
+		used_inputs = {}
+		for node in nodes:
+			if node.type == 'GROUP_INPUT':
+				for socket in node.outputs:
+					if socket.is_linked:  # socket.enabled
+						used_sockets.add(socket)
+		
+		for group_input in group.inputs[:]:
+			if group_input not in used_inputs:
+				group.inputs.remove(group_input)
+
 		return {'FINISHED'}
 
 
@@ -860,6 +891,26 @@ class AX_OT_reset_node_color(bpy.types.Operator):
 		
 		return {'FINISHED'}
 
+class AX_OT_set_node_size(bpy.types.Operator):
+	
+	bl_idname = "ax.set_node_size"
+	bl_label = "Set Node Size"
+	bl_description = ""
+	
+	@classmethod
+	def poll(cls, context):
+		return context.area.type == 'NODE_EDITOR'
+	
+	size: bpy.props.FloatProperty(name="Size", default=1.0)
+
+	def execute(self, context):
+
+		nodes = context.selected_nodes
+		for node in nodes:
+			node.width = node.bl_width_default * self.size
+		
+		return {'FINISHED'}
+
 
 
 
@@ -910,24 +961,3 @@ class AX_OT_reset_gn_defaults(bpy.types.Operator):
 		
 		return {'FINISHED'}
 
-class AX_OT_set_node_size(bpy.types.Operator):
-	
-	bl_idname = "ax.set_node_size"
-	bl_label = "Set Node Size"
-	bl_description = ""
-	
-	@classmethod
-	def poll(cls, context):
-		return context.area.type == 'NODE_EDITOR'
-	
-	size: bpy.props.FloatProperty(
-		name="Size",
-		default=1.0)
-
-	def execute(self, context):
-
-		nodes = context.selected_nodes
-		for node in nodes:
-			node.width = node.bl_width_default * self.size
-		
-		return {'FINISHED'}

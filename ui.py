@@ -229,7 +229,7 @@ class AX_PT_node_group(bpy.types.Panel):
 
 		col = layout.column(align=True)
 		col.operator("ax.hide_group_inputs", icon='HIDE_ON')
-		col.operator("ax.hide_group_inputs", text="(Remove Unused Inputs)", icon='REMOVE')
+		col.operator("ax.remove_unused_group_inputs", text="Remove Unused Inputs", icon='REMOVE')
 
 		# TODO
 		# col = layout.column(align=True)

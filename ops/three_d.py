@@ -15,15 +15,12 @@ class AX_OT_locate_vertex(bpy.types.Operator):
 	def poll(cls, context):
 		return context.object and context.object.type == 'MESH'
 	
-	index: bpy.props.IntProperty(
-		name = "Index",
-		min = 0, default = 0
-	)
+	index: bpy.props.IntProperty(name="Index", min=0, default=0)
 
 	def execute(self, context):
 
 		mode_prev = context.object.mode
-		bpy.ops.object.mode_set(mode = 'EDIT')
+		bpy.ops.object.mode_set(mode='EDIT')
 
 		statistics_str = context.scene.statistics(context.view_layer)
 		total_verts = int(re.search("Verts:\d+/(\d+)", statistics_str).groups()[0])
@@ -76,10 +73,7 @@ class AX_OT_locate_vertices(bpy.types.Operator):
 	def poll(cls, context):
 		return context.active_object and context.object.type == 'MESH'
 	
-	indices_str: bpy.props.StringProperty(
-		name = "Indices",
-		default = ""
-	)
+	indices_str: bpy.props.StringProperty(name="Indices", default="")
 
 	def execute(self, context):
 
