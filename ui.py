@@ -1,4 +1,5 @@
 import bpy
+from ..functions import *
 
 
 
@@ -111,6 +112,8 @@ class AX_PT_fulcrum_node(bpy.types.Panel):
 		layout.operator("ax.update_fulcrum", text="Update", icon='FILE_REFRESH')
 		if context.scene.fulcrum.restart_needed:
 			layout.label(text="Blender restart needed.", icon='SEQUENCE_COLOR_07')
+		else:
+			layout.label(text=f"v{get_addon_version("Fulcrum")}")
 		# col.prop(context.scene.fulcrum, 'dev')
 		
 class AX_PT_node_tools(bpy.types.Panel):

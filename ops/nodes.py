@@ -454,7 +454,7 @@ class AX_OT_remove_unused_group_inputs(bpy.types.Operator):
 		nodes = context.space_data.edit_tree.nodes
 		group = nodes.id_data
 
-		used_inputs = {}
+		used_inputs = set()
 		for node in nodes:
 			if node.type == 'GROUP_INPUT':
 				for socket in node.outputs:

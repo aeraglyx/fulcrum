@@ -188,5 +188,5 @@ def version_up(name):
 
 import addon_utils
 def get_addon_version(addon_name):
-	old_version = [addon.bl_info.get('version', (-1,-1,-1)) for addon in addon_utils.modules() if addon.bl_info['name'] == addon_name][0]
-	return ".".join(map(str, old_version))
+	version = [addon.bl_info.get('version', (-1,-1,-1)) for addon in addon_utils.modules() if addon.bl_info['name'] == addon_name][0]
+	return ".".join(map(str, version))
