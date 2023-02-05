@@ -448,9 +448,6 @@ class AX_OT_remove_unused_group_inputs(bpy.types.Operator):
 	bl_label = "Remove Unused Group Inputs"
 	bl_description = ""
 	
-	# @classmethod
-	# def poll(cls, context):
-	# 	return hasattr(context, "selected_nodes")
 
 	def execute(self, context):
 		
@@ -462,7 +459,9 @@ class AX_OT_remove_unused_group_inputs(bpy.types.Operator):
 			if node.type == 'GROUP_INPUT':
 				for socket in node.outputs:
 					if socket.is_linked:  # socket.enabled
-						used_sockets.add(socket)
+						used_inputs.add(socket)
+		
+		self.report({'INFO'}, f"Removed {len(group.inputs) - len(used_inputs)} unused inputs.")
 		
 		for group_input in group.inputs[:]:
 			if group_input not in used_inputs:
