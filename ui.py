@@ -1,5 +1,5 @@
 import bpy
-from ..functions import *
+from .functions import *
 
 
 

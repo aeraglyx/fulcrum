@@ -399,7 +399,6 @@ class AX_OT_center_nodes(bpy.types.Operator):
 			node.location -= node_center
 		
 		bpy.ops.node.view_all()
-		bpy.ops.node.view_all()
 
 		return {'FINISHED'}
 
@@ -447,6 +446,7 @@ class AX_OT_remove_unused_group_inputs(bpy.types.Operator):
 	bl_idname = "ax.remove_unused_group_inputs"
 	bl_label = "Remove Unused Group Inputs"
 	bl_description = ""
+	bl_options = {'UNDO'}
 	
 
 	def execute(self, context):
@@ -895,6 +895,7 @@ class AX_OT_set_node_size(bpy.types.Operator):
 	bl_idname = "ax.set_node_size"
 	bl_label = "Set Node Size"
 	bl_description = ""
+	bl_options = {'UNDO'}
 	
 	@classmethod
 	def poll(cls, context):
