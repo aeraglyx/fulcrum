@@ -213,6 +213,7 @@ class AX_PT_compositor(NodePanel, bpy.types.Panel):
 		# row.operator("ax.compositor_increment_version", text="Ver. Up", icon='TRIA_UP')
 		col = layout.column(align=True)
 		col.operator("ax.prepare_for_render", icon='RESTRICT_RENDER_OFF')
+		col.operator("ax.view_layers_to_muted_nodes", icon='TRIA_LEFT')
 
 class AX_PT_find_nodes(NodePanel, bpy.types.Panel):
 	bl_label = "Find"

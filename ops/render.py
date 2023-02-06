@@ -515,3 +515,26 @@ class AX_OT_prepare_for_render(bpy.types.Operator):
 		bpy.ops.file.make_paths_absolute()
 
 		return {'FINISHED'}
+
+class AX_OT_view_layers_to_muted_nodes(bpy.types.Operator):
+
+	bl_idname = "ax.view_layers_to_muted_nodes"
+	bl_label = "View Layers to Muted Nodes"
+	bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
+
+	def execute(self, context):
+
+		node_tree = context.scene.node_tree
+		
+		if not node_tree:
+			return {'FINISHED'}
+		view_layers = context.scene.view_layers
+		view_layer_names = [layer.name for layer in view_layers]
+
+		nodes = [node for node in node_tree.nodes if node.type == 'OUTPUT_FILE']
+		for node in nodes:
+			if node.name in view_layer_names:
+				node.mute = not view_layers.get(node.name).use
+
+		return {'FINISHED'}

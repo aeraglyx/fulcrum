@@ -25,7 +25,8 @@ from .ops.render import (
 	AX_OT_render_to_new_slot,
 	AX_OT_set_output_directory,
 	AX_OT_prepare_for_render,
-	AX_OT_compositor_increment_version)
+	AX_OT_compositor_increment_version,
+	AX_OT_view_layers_to_muted_nodes)
 from .ops.nodes import (
 	AX_OT_select_node_inputs,
 	AX_OT_select_node_dependencies,
@@ -135,6 +136,7 @@ classes = (
 	AX_OT_set_output_directory,
 	AX_OT_prepare_for_render,
 	AX_OT_compositor_increment_version,
+	AX_OT_view_layers_to_muted_nodes,
 
 	AX_OT_dof_setup,
 	AX_OT_isometric_setup,
