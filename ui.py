@@ -34,6 +34,11 @@ def draw_topbar(self, context):
 		else:
 			layout.label(text="File not saved!", icon='SEQUENCE_COLOR_01')
 
+def draw_outliner(self, context):
+
+	if context.space_data.display_mode == 'SCENES':
+		self.layout.operator("ax.view_layers_to_muted_nodes", text="", icon='TRIA_LEFT')
+
 
 
 

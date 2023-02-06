@@ -12,6 +12,8 @@ bl_info = {
 
 import bpy
 from bpy.app.handlers import persistent
+from .functions import *
+import time
 
 from .ops.file_stuff import (
 	AX_OT_update_fulcrum,
@@ -70,6 +72,9 @@ from .ops.copy_pasta import AX_OT_copy_nodes, AX_OT_paste_nodes
 from .props import fulcrum_props
 from .prefs import FulcrumPreferences
 from .ui import (
+	draw_topbar,
+	draw_outliner,
+
 	AX_PT_fulcrum_node,
 	AX_PT_node_tools,
 	AX_PT_node_group,
@@ -87,7 +92,7 @@ from .ui import (
 	AX_PT_camera,
 	AX_PT_3d_stuff,
 	AX_PT_3d_axis_selection,
-	draw_topbar)
+)
 
 classes = (
 	FulcrumPreferences,
@@ -176,9 +181,6 @@ classes = (
 
 addon_keymaps = []
 
-from .functions import *
-import time
-
 def unused_nodes():
 	tree = bpy.context.space_data.edit_tree  # context.active_node.id_data
 	nodes = tree.nodes
@@ -266,7 +268,9 @@ def register():
 	for cls in classes:
 		bpy.utils.register_class(cls)
 	bpy.types.Scene.fulcrum = bpy.props.PointerProperty(type=fulcrum_props)
+	
 	bpy.types.TOPBAR_HT_upper_bar.append(draw_topbar)
+	bpy.types.OUTLINER_HT_header.append(draw_outliner)
 	# bpy.app.handlers.depsgraph_update_post.append(ax_depsgraph_handler)
 	bpy.app.handlers.load_post.append(set_restart_needed_flag)
 	
@@ -279,6 +283,8 @@ def unregister():
 			bpy.app.handlers.load_post.remove(handler)
 		
 	bpy.types.TOPBAR_HT_upper_bar.remove(draw_topbar)
+	bpy.types.OUTLINER_HT_header.remove(draw_outliner)
+
 	for cls in classes:
 		bpy.utils.unregister_class(cls)
 	del bpy.types.Scene.fulcrum

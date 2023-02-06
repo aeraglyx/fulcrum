@@ -520,7 +520,7 @@ class AX_OT_view_layers_to_muted_nodes(bpy.types.Operator):
 
 	bl_idname = "ax.view_layers_to_muted_nodes"
 	bl_label = "View Layers to Muted Nodes"
-	bl_description = ""
+	bl_description = "If File Output nodes are named correctly, this will mute any output nodes whose corresponding View Layer isn't used for rendering"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	def execute(self, context):
