@@ -419,3 +419,28 @@ class AX_OT_passepartout(bpy.types.Operator):
 			cam.data.passepartout_alpha = self.alpha
 		
 		return {'FINISHED'}
+
+class AX_OT_center_render_region(bpy.types.Operator):
+	
+	bl_idname = "ax.center_render_region"
+	bl_label = "Center Render Region"
+	bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
+
+	def execute(self, context):
+
+		render = context.scene.render
+		x = 0.5 * (render.border_min_x + render.border_max_x) - 0.5
+		y = 0.5 * (render.border_min_y + render.border_max_y) - 0.5
+
+		width = 1 / (render.border_max_x - render.border_min_x)
+		zoom = 175 * math.log10(width + 0.5)
+		context.region.data.view_camera_zoom = zoom
+
+		context.region.data.view_camera_offset[0] = 0.5 * x
+		context.region.data.view_camera_offset[1] = 0.5 * y * 16 / 9
+		# BUG offset y is bugged in blender, idk
+		
+		return {'FINISHED'}
+
+# regions[5].data.view_perspective == 'CAMERA'

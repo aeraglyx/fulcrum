@@ -4,7 +4,7 @@ from .functions import *
 
 
 
-# --- TOPBAR ---
+# ---------------- TOPBAR ----------------
 
 from .ops.file_stuff import is_current_file_version
 
@@ -37,7 +37,7 @@ def draw_topbar(self, context):
 
 
 
-# --- PROPERTIES ---
+# ---------------- PROPERTIES ----------------
 
 class AX_PT_render(bpy.types.Panel):
 	
@@ -66,43 +66,17 @@ class AX_PT_data(bpy.types.Panel):
 		row = layout.row()
 		row.operator("ax.vert_group_2_col", icon='COLOR')
 
-class AX_PT_physics(bpy.types.Panel):
-	
-	bl_space_type = "PROPERTIES"
-	bl_region_type = "WINDOW"
-	bl_context = "physics"
-	bl_label = "Fulcrum"
-
-	def draw(self, context):
-		layout = self.layout
-		row = layout.row()
-		row.operator("ax.cloth_vert_mass", icon='MOD_VERTEX_WEIGHT')
 
 
-# --- NODE EDITOR ---
 
-# class AX_PT_node_group(bpy.types.Panel):
-	
-# 	bl_space_type = "NODE_EDITOR"
-# 	bl_region_type = "UI"
-# 	bl_category = "Group"
-# 	bl_label = "Fulcrum"
+# ---------------- NODE EDITOR ----------------
 
-# 	def draw(self, context):
-
-# 		layout = self.layout
-
-# 		col = layout.column(align=True)
-# 		col.label(text="GN Defaults:")
-# 		row = col.row(align=True)
-# 		row.operator("ax.set_gn_defaults", text="Set")
-# 		row.operator("ax.reset_gn_defaults", text="Reset")
-
-class AX_PT_fulcrum_node(bpy.types.Panel):
-	
+class NodePanel(bpy.types.Panel):
 	bl_space_type = "NODE_EDITOR"
 	bl_region_type = "UI"
 	bl_category = "Fulcrum"
+
+class AX_PT_fulcrum_node(NodePanel, bpy.types.Panel):
 	bl_label = "FULCRUM"
 	bl_options = {'DEFAULT_CLOSED'}
 
@@ -114,13 +88,9 @@ class AX_PT_fulcrum_node(bpy.types.Panel):
 			layout.label(text="Blender restart needed.", icon='SEQUENCE_COLOR_07')
 		else:
 			layout.label(text=f"v{get_addon_version('Fulcrum')}")
-		# col.prop(context.scene.fulcrum, 'dev')
+		# col.prop(context.scene.fulcrum, 'experimental')
 		
-class AX_PT_node_tools(bpy.types.Panel):
-	
-	bl_space_type = "NODE_EDITOR"
-	bl_region_type = "UI"
-	bl_category = "Fulcrum"
+class AX_PT_node_tools(NodePanel, bpy.types.Panel):
 	bl_label = "Node Tools"
 
 	def draw(self, context):
@@ -166,28 +136,16 @@ class AX_PT_node_tools(bpy.types.Panel):
 		row.operator("ax.align_nodes", text="Auto")
 		row.operator("ax.center_nodes", text="Center")
 		row.operator("ax.nodes_to_grid", text="Grid")
-		if context.scene.fulcrum.dev:
+		if context.preferences.addons['fulcrum'].preferences.experimental:
 			col.operator("ax.align_nodes_v2", icon='ALIGN_CENTER')
 			col.operator("ax.color_node_flow", icon='COLOR')
 			col.operator("ax.randomize_node_color", icon='COLOR')
 
-		# col = layout.column(align=True)
-		# col.label(text="Find:", icon='VIEWZOOM')
-		# row = col.row(align=True)
-		# row.operator("ax.select_node_inputs", text="Inputs")
-		# row.operator("ax.select_node_dependencies", text="Deps")
-		# row = col.row(align=True)
-		# row.operator("ax.select_group_inputs", text="Group Inputs")
-		# row.operator("ax.select_unused_nodes", text="Unused")
-
-		if context.scene.fulcrum.dev:
+		if context.preferences.addons['fulcrum'].preferences.experimental:
 			col = layout.column(align=True)
 			col.prop(context.scene.fulcrum, 'use_node_handler')
 			if context.scene.fulcrum.use_node_handler:
 				col.prop(context.scene.fulcrum, 'node_vis_type', text='')
-
-		# col = layout.column(align=True)
-		# col.label(text="Node Size:", icon='FIXED_SIZE')
 		
 		# col = layout.column(align=True)
 		# row = col.row(align=True)
@@ -209,17 +167,13 @@ class AX_PT_node_tools(bpy.types.Panel):
 				both.mat = True
 				both.obj = True
 
-		if context.scene.fulcrum.dev:
+		if context.preferences.addons['fulcrum'].preferences.experimental:
 			col = layout.column(align=True)
 			row = col.row(align=True)
 			row.operator("ax.version_encode", text="Encode", icon='SYSTEM')
 			row.operator("ax.version_decode", text="Decode", icon='ZOOM_ALL')
 
-class AX_PT_node_group(bpy.types.Panel):
-	
-	bl_space_type = "NODE_EDITOR"
-	bl_region_type = "UI"
-	bl_category = "Fulcrum"
+class AX_PT_node_group(NodePanel, bpy.types.Panel):
 	bl_label = "Group"
 
 	@classmethod
@@ -241,11 +195,7 @@ class AX_PT_node_group(bpy.types.Panel):
 		# row.operator("ax.set_gn_defaults", text="(Set Defaults)")
 		# row.operator("ax.reset_gn_defaults", text="(Reset Defaults)")
 
-class AX_PT_compositor(bpy.types.Panel):
-	
-	bl_space_type = "NODE_EDITOR"
-	bl_region_type = "UI"
-	bl_category = "Fulcrum"
+class AX_PT_compositor(NodePanel, bpy.types.Panel):
 	bl_label = "Compositor"
 	
 	@classmethod
@@ -264,11 +214,7 @@ class AX_PT_compositor(bpy.types.Panel):
 		col = layout.column(align=True)
 		col.operator("ax.prepare_for_render", icon='RESTRICT_RENDER_OFF')
 
-class AX_PT_find_nodes(bpy.types.Panel):
-	
-	bl_space_type = "NODE_EDITOR"
-	bl_region_type = "UI"
-	bl_category = "Fulcrum"
+class AX_PT_find_nodes(NodePanel, bpy.types.Panel):
 	bl_label = "Find"
 	bl_options = {'DEFAULT_CLOSED'}
 
@@ -283,11 +229,7 @@ class AX_PT_find_nodes(bpy.types.Panel):
 		row.operator("ax.select_group_inputs", text="Group Inputs")
 		row.operator("ax.select_unused_nodes", text="Unused")
 
-class AX_PT_optimization(bpy.types.Panel):
-	
-	bl_space_type = "NODE_EDITOR"
-	bl_region_type = "UI"
-	bl_category = "Fulcrum"
+class AX_PT_optimization(NodePanel, bpy.types.Panel):
 	bl_label = "Optimization"
 	bl_options = {'DEFAULT_CLOSED'}
 	
@@ -304,11 +246,7 @@ class AX_PT_optimization(bpy.types.Panel):
 		col.label(text=f"Ratio: {props.result:.3f}", icon='SETTINGS')  # UV_SYNC_SELECT CONSTRAINT SETTINGS
 		col.label(text=f"Confidence: {props.confidence*100:.0f}%", icon='RNDCURVE')  # INDIRECT_ONLY_ON RNDCURVE
 
-class AX_PT_utility_node(bpy.types.Panel):
-	
-	bl_space_type = "NODE_EDITOR"
-	bl_region_type = "UI"
-	bl_category = "Fulcrum"
+class AX_PT_utility_node(NodePanel, bpy.types.Panel):
 	bl_label = "Utility"
 
 	def draw(self, context):
@@ -323,13 +261,15 @@ class AX_PT_utility_node(bpy.types.Panel):
 
 
 
-# --- VIEW 3D ---
+# ---------------- VIEW 3D ----------------
 
-class AX_PT_fulcrum_3d(bpy.types.Panel):
+class View3DPanel(bpy.types.Panel):
 	
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"
 	bl_category = "Fulcrum"
+
+class AX_PT_fulcrum_3d(View3DPanel, bpy.types.Panel):
 	bl_label = "FULCRUM"
 	bl_options = {'DEFAULT_CLOSED'}
 
@@ -337,13 +277,9 @@ class AX_PT_fulcrum_3d(bpy.types.Panel):
 		layout = self.layout
 		# col = layout.column(align=True)
 		layout.operator("ax.update_fulcrum", text="Update", icon='FILE_REFRESH')
-		# col.prop(context.scene.fulcrum, 'dev')
+		# col.prop(context.scene.fulcrum, 'experimental')
 
-class AX_PT_3d_stuff(bpy.types.Panel):
-	
-	bl_space_type = "VIEW_3D"
-	bl_region_type = "UI"
-	bl_category = "Fulcrum"
+class AX_PT_3d_stuff(View3DPanel, bpy.types.Panel):
 	bl_label = "Stuff"
 
 	def draw(self, context):
@@ -357,16 +293,13 @@ class AX_PT_3d_stuff(bpy.types.Panel):
 		col.operator("ax.duplicates_to_instances", icon='MOD_INSTANCE')
 		# col.operator("ax.hybrid_subdiv", icon='MOD_SUBSURF')
 		
-		if context.scene.fulcrum.dev:
+		if context.preferences.addons['fulcrum'].preferences.experimental:
 			col = layout.column(align=True)
 			col.operator("ax.locate_vertex", icon='VERTEXSEL')
 			col.operator("ax.locate_vertices", icon='SNAP_VERTEX')
+			col.operator("ax.center_render_region", icon='BORDERMOVE')
 
-class AX_PT_camera(bpy.types.Panel):
-	
-	bl_space_type = "VIEW_3D"
-	bl_region_type = "UI"
-	bl_category = "Fulcrum"
+class AX_PT_camera(View3DPanel, bpy.types.Panel):
 	bl_label = "Camera"
 
 	def draw(self, context):
@@ -382,7 +315,7 @@ class AX_PT_camera(bpy.types.Panel):
 
 		# ARROW_LEFTRIGHT
 		col = layout.column(align=True)
-		col.label(text = "Set Passepartout:")
+		col.label(text="Set Passepartout:")
 		row = col.row(align=True)
 		passepartout_none = row.operator("ax.passepartout", text="None")
 		passepartout_none.alpha = 0.0
@@ -391,11 +324,7 @@ class AX_PT_camera(bpy.types.Panel):
 		passepartout_full = row.operator("ax.passepartout", text="Full")
 		passepartout_full.alpha = 1.0
 
-class AX_PT_3d_axis_selection(bpy.types.Panel):
-	
-	bl_space_type = "VIEW_3D"
-	bl_region_type = "UI"
-	bl_category = "Fulcrum"
+class AX_PT_3d_axis_selection(View3DPanel, bpy.types.Panel):
 	bl_label = "Axis Selection"
 	bl_options = {'DEFAULT_CLOSED'}
 
@@ -423,11 +352,7 @@ class AX_PT_3d_axis_selection(bpy.types.Panel):
 		row = col.row(align=True)
 		row.prop(transform.properties, "constraint_axis", text="", toggle=True, slider=True)
 
-class AX_PT_paint(bpy.types.Panel):
-	
-	bl_space_type = "VIEW_3D"
-	bl_region_type = "UI"
-	bl_category = "Fulcrum"
+class AX_PT_paint(View3DPanel, bpy.types.Panel):
 	bl_label = "Paint"
 
 	@classmethod
@@ -467,11 +392,7 @@ class AX_PT_paint(bpy.types.Panel):
 			props = row.operator("ax.set_weight_brush", text="1.0", icon='NONE')
 			props.weight = 1.0
 
-class AX_PT_utility_3d(bpy.types.Panel):
-	
-	bl_space_type = "VIEW_3D"
-	bl_region_type = "UI"
-	bl_category = "Fulcrum"
+class AX_PT_utility_3d(View3DPanel, bpy.types.Panel):
 	bl_label = "Utility"
 
 	def draw (self, context):

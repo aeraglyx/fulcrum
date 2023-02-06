@@ -3,7 +3,7 @@ bl_info = {
 	"author": "Vladislav Macíček (Aeraglyx)",
 	"description": "All kinds of tools",
 	"blender": (3, 4, 0),
-	"version": (0, 1, 18),
+	"version": (0, 1, 19),
 	"location": "Everywhere. Mostly in node editor and 3D viewport.",
 	"doc_url": "https://github.com/aeraglyx/fulcrum",
 	"category": 'User Interface',
@@ -51,7 +51,6 @@ from .ops.three_d import (
 	AX_OT_locate_vertex,
 	AX_OT_locate_vertices,
 	AX_OT_duplicates_to_instances,
-	AX_OT_cloth_vert_mass,
 	AX_OT_hybrid_subdiv,
 	AX_OT_obj_backup,
 	AX_OT_vert_group_2_col)
@@ -62,11 +61,13 @@ from .ops.camera import (
 	AX_OT_frame_range_from_cam,
 	AX_OT_set_resolution,
 	AX_OT_set_aspect_ratio,
-	AX_OT_passepartout)
+	AX_OT_passepartout,
+	AX_OT_center_render_region)
 from .ops.paint import AX_OT_set_paint_brush, AX_OT_set_weight_brush
 from .ops.compare import AX_OT_compare, AX_OT_benchmark
-from .props import fulcrum_props
 from .ops.copy_pasta import AX_OT_copy_nodes, AX_OT_paste_nodes
+from .props import fulcrum_props
+from .prefs import FulcrumPreferences
 from .ui import (
 	AX_PT_fulcrum_node,
 	AX_PT_node_tools,
@@ -79,7 +80,6 @@ from .ui import (
 	AX_PT_fulcrum_3d,
 	AX_PT_render,
 	AX_PT_data,
-	AX_PT_physics,
 	# AX_PT_versioning,
 	AX_PT_paint,
 	AX_PT_utility_3d,
@@ -89,6 +89,7 @@ from .ui import (
 	draw_topbar)
 
 classes = (
+	FulcrumPreferences,
 	fulcrum_props,
 	
 	AX_OT_benchmark,
@@ -140,6 +141,7 @@ classes = (
 	AX_OT_projection_setup,
 	AX_OT_frame_range_from_cam,
 	AX_OT_passepartout,
+	AX_OT_center_render_region,
 	AX_OT_set_aspect_ratio,
 	AX_OT_set_resolution,
 
@@ -147,7 +149,6 @@ classes = (
 	AX_OT_locate_vertex,
 	AX_OT_locate_vertices,
 	AX_OT_duplicates_to_instances,
-	AX_OT_cloth_vert_mass,
 	AX_OT_obj_backup,
 
 	# AX_PT_versioning,
@@ -169,7 +170,6 @@ classes = (
 
 	AX_PT_render,
 	AX_PT_data,
-	AX_PT_physics,
 )
 
 addon_keymaps = []
