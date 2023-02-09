@@ -363,9 +363,9 @@ class AX_PT_paint(View3DPanel, bpy.types.Panel):
 
 	@classmethod
 	def poll(cls, context):
-		weight = context.mode == 'PAINT_WEIGHT'
-		paint = context.mode == 'PAINT_VERTEX'
-		return weight or paint
+		is_weight = context.mode == 'PAINT_WEIGHT'
+		is_paint = context.mode == 'PAINT_VERTEX'
+		return is_weight or is_paint
 
 	def draw(self, context):
 		layout = self.layout
@@ -408,4 +408,6 @@ class AX_PT_utility_3d(View3DPanel, bpy.types.Panel):
 		col.operator("ax.open_blend_dir", icon='FILE_BACKUP')
 		col.operator("ax.open_script_dir", icon='SCRIPT')  # FOLDER_REDIRECT  SCRIPT
 		
-		layout.operator("wm.console_toggle", icon='CONSOLE')
+		col = layout.column(align=True)
+		col.operator("ax.open_addon_preferences", text="Addon Preferences", icon='PREFERENCES')
+		col.operator("wm.console_toggle", icon='CONSOLE')

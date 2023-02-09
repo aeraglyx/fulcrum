@@ -19,7 +19,7 @@ class AX_OT_anim_time_limit(bpy.types.Operator):
 	
 	time_needed: bpy.props.FloatProperty(
 		name = "Time",
-		description = "How much time you want the render to take (in minutes)",
+		description = "How much time you want the render to take",
 		unit = 'TIME_ABSOLUTE',
 		step = 100,
 		min = 0, default = 3600, soft_max = 86400
@@ -53,8 +53,11 @@ class AX_OT_anim_time_limit(bpy.types.Operator):
 		time_limit = self.multiplier * self.time_needed / frames
 		context.scene.cycles.time_limit = time_limit
 
-		self.report({'INFO'}, f"Time Limit set to {time_limit} s")  # TODO round and use appropriate units
+		self.report({'INFO'}, f"Time Limit set to {time_limit:.2f}s per frame")  # TODO use appropriate units
 		return {'FINISHED'}
+
+		# TODO deprecate custom frame range?
+		# TODO number of nodes etc. for render farm?
 
 	def invoke(self, context, event):
 
@@ -67,16 +70,16 @@ class AX_OT_anim_time_limit(bpy.types.Operator):
 		layout.use_property_split = True
 		layout.use_property_decorate = False
 
-		col = layout.column(align = True)
+		col = layout.column(align=True)
 		col.prop(self, "time_needed")
 		col.prop(self, "multiplier")
 
-		heading = layout.column(align = True, heading = "Custom Frame Range")
-		row = heading.row(align = True)
-		row.prop(self, "custom_range", text = "")
-		sub = row.row(align = True)
+		heading = layout.column(align=True, heading="Custom Frame Range")
+		row = heading.row(align=True)
+		row.prop(self, "custom_range", text="")
+		sub = row.row(align=True)
 		sub.active = self.custom_range
-		sub.prop(self, "frames", text = "")
+		sub.prop(self, "frames", text="")
 
 
 

@@ -101,6 +101,8 @@ class AX_OT_locate_vertices(bpy.types.Operator):
 
 		self.report({'INFO'}, f"Found {found} out of {len(indices)} vertices.")
 		return {'FINISHED'}
+
+		# TODO combine single vertex and multiple vertices search to one op?
 	
 	def invoke(self, context, event):
 		wm = context.window_manager

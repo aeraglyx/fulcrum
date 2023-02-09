@@ -119,21 +119,23 @@ class AX_OT_open_script_dir(bpy.types.Operator):
 		os.startfile(path)
 		return {'FINISHED'}
 
+class AX_OT_open_addon_preferences(bpy.types.Operator):
+	
+	bl_idname = "ax.open_addon_preferences"
+	bl_label = "Open Addon Preferences"
+	bl_description = "Open Preferences and Find Fulcrum"
+
+	def execute(self, context):
+		bpy.ops.screen.userpref_show()
+		bpy.context.preferences.active_section = 'ADDONS'
+		bpy.data.window_managers["WinMan"].addon_search = "fulcrum"
+		# bpy.ops.preferences.addon_expand(module="fulcrum")
+		return {'FINISHED'}
 
 
 
 
-
-# import subprocess
-# import sys
-# import os
-
-# python_exe = os.path.join(sys.prefix, 'bin', 'python.exe')
-# subprocess.call([python_exe, "-m", "ensurepip"])
-# subprocess.call([python_exe, "-m", "pip", "install", "--upgrade", "pip"])
-# subprocess.call([python_exe, "-m", "pip", "install", "urllib"])
-
-import requests, zipfile, io, shutil, addon_utils
+import requests, zipfile, io, shutil
 
 class AX_OT_update_fulcrum(bpy.types.Operator):
 	

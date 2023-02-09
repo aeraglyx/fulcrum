@@ -3,7 +3,7 @@ bl_info = {
 	"author": "Vladislav Macíček (Aeraglyx)",
 	"description": "All kinds of tools",
 	"blender": (3, 4, 0),
-	"version": (0, 1, 19),
+	"version": (0, 1, 20),
 	"location": "Everywhere. Mostly in node editor and 3D viewport.",
 	"doc_url": "https://github.com/aeraglyx/fulcrum",
 	"category": 'User Interface',
@@ -20,15 +20,8 @@ from .ops.file_stuff import (
 	AX_OT_save_as_new_version,
 	AX_OT_go_to_latest_version,
 	AX_OT_open_script_dir,
-	AX_OT_open_blend_dir)
-from .ops.render import (
-	AX_OT_set_render_passes,
-	AX_OT_anim_time_limit,
-	AX_OT_render_to_new_slot,
-	AX_OT_set_output_directory,
-	AX_OT_prepare_for_render,
-	AX_OT_compositor_increment_version,
-	AX_OT_view_layers_to_muted_nodes)
+	AX_OT_open_blend_dir,
+	AX_OT_open_addon_preferences)
 from .ops.nodes import (
 	AX_OT_select_node_inputs,
 	AX_OT_select_node_dependencies,
@@ -49,6 +42,14 @@ from .ops.nodes import (
 	AX_OT_set_node_color,
 	AX_OT_reset_node_color,
 	AX_OT_set_node_size)
+from .ops.render import (
+	AX_OT_set_render_passes,
+	AX_OT_anim_time_limit,
+	AX_OT_render_to_new_slot,
+	AX_OT_set_output_directory,
+	AX_OT_prepare_for_render,
+	AX_OT_compositor_increment_version,
+	AX_OT_view_layers_to_muted_nodes)
 from .ops.node_versioning import AX_OT_version_encode, AX_OT_version_decode
 from .ops.three_d import (
 	AX_OT_locate_vertex,
@@ -66,11 +67,14 @@ from .ops.camera import (
 	AX_OT_set_aspect_ratio,
 	AX_OT_passepartout,
 	AX_OT_center_render_region)
+
 from .ops.paint import AX_OT_set_paint_brush, AX_OT_set_weight_brush
 from .ops.compare import AX_OT_compare, AX_OT_benchmark
 from .ops.copy_pasta import AX_OT_copy_nodes, AX_OT_paste_nodes
+
 from .props import fulcrum_props
 from .prefs import FulcrumPreferences
+
 from .ui import (
 	draw_topbar,
 	draw_outliner,
@@ -82,11 +86,10 @@ from .ui import (
 	AX_PT_compositor,
 	AX_PT_find_nodes,
 	AX_PT_utility_node,
-	# AX_PT_node_group,
+
 	AX_PT_fulcrum_3d,
 	AX_PT_render,
 	AX_PT_data,
-	# AX_PT_versioning,
 	AX_PT_paint,
 	AX_PT_utility_3d,
 	AX_PT_camera,
@@ -109,6 +112,7 @@ classes = (
 	AX_OT_open_blend_dir,
 	AX_OT_save_as_new_version,
 	AX_OT_go_to_latest_version,
+	AX_OT_open_addon_preferences,
 	
 	AX_OT_select_node_inputs,
 	AX_OT_select_node_dependencies,
