@@ -41,7 +41,7 @@ def draw_outliner(self, context):
 
 def draw_timeline(self, context):
 
-	if context.area.ui_type == 'TIMELINE' and context.region.alignment == 'RIGHT':
+	if context.area.ui_type == 'TIMELINE':
 		frame_count = context.scene.frame_end - context.scene.frame_start + 1
 		self.layout.label(text=f"{frame_count}")
 
