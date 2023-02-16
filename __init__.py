@@ -3,7 +3,7 @@ bl_info = {
 	"author": "Vladislav Macíček (Aeraglyx)",
 	"description": "All kinds of tools",
 	"blender": (3, 4, 0),
-	"version": (0, 1, 20),
+	"version": (0, 1, 21),
 	"location": "Everywhere. Mostly in node editor and 3D viewport.",
 	"doc_url": "https://github.com/aeraglyx/fulcrum",
 	"category": 'User Interface',
@@ -276,7 +276,7 @@ def register():
 	
 	bpy.types.TOPBAR_HT_upper_bar.append(draw_topbar)
 	bpy.types.OUTLINER_HT_header.append(draw_outliner)
-	bpy.types.DOPESHEET_HT_header.prepend(draw_timeline)
+	bpy.types.DOPESHEET_HT_header.append(draw_timeline)
 	# bpy.app.handlers.depsgraph_update_post.append(ax_depsgraph_handler)
 	bpy.app.handlers.load_post.append(set_restart_needed_flag)
 	
