@@ -39,6 +39,11 @@ def draw_outliner(self, context):
 	if context.space_data.display_mode == 'SCENES':
 		self.layout.operator("ax.view_layers_to_muted_nodes", text="", icon='TRIA_LEFT')
 
+def draw_timeline(self, context):
+
+	frame_count = context.scene.frame_end - context.scene.frame_start + 1
+	self.layout.label(text=f"{frame_count}")
+
 
 
 
