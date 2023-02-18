@@ -19,6 +19,6 @@ class FulcrumPreferences(bpy.types.AddonPreferences):
 		layout = self.layout
 		layout.prop(self, 'experimental')
 		
-		layout.operator("ax.update_fulcrum", text="Update", icon='FILE_REFRESH')
+		layout.operator("fulcrum.update_fulcrum", text="Update", icon='FILE_REFRESH')
 		if context.scene.fulcrum.restart_needed:
 			layout.label(text="Updated. Blender needs restarting.", icon='SEQUENCE_COLOR_07')

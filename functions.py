@@ -159,9 +159,13 @@ def get_original_tree(tree, context):
 def is_original_tree(tree, context):
 	return get_original_tree(tree, context) == tree
 
+def is_node_group(tree):
+	# tree.inputs
+	# return get_original_tree(tree, context) != tree
+	return tree in bpy.data.node_groups
+
 def get_output_nodes(context):
 	tree = context.space_data.edit_tree
-	# print(tree.type)
 	nodes = tree.nodes
 	if is_original_tree(tree, context):
 		if tree.type == 'GEOMETRY':

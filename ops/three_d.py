@@ -4,9 +4,9 @@ import re
 import random
 
 
-class AX_OT_locate_vertex(bpy.types.Operator):
+class FULCRUM_OT_locate_vertex(bpy.types.Operator):
 
-	bl_idname = "ax.locate_vertex"
+	bl_idname = "fulcrum.locate_vertex"
 	bl_label = "Locate Vertex"
 	bl_description = "Select a vertex based on its ID"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -62,9 +62,9 @@ class AX_OT_locate_vertex(bpy.types.Operator):
 		layout = self.layout
 		layout.prop(self, "index")
 
-class AX_OT_locate_vertices(bpy.types.Operator):
+class FULCRUM_OT_locate_vertices(bpy.types.Operator):
 
-	bl_idname = "ax.locate_vertices"
+	bl_idname = "fulcrum.locate_vertices"
 	bl_label = "Locate Vertices"
 	bl_description = "Select vertices based on a list of IDs"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -112,9 +112,9 @@ class AX_OT_locate_vertices(bpy.types.Operator):
 		layout = self.layout
 		layout.prop(self, "indices_str")
 
-class AX_OT_hybrid_subdiv(bpy.types.Operator):
+class FULCRUM_OT_hybrid_subdiv(bpy.types.Operator):
 
-	bl_idname = "ax.hybrid_subdiv"
+	bl_idname = "fulcrum.hybrid_subdiv"
 	bl_label = "Hybrid Subdivision"
 	bl_description = "..."
 	bl_options = {'REGISTER', 'UNDO'}
@@ -181,9 +181,9 @@ class AX_OT_hybrid_subdiv(bpy.types.Operator):
 		
 		layout.prop(self, "shade_smooth")
 
-class AX_OT_vert_group_2_col(bpy.types.Operator):
+class FULCRUM_OT_vert_group_2_col(bpy.types.Operator):
 	
-	bl_idname = "ax.vert_group_2_col"
+	bl_idname = "fulcrum.vert_group_2_col"
 	bl_label = "Groups to Colors"
 	bl_description = ""
 	
@@ -220,9 +220,9 @@ class AX_OT_vert_group_2_col(bpy.types.Operator):
 
 		return {'FINISHED'}
 
-class AX_OT_duplicates_to_instances(bpy.types.Operator):
+class FULCRUM_OT_duplicates_to_instances(bpy.types.Operator):
 	
-	bl_idname = "ax.duplicates_to_instances"
+	bl_idname = "fulcrum.duplicates_to_instances"
 	bl_label = "Duplicates to Instances"
 	bl_description = "Find objects with with duplicate meshes, make them use the same instance of mesh and remove the redundant data"
 	
@@ -281,9 +281,9 @@ class AX_OT_duplicates_to_instances(bpy.types.Operator):
 
 		return {'FINISHED'}
 
-class AX_OT_obj_backup(bpy.types.Operator):
+class FULCRUM_OT_obj_backup(bpy.types.Operator):
 	
-	bl_idname = "ax.obj_backup"
+	bl_idname = "fulcrum.obj_backup"
 	bl_label = "Backup Object"
 	bl_description = ""
 	

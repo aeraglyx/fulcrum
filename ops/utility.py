@@ -2,9 +2,9 @@ import bpy
 import os
 import subprocess
 
-class AX_OT_open_script_dir(bpy.types.Operator):
+class FULCRUM_OT_open_script_dir(bpy.types.Operator):
 	
-	bl_idname = "ax.open_script_dir"
+	bl_idname = "fulcrum.open_script_dir"
 	bl_label = "Open Script Directory"
 	bl_description = ""
 	bl_options = {'REGISTER', 'UNDO'}
@@ -14,9 +14,9 @@ class AX_OT_open_script_dir(bpy.types.Operator):
 		os.startfile(path)
 		return {'FINISHED'}
 
-class AX_OT_open_blend_dir(bpy.types.Operator):
+class FULCRUM_OT_open_blend_dir(bpy.types.Operator):
 	
-	bl_idname = "ax.open_blend_dir"
+	bl_idname = "fulcrum.open_blend_dir"
 	bl_label = "Open BLEND Directory"
 	bl_description = ""
 	bl_options = {'REGISTER', 'UNDO'}

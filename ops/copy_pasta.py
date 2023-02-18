@@ -23,9 +23,9 @@ def node_centroid(nodes):
 	return node_center / n
 
 
-class AX_OT_copy_nodes(bpy.types.Operator):
+class FULCRUM_OT_copy_nodes(bpy.types.Operator):
 	
-	bl_idname = "ax.copy_nodes"
+	bl_idname = "fulcrum.copy_nodes"
 	bl_label = "Copy Nodes"
 	bl_description = "Copy selected nodes to clipboard"
 	
@@ -151,9 +151,9 @@ class AX_OT_copy_nodes(bpy.types.Operator):
 		return {'FINISHED'}
 
 
-class AX_OT_paste_nodes(bpy.types.Operator):
+class FULCRUM_OT_paste_nodes(bpy.types.Operator):
 	
-	bl_idname = "ax.paste_nodes"
+	bl_idname = "fulcrum.paste_nodes"
 	bl_label = "Paste Nodes"
 	bl_description = ""
 	

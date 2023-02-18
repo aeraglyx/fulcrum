@@ -58,9 +58,9 @@ def is_current_file_version():
 
 
 
-class AX_OT_save_as_new_version(bpy.types.Operator):
+class FULCRUM_OT_save_as_new_version(bpy.types.Operator):
 	
-	bl_idname = "ax.save_as_new_version"
+	bl_idname = "fulcrum.save_as_new_version"
 	bl_label = "Save as New Version"
 	bl_description = "This will work even if the current file is not the latest version"
 
@@ -78,9 +78,9 @@ class AX_OT_save_as_new_version(bpy.types.Operator):
 		# TODO save versions in a subfolder
 		return {'FINISHED'}
 
-class AX_OT_go_to_latest_version(bpy.types.Operator):
+class FULCRUM_OT_go_to_latest_version(bpy.types.Operator):
 	
-	bl_idname = "ax.go_to_latest_version"
+	bl_idname = "fulcrum.go_to_latest_version"
 	bl_label = "Jump to Latest Version"
 	bl_description = "Opens the latest version of this file from the same directory"
 
@@ -93,9 +93,9 @@ class AX_OT_go_to_latest_version(bpy.types.Operator):
 		bpy.ops.wm.open_mainfile(filepath=latest_file)
 		return {'FINISHED'}
 
-class AX_OT_open_blend_dir(bpy.types.Operator):
+class FULCRUM_OT_open_blend_dir(bpy.types.Operator):
 	
-	bl_idname = "ax.open_blend_dir"
+	bl_idname = "fulcrum.open_blend_dir"
 	bl_label = "Find .blend File"
 	bl_description = "Opens file explorer with the current Blender file selected"
 
@@ -108,9 +108,9 @@ class AX_OT_open_blend_dir(bpy.types.Operator):
 		subprocess.Popen('explorer /select,"' + path + '"')
 		return {'FINISHED'}
 
-class AX_OT_open_script_dir(bpy.types.Operator):
+class FULCRUM_OT_open_script_dir(bpy.types.Operator):
 	
-	bl_idname = "ax.open_script_dir"
+	bl_idname = "fulcrum.open_script_dir"
 	bl_label = "Find Script Directory"
 	bl_description = "Opens folder with addons and themes"
 
@@ -119,9 +119,9 @@ class AX_OT_open_script_dir(bpy.types.Operator):
 		os.startfile(path)
 		return {'FINISHED'}
 
-class AX_OT_open_addon_preferences(bpy.types.Operator):
+class FULCRUM_OT_open_addon_preferences(bpy.types.Operator):
 	
-	bl_idname = "ax.open_addon_preferences"
+	bl_idname = "fulcrum.open_addon_preferences"
 	bl_label = "Open Addon Preferences"
 	bl_description = "Open Preferences and Find Fulcrum"
 
@@ -137,9 +137,9 @@ class AX_OT_open_addon_preferences(bpy.types.Operator):
 
 import requests, zipfile, io, shutil
 
-class AX_OT_update_fulcrum(bpy.types.Operator):
+class FULCRUM_OT_update_fulcrum(bpy.types.Operator):
 	
-	bl_idname = "ax.update_fulcrum"
+	bl_idname = "fulcrum.update_fulcrum"
 	bl_label = "Update Fulcrum"
 	bl_description = "Update this addon. Blender will need to be restarted"
 

@@ -8,11 +8,11 @@ from ..functions import *
 
 
 
-class AX_OT_align_nodes(bpy.types.Operator):
+class FULCRUM_OT_align_nodes(bpy.types.Operator):
 
 	# layered graph drawing
 	
-	bl_idname = "ax.align_nodes"
+	bl_idname = "fulcrum.align_nodes"
 	bl_label = "Align Nodes"
 	bl_description = "Automatically align all the nodes preceding the selection"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -98,11 +98,11 @@ class AX_OT_align_nodes(bpy.types.Operator):
 		layout.prop(self, "spacing")
 		layout.prop(self, "test")
 
-class AX_OT_align_nodes_v2(bpy.types.Operator):
+class FULCRUM_OT_align_nodes_v2(bpy.types.Operator):
 
 	# layered graph drawing
 	
-	bl_idname = "ax.align_nodes_v2"
+	bl_idname = "fulcrum.align_nodes_v2"
 	bl_label = "Align Nodes (Force Directed)"
 	bl_description = "Automatically align all the nodes preceding the selection"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -258,11 +258,11 @@ class AX_OT_align_nodes_v2(bpy.types.Operator):
 		layout.prop(self, "repulsion")
 		layout.prop(self, "angle")
 
-class AX_OT_align_nodes_v3(bpy.types.Operator):
+class FULCRUM_OT_align_nodes_v3(bpy.types.Operator):
 
 	# layered graph drawing
 	
-	bl_idname = "ax.align_nodes_v3"
+	bl_idname = "fulcrum.align_nodes_v3"
 	bl_label = "Align Nodes (FD v3)"
 	bl_description = "Automatically align all the nodes"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -368,9 +368,9 @@ class AX_OT_align_nodes_v3(bpy.types.Operator):
 		layout.prop(self, "repulsion")
 		layout.prop(self, "angle")
 
-class AX_OT_center_nodes(bpy.types.Operator):
+class FULCRUM_OT_center_nodes(bpy.types.Operator):
 	
-	bl_idname = "ax.center_nodes"
+	bl_idname = "fulcrum.center_nodes"
 	bl_label = "Center Nodes"
 	bl_description = ""
 	
@@ -402,9 +402,9 @@ class AX_OT_center_nodes(bpy.types.Operator):
 
 		return {'FINISHED'}
 
-class AX_OT_nodes_to_grid(bpy.types.Operator):
+class FULCRUM_OT_nodes_to_grid(bpy.types.Operator):
 	
-	bl_idname = "ax.nodes_to_grid"
+	bl_idname = "fulcrum.nodes_to_grid"
 	bl_label = "Nodes to Grid"
 	bl_description = ""
 	
@@ -422,9 +422,9 @@ class AX_OT_nodes_to_grid(bpy.types.Operator):
 
 
 
-class AX_OT_hide_group_inputs(bpy.types.Operator):
+class FULCRUM_OT_hide_group_inputs(bpy.types.Operator):
 	
-	bl_idname = "ax.hide_group_inputs"
+	bl_idname = "fulcrum.hide_group_inputs"
 	bl_label = "Hide Group Inputs"
 	bl_description = ""
 	
@@ -441,9 +441,9 @@ class AX_OT_hide_group_inputs(bpy.types.Operator):
 						socket.hide = True
 		return {'FINISHED'}
 
-class AX_OT_remove_unused_group_inputs(bpy.types.Operator):
+class FULCRUM_OT_remove_unused_group_inputs(bpy.types.Operator):
 	
-	bl_idname = "ax.remove_unused_group_inputs"
+	bl_idname = "fulcrum.remove_unused_group_inputs"
 	bl_label = "Remove Unused Group Inputs"
 	bl_description = ""
 	bl_options = {'UNDO'}
@@ -472,9 +472,9 @@ class AX_OT_remove_unused_group_inputs(bpy.types.Operator):
 
 
 
-class AX_OT_select_node_inputs(bpy.types.Operator):
+class FULCRUM_OT_select_node_inputs(bpy.types.Operator):
 	
-	bl_idname = "ax.select_node_inputs"
+	bl_idname = "fulcrum.select_node_inputs"
 	bl_label = "Select Node Inputs"
 	bl_description = "Show all nodes used by the selected nodes"
 	
@@ -512,9 +512,9 @@ class AX_OT_select_node_inputs(bpy.types.Operator):
 		
 		return {'FINISHED'}
 
-class AX_OT_select_node_dependencies(bpy.types.Operator):
+class FULCRUM_OT_select_node_dependencies(bpy.types.Operator):
 	
-	bl_idname = "ax.select_node_dependencies"
+	bl_idname = "fulcrum.select_node_dependencies"
 	bl_label = "Select Node Dependencies"
 	bl_description = "Show all nodes used by the selected nodes"
 	
@@ -551,9 +551,9 @@ class AX_OT_select_node_dependencies(bpy.types.Operator):
 
 		return {'FINISHED'}
 
-class AX_OT_select_group_inputs(bpy.types.Operator):
+class FULCRUM_OT_select_group_inputs(bpy.types.Operator):
 	
-	bl_idname = "ax.select_group_inputs"
+	bl_idname = "fulcrum.select_group_inputs"
 	bl_label = "Select Group Inputs"
 	bl_description = ""
 
@@ -570,9 +570,9 @@ class AX_OT_select_group_inputs(bpy.types.Operator):
 
 		return {'FINISHED'}
 
-class AX_OT_select_unused_nodes(bpy.types.Operator):
+class FULCRUM_OT_select_unused_nodes(bpy.types.Operator):
 	
-	bl_idname = "ax.select_unused_nodes"
+	bl_idname = "fulcrum.select_unused_nodes"
 	bl_label = "Select Unused Nodes"
 	bl_description = "Show all nodes used by the selected nodes"
 	
@@ -617,9 +617,9 @@ class AX_OT_select_unused_nodes(bpy.types.Operator):
 
 
 
-class AX_OT_randomize_node_color(bpy.types.Operator):
+class FULCRUM_OT_randomize_node_color(bpy.types.Operator):
 
-	bl_idname = "ax.randomize_node_color"
+	bl_idname = "fulcrum.randomize_node_color"
 	bl_label = "Randomize Node Color"
 	bl_description = "..."
 	bl_options = {'REGISTER', 'UNDO'}
@@ -657,11 +657,11 @@ class Node:
 		self.center = node_center(node)
 		self.radius = node_size(node) * 0.5
 
-class AX_OT_color_node_flow(bpy.types.Operator):
+class FULCRUM_OT_color_node_flow(bpy.types.Operator):
 
 	# layered graph drawing
 	
-	bl_idname = "ax.color_node_flow"
+	bl_idname = "fulcrum.color_node_flow"
 	bl_label = "Color Node Flow"
 	bl_description = "Automatically color all the nodes"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -756,9 +756,9 @@ class AX_OT_color_node_flow(bpy.types.Operator):
 		layout.prop(self, "repulsion")
 		layout.prop(self, "angle")
 
-class AX_OT_add_todo_note(bpy.types.Operator):
+class FULCRUM_OT_add_todo_note(bpy.types.Operator):
 	
-	bl_idname = "ax.add_todo_note"
+	bl_idname = "fulcrum.add_todo_note"
 	bl_label = "Add TODO Note"
 	bl_description = ""
 	
@@ -798,9 +798,9 @@ class AX_OT_add_todo_note(bpy.types.Operator):
 		col = layout.column(align=True)
 		col.prop(self, "note")
 
-class AX_OT_tex_to_name(bpy.types.Operator):
+class FULCRUM_OT_tex_to_name(bpy.types.Operator):
 	
-	bl_idname = "ax.tex_to_name"
+	bl_idname = "fulcrum.tex_to_name"
 	bl_label = "Tex > Mat Name"
 	bl_description = "Name material or object after image used by the active Image Texture node"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -843,11 +843,11 @@ class AX_OT_tex_to_name(bpy.types.Operator):
 
 
 
-class AX_OT_set_node_color(bpy.types.Operator):
+class FULCRUM_OT_set_node_color(bpy.types.Operator):
 	
 	""" Set custom node color """
 	
-	bl_idname = "ax.set_node_color"
+	bl_idname = "fulcrum.set_node_color"
 	bl_label = "Set Node Color"
 	bl_description = "Set custom node color"
 	
@@ -869,11 +869,11 @@ class AX_OT_set_node_color(bpy.types.Operator):
 
 		return {'FINISHED'}
 
-class AX_OT_reset_node_color(bpy.types.Operator):
+class FULCRUM_OT_reset_node_color(bpy.types.Operator):
 	
 	""" Reset custom node color """
 	
-	bl_idname = "ax.reset_node_color"
+	bl_idname = "fulcrum.reset_node_color"
 	bl_label = "Reset Node Color"
 	bl_description = "Reset custom node color"
 	
@@ -890,9 +890,9 @@ class AX_OT_reset_node_color(bpy.types.Operator):
 		
 		return {'FINISHED'}
 
-class AX_OT_set_node_size(bpy.types.Operator):
+class FULCRUM_OT_set_node_size(bpy.types.Operator):
 	
-	bl_idname = "ax.set_node_size"
+	bl_idname = "fulcrum.set_node_size"
 	bl_label = "Set Node Size"
 	bl_description = ""
 	bl_options = {'UNDO'}
@@ -914,9 +914,9 @@ class AX_OT_set_node_size(bpy.types.Operator):
 
 
 
-class AX_OT_set_gn_defaults(bpy.types.Operator):
+class FULCRUM_OT_set_gn_defaults(bpy.types.Operator):
 	
-	bl_idname = "ax.set_gn_defaults"
+	bl_idname = "fulcrum.set_gn_defaults"
 	bl_label = "Set GN Defaults"
 	bl_description = ""
 	
@@ -936,9 +936,9 @@ class AX_OT_set_gn_defaults(bpy.types.Operator):
 		
 		return {'FINISHED'}
 
-class AX_OT_reset_gn_defaults(bpy.types.Operator):
+class FULCRUM_OT_reset_gn_defaults(bpy.types.Operator):
 	
-	bl_idname = "ax.reset_gn_defaults"
+	bl_idname = "fulcrum.reset_gn_defaults"
 	bl_label = "Reset GN Defaults"
 	bl_description = ""
 	

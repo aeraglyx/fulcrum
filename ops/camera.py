@@ -8,9 +8,9 @@ def get_output_node(nodes):
 		if node.bl_idname == 'ShaderNodeOutputMaterial' and node.is_active_output == True:
 			return node
 
-class AX_OT_dof_setup(bpy.types.Operator):
+class FULCRUM_OT_dof_setup(bpy.types.Operator):
 
-	bl_idname = "ax.dof_setup"
+	bl_idname = "fulcrum.dof_setup"
 	bl_label = "DOF Setup"
 	bl_description = "Add an empty and make it the active camera's Focus Object"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -65,9 +65,9 @@ class AX_OT_dof_setup(bpy.types.Operator):
 		col = layout.column(align=True)
 		col.prop(self, "alignment")
 
-class AX_OT_isometric_setup(bpy.types.Operator):
+class FULCRUM_OT_isometric_setup(bpy.types.Operator):
 
-	bl_idname = "ax.isometric_setup"
+	bl_idname = "fulcrum.isometric_setup"
 	bl_label = "Isometric Setup"
 	bl_description = "Set up an orthographic camera for isometric view"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -166,9 +166,9 @@ class AX_OT_isometric_setup(bpy.types.Operator):
 
 from bpy_extras.io_utils import ImportHelper
 
-class AX_OT_projection_setup(bpy.types.Operator, ImportHelper):
+class FULCRUM_OT_projection_setup(bpy.types.Operator, ImportHelper):
 
-	bl_idname = "ax.projection_setup"
+	bl_idname = "fulcrum.projection_setup"
 	bl_label = "Projection Setup"
 	bl_description = "Set up camera projection"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -284,9 +284,9 @@ class AX_OT_projection_setup(bpy.types.Operator, ImportHelper):
 		
 		layout.prop(self, "shade_smooth")
 
-class AX_OT_frame_range_from_cam(bpy.types.Operator):
+class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
 	
-	bl_idname = "ax.frame_range_from_cam"
+	bl_idname = "fulcrum.frame_range_from_cam"
 	bl_label = "Frame Range from Cameras"
 	bl_description = "Set scene frame range from selected cameras. Expected format blabla_startframe_endframe"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -351,9 +351,9 @@ class AX_OT_frame_range_from_cam(bpy.types.Operator):
 		
 		return {'FINISHED'}
 
-class AX_OT_set_resolution(bpy.types.Operator):
+class FULCRUM_OT_set_resolution(bpy.types.Operator):
 	
-	bl_idname = "ax.set_resolution"
+	bl_idname = "fulcrum.set_resolution"
 	bl_label = "Set Resolution"
 	bl_description = "Changes resolution proportionally"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -373,9 +373,9 @@ class AX_OT_set_resolution(bpy.types.Operator):
 		
 		return {'FINISHED'}
 
-class AX_OT_set_aspect_ratio(bpy.types.Operator):
+class FULCRUM_OT_set_aspect_ratio(bpy.types.Operator):
 	
-	bl_idname = "ax.set_aspect_ratio"
+	bl_idname = "fulcrum.set_aspect_ratio"
 	bl_label = "Set Aspect Ratio"
 	bl_description = "Sets aspect ratio while keeping Resolution X the same"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -393,9 +393,9 @@ class AX_OT_set_aspect_ratio(bpy.types.Operator):
 		
 		return {'FINISHED'}
 
-class AX_OT_passepartout(bpy.types.Operator):
+class FULCRUM_OT_passepartout(bpy.types.Operator):
 	
-	bl_idname = "ax.passepartout"
+	bl_idname = "fulcrum.passepartout"
 	bl_label = "Set Passepartout"
 	bl_description = "Sets passepartout opacity"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -420,9 +420,9 @@ class AX_OT_passepartout(bpy.types.Operator):
 		
 		return {'FINISHED'}
 
-class AX_OT_center_render_region(bpy.types.Operator):
+class FULCRUM_OT_center_render_region(bpy.types.Operator):
 	
-	bl_idname = "ax.center_render_region"
+	bl_idname = "fulcrum.center_render_region"
 	bl_label = "Center Render Region"
 	bl_description = ""
 	bl_options = {'REGISTER', 'UNDO'}

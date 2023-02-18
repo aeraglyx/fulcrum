@@ -42,9 +42,9 @@ def has_version(name):
 		has_version = False
 	return has_version
 
-class AX_OT_version_encode(bpy.types.Operator):
+class FULCRUM_OT_version_encode(bpy.types.Operator):
 	
-	bl_idname = "ax.version_encode"
+	bl_idname = "fulcrum.version_encode"
 	bl_label = "Encode Time"
 	bl_description = "Append encoded time to the end of node group's name"
 	
@@ -68,9 +68,9 @@ class AX_OT_version_encode(bpy.types.Operator):
 		active.node_tree.name = new_name
 		return {'FINISHED'}
 
-class AX_OT_version_decode(bpy.types.Operator):
+class FULCRUM_OT_version_decode(bpy.types.Operator):
 	
-	bl_idname = "ax.version_decode"
+	bl_idname = "fulcrum.version_decode"
 	bl_label = "Decode Time"
 	bl_description = "Decode the time of last marked change"
 	

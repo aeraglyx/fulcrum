@@ -45,9 +45,9 @@ def falloff(x, g):
 	return max(0, x-1) + 0.5*g*math.pow(max(1-abs(x-1), 0), 1/g)
 
 
-class AX_OT_compare(bpy.types.Operator):
+class FULCRUM_OT_compare(bpy.types.Operator):
 	
-	bl_idname = "ax.compare"
+	bl_idname = "fulcrum.compare"
 	bl_label = "Compare Node Speed"
 	bl_description = "Compare speed of multiple nodes, useful for making optimized node groups"
 	
@@ -104,17 +104,17 @@ class AX_OT_compare(bpy.types.Operator):
 		def prepare_nodes():
 			if node.outputs[0].type == 'SHADER': # TODO fix when i select output (or any other nodes without out?)
 				links.new(node.outputs[0], output_node.inputs[0])
-				if "ax_viewer" in nodes:
-					nodes.remove(nodes.get("ax_viewer"))  # XXX or? remove on last
+				if "fulcrum_viewer" in nodes:
+					nodes.remove(nodes.get("fulcrum_viewer"))  # XXX or? remove on last
 			else:
-				if "ax_viewer" not in nodes:
+				if "fulcrum_viewer" not in nodes:
 					viewer = nodes.new(type = "ShaderNodeEmission")
 					viewer.location = output_node.location + mathutils.Vector((0, 50))
 					viewer.hide = True
-					viewer.name = "ax_viewer"
-					viewer.label = "ax_viewer"
+					viewer.name = "fulcrum_viewer"
+					viewer.label = "fulcrum_viewer"
 				
-				viewer = nodes.get("ax_viewer")
+				viewer = nodes.get("fulcrum_viewer")
 				
 				links.new(node.outputs[0], viewer.inputs[0])
 				links.new(viewer.outputs[0], output_node.inputs[0])
@@ -295,8 +295,8 @@ class AX_OT_compare(bpy.types.Operator):
 			node.color = [x**0.45 for x in oklab_hsl_2_srgb(h, 0.067, 0.44)] # gamma
 			# node.color = [x**0.45 for x in oklab_hsl_2_srgb(h, s, 0.44)] # gamma
 			# node.color = oklab_hsl_2_srgb(h, s, 0.7)
-		if "ax_viewer" in nodes:
-			nodes.remove(nodes.get("ax_viewer"))
+		if "fulcrum_viewer" in nodes:
+			nodes.remove(nodes.get("fulcrum_viewer"))
 
 
 		# restore render values
@@ -327,9 +327,9 @@ class AX_OT_compare(bpy.types.Operator):
 		layout.prop(self, "use_base")
 
 
-class AX_OT_benchmark(bpy.types.Operator):
+class FULCRUM_OT_benchmark(bpy.types.Operator):
 	
-	bl_idname = "ax.benchmark"
+	bl_idname = "fulcrum.benchmark"
 	bl_label = "Benchmark"
 	bl_description = "Get average render time"
 	

@@ -4,9 +4,9 @@ from ..functions import version_up
 import re
 
 
-class AX_OT_anim_time_limit(bpy.types.Operator):
+class FULCRUM_OT_anim_time_limit(bpy.types.Operator):
 	
-	bl_idname = "ax.anim_time_limit"
+	bl_idname = "fulcrum.anim_time_limit"
 	bl_label = "Animation Time Limit"
 	bl_description = "Estimate samples so that render takes a certain time"
 	COMPAT_ENGINES = {'CYCLES'}
@@ -101,9 +101,9 @@ def check_if_render_slot_is_used(slot):
 	# TODO delete test image ?
 	os.remove(tmp_path)  # TODO delete only once at the end ?
 
-class AX_OT_render_to_new_slot(bpy.types.Operator):
+class FULCRUM_OT_render_to_new_slot(bpy.types.Operator):
 
-	bl_idname = "ax.render_to_new_slot"
+	bl_idname = "fulcrum.render_to_new_slot"
 	bl_label = "Render to New Slot"
 	bl_description = "Render to Next Available Render Slot"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -118,9 +118,9 @@ class AX_OT_render_to_new_slot(bpy.types.Operator):
 
 		return {'FINISHED'}
 	
-class AX_OT_set_render_passes(bpy.types.Operator):
+class FULCRUM_OT_set_render_passes(bpy.types.Operator):
 
-	bl_idname = "ax.set_render_passes"
+	bl_idname = "fulcrum.set_render_passes"
 	bl_label = "Set Render Passes"
 	bl_description = "Set-up compositor nodes."
 	bl_options = {'REGISTER', 'UNDO'}
@@ -141,6 +141,11 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 	)
 	transparent: bpy.props.BoolProperty(
 		name = "Transparent",
+		description = "",
+		default = True
+	)
+	denoise: bpy.props.BoolProperty(
+		name = "Denoise",
 		description = "",
 		default = True
 	)
@@ -245,7 +250,6 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 		
 		def set_render_passes(view_layer):
 			
-			cycles_view_layer = view_layer.cycles
 			view_layer.use_pass_combined = True
 
 			view_layer.use_pass_diffuse_color = self.diffuse
@@ -260,14 +264,14 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 			view_layer.use_pass_transmission_direct = self.transmission
 			view_layer.use_pass_transmission_indirect = self.transmission
 
-			cycles_view_layer.use_pass_volume_direct = self.volume
-			cycles_view_layer.use_pass_volume_indirect = self.volume
+			view_layer.cycles.use_pass_volume_direct = self.volume
+			view_layer.cycles.use_pass_volume_indirect = self.volume
 
 			view_layer.use_pass_emit = self.emit
 			view_layer.use_pass_environment = self.env
 			view_layer.use_pass_shadow = self.shadow
 			view_layer.use_pass_ambient_occlusion = self.ao
-			cycles_view_layer.use_pass_shadow_catcher = self.shadow_catcher
+			view_layer.cycles.use_pass_shadow_catcher = self.shadow_catcher
 
 			view_layer.use_pass_z = self.z
 			view_layer.use_pass_mist = self.mist
@@ -275,6 +279,7 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 			view_layer.use_pass_normal = self.normal
 			view_layer.use_pass_vector = self.vector
 			view_layer.use_pass_uv = self.uv
+			view_layer.cycles.denoising_store_passes = self.denoise
 
 			view_layer.use_pass_cryptomatte_accurate = True
 			view_layer.use_pass_cryptomatte_asset = self.crypto_asset
@@ -395,7 +400,7 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 				make_link_1('UV', 'uv')
 			
 			nodes.active = output_node
-			bpy.ops.ax.align_nodes()
+			bpy.ops.fulcrum.align_nodes()
 			
 		return {'FINISHED'}
 
@@ -409,6 +414,7 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 		col.prop(self, "combine_dir_ind")
 		col.prop(self, "combine_light_color")
 		col.prop(self, "transparent")
+		col.prop(self, "denoise")
 		
 		col = layout.column(heading="Light", align=True)
 		col.prop(self, "diffuse")
@@ -440,9 +446,9 @@ class AX_OT_set_render_passes(bpy.types.Operator):
 
 from bpy_extras.io_utils import ImportHelper
 
-class AX_OT_set_output_directory(bpy.types.Operator, ImportHelper):
+class FULCRUM_OT_set_output_directory(bpy.types.Operator, ImportHelper):
 
-	bl_idname = "ax.set_output_directory"
+	bl_idname = "fulcrum.set_output_directory"
 	bl_label = "Set Output Directory"
 	bl_description = "Change path in Output Properties and all File Output nodes"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -479,9 +485,9 @@ class AX_OT_set_output_directory(bpy.types.Operator, ImportHelper):
 		wm = context.window_manager.fileselect_add(self)
 		return {'RUNNING_MODAL'}
 
-class AX_OT_compositor_increment_version(bpy.types.Operator):
+class FULCRUM_OT_compositor_increment_version(bpy.types.Operator):
 
-	bl_idname = "ax.compositor_increment_version"
+	bl_idname = "fulcrum.compositor_increment_version"
 	bl_label = "Increment Version"
 	bl_description = "Change filename for all File Output nodes"
 	bl_options = {'REGISTER', 'UNDO'}
@@ -500,9 +506,9 @@ class AX_OT_compositor_increment_version(bpy.types.Operator):
 
 		return {'FINISHED'}
 
-class AX_OT_prepare_for_render(bpy.types.Operator):
+class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
 
-	bl_idname = "ax.prepare_for_render"
+	bl_idname = "fulcrum.prepare_for_render"
 	bl_label = "Prep for Beaming"
 	bl_description = "..."
 	bl_options = {'REGISTER', 'UNDO'}
@@ -519,9 +525,9 @@ class AX_OT_prepare_for_render(bpy.types.Operator):
 
 		return {'FINISHED'}
 
-class AX_OT_view_layers_to_muted_nodes(bpy.types.Operator):
+class FULCRUM_OT_view_layers_to_muted_nodes(bpy.types.Operator):
 
-	bl_idname = "ax.view_layers_to_muted_nodes"
+	bl_idname = "fulcrum.view_layers_to_muted_nodes"
 	bl_label = "View Layers to Muted Nodes"
 	bl_description = "If File Output nodes are named correctly, this will mute any output nodes whose corresponding View Layer isn't used for rendering"
 	bl_options = {'REGISTER', 'UNDO'}

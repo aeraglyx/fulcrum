@@ -2,7 +2,7 @@
 
 Blender addon consisting of random tools. Mostly harmless. Contains a rudimentary self updater.
 
->> Some functionality is hidden behind *Unlimited Power* in addon preferences.
+> Some functionality is hidden behind *Unlimited Power* in addon preferences.
 
 ## Node Stuff
 <!-- - Compare speed of selected shader nodes and color them by their efficiency -->
