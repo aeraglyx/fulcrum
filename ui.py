@@ -63,7 +63,7 @@ class FULCRUM_PT_render(bpy.types.Panel):
 		row = layout.row()
 		row.operator("fulcrum.anim_time_limit", icon='RENDER_ANIMATION')
 		layout.operator("fulcrum.benchmark", icon='NONE')
-		layout.operator("fulcrum.render_to_new_slot", icon='RENDER_RESULT')
+		# layout.operator("fulcrum.render_to_new_slot", icon='RENDER_RESULT')
 
 class FULCRUM_PT_data(bpy.types.Panel):
 	
@@ -105,7 +105,6 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
 	bl_label = "Node Tools"
 
 	def draw(self, context):
-
 		layout = self.layout
 
 		col = layout.column(align=True)
@@ -192,7 +191,6 @@ class FULCRUM_PT_node_group(NodePanel, bpy.types.Panel):
 		return True  # TODO
 
 	def draw(self, context):
-
 		layout = self.layout
 
 		col = layout.column(align=True)
@@ -218,7 +216,7 @@ class FULCRUM_PT_compositor(NodePanel, bpy.types.Panel):
 		col = layout.column(align=True)
 		col.operator("fulcrum.set_render_passes", icon='NODE_COMPOSITING')
 		col.operator("fulcrum.set_output_directory", icon='FILE_FOLDER')
-		col.operator("fulcrum.compositor_increment_version", icon='TRIA_UP')
+		col.operator("fulcrum.compositor_increment_version", icon='LINENUMBERS_ON')
 		# row = col.row(align=True)
 		# row.operator("fulcrum.compositor_increment_version", text="Ver. Down", icon='TRIA_DOWN')
 		# row.operator("fulcrum.compositor_increment_version", text="Ver. Up", icon='TRIA_UP')
@@ -294,17 +292,15 @@ class FULCRUM_PT_3d_stuff(View3DPanel, bpy.types.Panel):
 	bl_label = "Stuff"
 
 	def draw(self, context):
-		
 		layout = self.layout
-
-		layout.operator("fulcrum.prepare_for_render", icon='RESTRICT_RENDER_OFF')
+		
+		layout.operator("fulcrum.edit_light_power", icon='LIGHT')
 		
 		col = layout.column(align=True)
 		col.operator("fulcrum.obj_backup", icon='DUPLICATE')
 		col.operator("fulcrum.duplicates_to_instances", icon='MOD_INSTANCE')
-		
-		layout.operator("fulcrum.edit_light_power", icon='LIGHT')
-		# col.operator("fulcrum.hybrid_subdiv", icon='MOD_SUBSURF')
+
+		layout.operator("fulcrum.prepare_for_render", icon='RESTRICT_RENDER_OFF')
 		
 		if context.preferences.addons['fulcrum'].preferences.experimental:
 			col = layout.column(align=True)
@@ -317,17 +313,16 @@ class FULCRUM_PT_camera(View3DPanel, bpy.types.Panel):
 	bl_label = "Camera"
 
 	def draw(self, context):
-
 		layout = self.layout
 		layout.operator("fulcrum.frame_range_from_cam", icon='ARROW_LEFTRIGHT')
 		layout.prop(context.area.spaces.active, "lock_camera")
 
 class FULCRUM_PT_camera_sub(View3DPanel, bpy.types.Panel):
 	bl_parent_id = "FULCRUM_PT_camera"
-	bl_label = "More"
+	bl_label = "Extra"
+	bl_options = {'DEFAULT_CLOSED'}
 
 	def draw(self, context):
-
 		layout = self.layout
 		
 		col = layout.column(align=True)
@@ -350,7 +345,6 @@ class FULCRUM_PT_3d_axis_selection(View3DPanel, bpy.types.Panel):
 	bl_options = {'DEFAULT_CLOSED'}
 
 	def draw(self, context):
-		
 		layout = self.layout
 
 		keymap_items = bpy.data.window_managers["WinMan"].keyconfigs["Blender user"].keymaps['3D View'].keymap_items

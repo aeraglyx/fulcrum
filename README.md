@@ -17,9 +17,10 @@ Blender addon consisting of random tools. Mostly harmless. Contains a rudimentar
 - Set up an Empty as a DOF controller
 - Setup camera for isometric art
 - Basic setup for projection mapping
-- Set passepartout
+- Passepartout presets
 
 ## 3D Stuff
+- Proportionally edit light intensities of all selected lights
 - Convert duplicated meshes to instances (experimental)
 - Lock certain axis
 - Locate vertices by its indices

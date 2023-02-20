@@ -56,7 +56,6 @@ from .ops.three_d import (
 	FULCRUM_OT_locate_vertices,
 	FULCRUM_OT_duplicates_to_instances,
 	FULCRUM_OT_edit_light_power,
-	FULCRUM_OT_hybrid_subdiv,
 	FULCRUM_OT_obj_backup,
 	FULCRUM_OT_vert_group_2_col)
 from .ops.camera import (
@@ -158,7 +157,6 @@ classes = (
 	FULCRUM_OT_set_aspect_ratio,
 	FULCRUM_OT_set_resolution,
 
-	FULCRUM_OT_hybrid_subdiv,
 	FULCRUM_OT_locate_vertex,
 	FULCRUM_OT_locate_vertices,
 	FULCRUM_OT_duplicates_to_instances,
