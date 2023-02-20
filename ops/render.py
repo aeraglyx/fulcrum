@@ -403,6 +403,10 @@ class FULCRUM_OT_set_render_passes(bpy.types.Operator):
 			bpy.ops.fulcrum.align_nodes()
 			
 		return {'FINISHED'}
+	
+	def invoke(self, context, event):
+		wm = context.window_manager
+		return wm.invoke_props_dialog(self)
 
 	def draw(self, context):
 

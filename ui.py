@@ -276,7 +276,6 @@ class FULCRUM_PT_utility_node(NodePanel, bpy.types.Panel):
 # ---------------- VIEW 3D ----------------
 
 class View3DPanel(bpy.types.Panel):
-	
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"
 	bl_category = "Fulcrum"
@@ -303,6 +302,8 @@ class FULCRUM_PT_3d_stuff(View3DPanel, bpy.types.Panel):
 		col = layout.column(align=True)
 		col.operator("fulcrum.obj_backup", icon='DUPLICATE')
 		col.operator("fulcrum.duplicates_to_instances", icon='MOD_INSTANCE')
+		
+		layout.operator("fulcrum.edit_light_power", icon='LIGHT')
 		# col.operator("fulcrum.hybrid_subdiv", icon='MOD_SUBSURF')
 		
 		if context.preferences.addons['fulcrum'].preferences.experimental:
@@ -312,6 +313,7 @@ class FULCRUM_PT_3d_stuff(View3DPanel, bpy.types.Panel):
 			col.operator("fulcrum.center_render_region", icon='BORDERMOVE')
 
 class FULCRUM_PT_camera(View3DPanel, bpy.types.Panel):
+	bl_idname = "FULCRUM_PT_camera"
 	bl_label = "Camera"
 
 	def draw(self, context):
@@ -319,13 +321,20 @@ class FULCRUM_PT_camera(View3DPanel, bpy.types.Panel):
 		layout = self.layout
 		layout.operator("fulcrum.frame_range_from_cam", icon='ARROW_LEFTRIGHT')
 		layout.prop(context.area.spaces.active, "lock_camera")
+
+class FULCRUM_PT_camera_sub(View3DPanel, bpy.types.Panel):
+	bl_parent_id = "FULCRUM_PT_camera"
+	bl_label = "More"
+
+	def draw(self, context):
+
+		layout = self.layout
 		
 		col = layout.column(align=True)
 		col.operator("fulcrum.isometric_setup", icon='FILE_3D')  # VIEW_ORTHO  FILE_3D
 		col.operator("fulcrum.dof_setup", icon='CAMERA_DATA')
 		col.operator("fulcrum.projection_setup", icon='MOD_UVPROJECT')  # STICKY_UVS_LOC  UV  MOD_UVPROJECT  IMAGE_PLANE
 
-		# ARROW_LEFTRIGHT
 		col = layout.column(align=True)
 		col.label(text="Set Passepartout:")
 		row = col.row(align=True)

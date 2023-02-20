@@ -313,3 +313,32 @@ class FULCRUM_OT_obj_backup(bpy.types.Operator):
 		self.report({'INFO'}, f"\"{obj_orig.name}\" backed up successfully!")
 
 		return {'FINISHED'}
+
+class FULCRUM_OT_edit_light_power(bpy.types.Operator):
+	
+	bl_idname = "fulcrum.edit_light_power"
+	bl_label = "Edit Light Power"
+	bl_description = "Proportionally edit light intensities of all selected lights"
+	bl_options = {'REGISTER', 'UNDO'}
+	
+	multiplier: bpy.props.FloatProperty(
+		name="Multiplier",
+		description="Light power multiplier. 2.0 means double the intensity etc",
+		soft_min=0.0, default=1.0,
+	)
+
+	def execute(self, context):
+		objects = context.selected_objects
+		lights = {obj.data for obj in objects if obj.type == 'LIGHT'}
+		for light in lights:
+			light.energy *= self.multiplier
+		# TODO make it work for emission shaders
+		return {'FINISHED'}
+	
+	def invoke(self, context, event):
+		wm = context.window_manager
+		return wm.invoke_props_dialog(self)
+	
+	def draw(self, context):
+		layout = self.layout
+		layout.prop(self, "multiplier")
