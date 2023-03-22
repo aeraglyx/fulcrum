@@ -35,15 +35,16 @@ def draw_topbar(self, context):
 			layout.label(text="File not saved!", icon='SEQUENCE_COLOR_01')
 
 def draw_outliner(self, context):
-
 	if context.space_data.display_mode == 'SCENES':
 		self.layout.operator("fulcrum.view_layers_to_muted_nodes", text="", icon='TRIA_LEFT')
 
 def draw_timeline(self, context):
-
 	if context.area.ui_type == 'TIMELINE':
 		frame_count = context.scene.frame_end - context.scene.frame_start + 1
 		self.layout.label(text=f"{frame_count}")
+
+def draw_material(self, context):
+	self.layout.operator("fulcrum.reduce_materials", icon='TRASH')  # REMOVE TRASH MATERIAL
 
 
 
@@ -51,7 +52,6 @@ def draw_timeline(self, context):
 # ---------------- PROPERTIES ----------------
 
 class FULCRUM_PT_render(bpy.types.Panel):
-	
 	bl_space_type = "PROPERTIES"
 	bl_region_type = "WINDOW"
 	bl_context = "render"
@@ -66,7 +66,6 @@ class FULCRUM_PT_render(bpy.types.Panel):
 		# layout.operator("fulcrum.render_to_new_slot", icon='RENDER_RESULT')
 
 class FULCRUM_PT_data(bpy.types.Panel):
-	
 	bl_space_type = "PROPERTIES"
 	bl_region_type = "WINDOW"
 	bl_context = "data"

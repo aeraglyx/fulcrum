@@ -273,3 +273,93 @@ class FULCRUM_OT_edit_light_power(bpy.types.Operator):
 	def draw(self, context):
 		layout = self.layout
 		layout.prop(self, "multiplier")
+
+class FULCRUM_OT_reduce_materials(bpy.types.Operator):
+
+	bl_idname = "fulcrum.reduce_materials"
+	bl_label = "(Reduce Materials)"
+	bl_description = "Remove duplicate materials. It's bugged"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	first_or_last: bpy.props.EnumProperty(
+		name = "Pick",
+		description = "...",
+		items = [
+			('FIRST', "First", ""),
+			('LAST', "Last", "")
+		],
+		default = 'FIRST',
+	)
+
+	def execute(self, context):
+
+		base_names_dict = {}
+		new_dict = {}
+		slots_to_remove = []
+
+		# base_name(slot)
+
+		for obj in context.selected_objects:  # TODO only data which supports materials ?
+			slots = obj.material_slots
+			for slot in slots:
+				name = slot.material.name
+				if name[-3:].isdigit() and name[-4] == '.':
+					base_name = name[:-4]
+					version = name[-3:]
+				else:
+					base_name = name
+					version = ""
+				if base_name in base_names_dict:
+					base_names_dict[base_name].append(version)
+				else:
+					base_names_dict[base_name] = [version]
+				# TODO iterativne davat min/max, takze by se nepotrebovala dalsi for loop ?
+		
+		for base_name in base_names_dict:
+			versions = base_names_dict[base_name]
+			def ordering(x):
+				return -1 if x == "" else int(x)
+			if self.first_or_last == 'FIRST':
+				version_yes = min(versions, key=ordering)
+			else:
+				version_yes = max(versions, key=ordering)
+			slot_yes = base_name if version_yes == "" else ".".join(base_name, version_yes)
+			new_dict[base_name] = slot_yes
+				
+		for obj in context.selected_objects:
+			bpy.context.view_layer.objects.active = obj
+			slots = obj.material_slots
+			slot_names = [slot.material.name for slot in slots]
+			for slot in slots:
+
+				name = slot.material.name
+				if name[-3:].isdigit() and name[-4] == '.':
+					base_name = name[:-4]
+				else:
+					base_name = name
+				
+				if new_dict[base_name] == name:
+					continue
+
+				index_noo = slot_names.index(name)
+				index_yes = slot_names.index(new_dict[base_name])
+				
+				faces = [face for face in bpy.context.object.data.polygons if face.material_index == index_noo]
+				for face in faces:
+					face.material_index = index_yes
+				
+				slots_to_remove.append(slot.name)
+
+			for slot in slots_to_remove:
+				if slot in [x.name for x in bpy.context.object.material_slots]:
+					obj.active_material_index = [x.material.name for x in obj.material_slots].index(slot)
+					bpy.ops.object.material_slot_remove()  # context zasrany, nejde to na vic objektu, passnout tomu context?
+
+			# bpy.ops.object.material_slot_remove_unused()
+
+
+		return {'FINISHED'}
+
+	def draw(self, context):
+		layout = self.layout
+		layout.prop(self, "first_or_last")

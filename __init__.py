@@ -3,7 +3,7 @@ bl_info = {
 	"author": "Vladislav Macíček (Aeraglyx)",
 	"description": "All kinds of tools",
 	"blender": (3, 4, 0),
-	"version": (0, 1, 23),
+	"version": (0, 1, 24),
 	"location": "Everywhere. Mostly in node editor and 3D viewport.",
 	"doc_url": "https://github.com/aeraglyx/fulcrum",
 	"category": 'User Interface',
@@ -57,7 +57,8 @@ from .ops.three_d import (
 	FULCRUM_OT_duplicates_to_instances,
 	FULCRUM_OT_edit_light_power,
 	FULCRUM_OT_obj_backup,
-	FULCRUM_OT_vert_group_2_col)
+	FULCRUM_OT_vert_group_2_col,
+	FULCRUM_OT_reduce_materials)
 from .ops.camera import (
 	FULCRUM_OT_dof_setup,
 	FULCRUM_OT_isometric_setup,
@@ -79,6 +80,7 @@ from .ui import (
 	draw_topbar,
 	draw_outliner,
 	draw_timeline,
+	draw_material,
 
 	FULCRUM_PT_fulcrum_node,
 	FULCRUM_PT_node_tools,
@@ -162,6 +164,7 @@ classes = (
 	FULCRUM_OT_duplicates_to_instances,
 	FULCRUM_OT_obj_backup,
 	FULCRUM_OT_edit_light_power,
+	FULCRUM_OT_reduce_materials,
 
 	# FULCRUM_PT_versioning,
 	FULCRUM_PT_fulcrum_3d,
@@ -277,6 +280,8 @@ def register():
 	bpy.types.TOPBAR_HT_upper_bar.append(draw_topbar)
 	bpy.types.OUTLINER_HT_header.append(draw_outliner)
 	bpy.types.DOPESHEET_HT_header.append(draw_timeline)
+	bpy.types.MATERIAL_MT_context_menu.append(draw_material)
+
 	# bpy.app.handlers.depsgraph_update_post.append(ax_depsgraph_handler)
 	bpy.app.handlers.load_post.append(set_restart_needed_flag)
 	
@@ -291,6 +296,7 @@ def unregister():
 	bpy.types.TOPBAR_HT_upper_bar.remove(draw_topbar)
 	bpy.types.OUTLINER_HT_header.remove(draw_outliner)
 	bpy.types.DOPESHEET_HT_header.remove(draw_timeline)
+	bpy.types.MATERIAL_MT_context_menu.remove(draw_material)
 
 	for cls in classes:
 		bpy.utils.unregister_class(cls)
