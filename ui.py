@@ -107,7 +107,7 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
 		layout = self.layout
 
 		col = layout.column(align=True)
-		col.label(text="Color:", icon='COLOR')
+		# col.label(text="Color:", icon='COLOR')
 		row = col.row(align=True)
 		row.operator("fulcrum.reset_node_color", text="", icon='X')
 		grey = row.operator("fulcrum.set_node_color", text="", icon='SEQUENCE_COLOR_09')
@@ -130,7 +130,7 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
 		# brown.color = [0.29, 0.25, 0.22]
 		
 		col = layout.column(align=True)
-		col.label(text="Size:", icon='FIXED_SIZE')
+		# col.label(text="Size:", icon='FIXED_SIZE')
 		row = col.row(align=True)
 		default = row.operator("fulcrum.set_node_size", text="Def.")
 		default.size = 1.0
@@ -140,7 +140,7 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
 		four.size = 4.0
 
 		col = layout.column(align=True)
-		col.label(text="Alignment:", icon='ALIGN_CENTER')
+		# col.label(text="Alignment:", icon='ALIGN_CENTER')
 		row = col.row(align=True)
 		row.operator("fulcrum.align_nodes", text="Auto")
 		row.operator("fulcrum.center_nodes", text="Center")
@@ -149,6 +149,9 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
 			col.operator("fulcrum.align_nodes_v2", icon='ALIGN_CENTER')
 			col.operator("fulcrum.color_node_flow", icon='COLOR')
 			col.operator("fulcrum.randomize_node_color", icon='COLOR')
+		
+		col = layout.column(align=True)
+		layout.operator("fulcrum.add_todo_note", icon='TEXT')  # FONT_DATA EVENT_A
 
 		if context.preferences.addons['fulcrum'].preferences.experimental:
 			col = layout.column(align=True)
@@ -187,14 +190,14 @@ class FULCRUM_PT_node_group(NodePanel, bpy.types.Panel):
 
 	@classmethod
 	def poll(cls, context):
-		return True  # TODO
+		return True  # TODO jestli jsem v groupe
 
 	def draw(self, context):
 		layout = self.layout
 
 		col = layout.column(align=True)
 		col.operator("fulcrum.hide_group_inputs", icon='HIDE_ON')
-		col.operator("fulcrum.remove_unused_group_inputs", text="Remove Unused Inputs", icon='REMOVE')
+		col.operator("fulcrum.remove_unused_group_inputs", text="Remove Unused Inputs", icon='REMOVE')  # PANEL_CLOSE
 
 		# TODO
 		# col = layout.column(align=True)
@@ -214,14 +217,16 @@ class FULCRUM_PT_compositor(NodePanel, bpy.types.Panel):
 		layout = self.layout
 		col = layout.column(align=True)
 		col.operator("fulcrum.set_render_passes", icon='NODE_COMPOSITING')
+		col.operator("fulcrum.remove_unused_output_sockets", icon='REMOVE')
+		col = layout.column(align=True)
 		col.operator("fulcrum.set_output_directory", icon='FILE_FOLDER')
 		col.operator("fulcrum.compositor_increment_version", icon='LINENUMBERS_ON')
 		# row = col.row(align=True)
 		# row.operator("fulcrum.compositor_increment_version", text="Ver. Down", icon='TRIA_DOWN')
 		# row.operator("fulcrum.compositor_increment_version", text="Ver. Up", icon='TRIA_UP')
 		col = layout.column(align=True)
+		col.operator("fulcrum.view_layers_to_muted_nodes", text="Layers to Muted Nodes", icon='TRIA_LEFT')
 		col.operator("fulcrum.prepare_for_render", icon='RESTRICT_RENDER_OFF')
-		col.operator("fulcrum.view_layers_to_muted_nodes", icon='TRIA_LEFT')
 
 class FULCRUM_PT_find_nodes(NodePanel, bpy.types.Panel):
 	bl_label = "Find"

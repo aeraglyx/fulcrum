@@ -357,9 +357,35 @@ class FULCRUM_OT_reduce_materials(bpy.types.Operator):
 
 			# bpy.ops.object.material_slot_remove_unused()
 
-
 		return {'FINISHED'}
 
 	def draw(self, context):
 		layout = self.layout
 		layout.prop(self, "first_or_last")
+
+class FULCRUM_OT_octane_set_id(bpy.types.Operator):
+
+	bl_idname = "fulcrum.octane_set_id"
+	bl_label = "(Set ID)"
+	bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
+
+	id: bpy.props.IntProperty(
+		name="ID",
+		description="",
+		min=1, default=2, max=255
+	)
+
+	def execute(self, context):
+
+		# TODO
+
+		return {'FINISHED'}
+
+	def invoke(self, context, event):
+		wm = context.window_manager
+		return wm.invoke_props_dialog(self)
+
+	def draw(self, context):
+		layout = self.layout
+		layout.prop(self, "id")

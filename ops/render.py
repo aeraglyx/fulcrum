@@ -94,12 +94,11 @@ def check_if_render_slot_is_used(slot):
 	try:
 		bpy.data.images['Render Result'].save_render(filepath=tmp_path)
 		# XXX probably only works for saved files ^
-		return True
 	except RuntimeError:
 		return False
 	
-	# TODO delete test image ?
 	os.remove(tmp_path)  # TODO delete only once at the end ?
+	return True
 
 class FULCRUM_OT_render_to_new_slot(bpy.types.Operator):
 
@@ -121,7 +120,7 @@ class FULCRUM_OT_render_to_new_slot(bpy.types.Operator):
 class FULCRUM_OT_set_render_passes(bpy.types.Operator):
 
 	bl_idname = "fulcrum.set_render_passes"
-	bl_label = "Set Render Passes"
+	bl_label = "(Set Render Passes)"
 	bl_description = "Set-up compositor nodes."
 	bl_options = {'REGISTER', 'UNDO'}
 
@@ -527,6 +526,8 @@ class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
 		
 		bpy.ops.file.make_paths_absolute()
 
+		# TODO purge ?
+
 		return {'FINISHED'}
 
 class FULCRUM_OT_view_layers_to_muted_nodes(bpy.types.Operator):
@@ -549,5 +550,27 @@ class FULCRUM_OT_view_layers_to_muted_nodes(bpy.types.Operator):
 		for node in nodes:
 			if node.name in view_layer_names:
 				node.mute = not view_layers.get(node.name).use
+
+		return {'FINISHED'}
+
+class FULCRUM_OT_remove_unused_output_sockets(bpy.types.Operator):
+
+	bl_idname = "fulcrum.remove_unused_output_sockets"
+	bl_label = "Remove Unused Outputs"
+	bl_description = "Remove unused sockets of selected File Output nodes (or all if none are selected)"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	def execute(self, context):
+
+		if not context.scene.node_tree:
+			return {'FINISHED'}
+
+		nodes = context.selected_nodes or context.scene.node_tree.nodes
+		nodes = [node for node in nodes if node.type == 'OUTPUT_FILE']
+
+		for node in nodes:
+			for input in node.inputs:
+				if not input.links:
+					node.inputs.remove(input)
 
 		return {'FINISHED'}

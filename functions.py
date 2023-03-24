@@ -180,15 +180,16 @@ def get_output_nodes(context):
 		output_nodes = (node for node in nodes if node.bl_idname == 'NodeGroupOutput')
 	return output_nodes
 
-def version_up(name):
+def version_up(name, i=1):
 	# if it doesn't have a version, add it
 	if not name[-1].isdigit():
 		return name + "_v02"  # v001 or v002 ?
 	# otherwise increment by 1
-	old_name = re.sub("\d+$", "", name)
-	old_v = re.search("\d+$", name).group()
-	new_v = str(int(old_v) + 1).zfill(len(old_v))
+	old_name = re.sub("(?<=v|V)\d+$", "", name)
+	old_v = re.search("(?<=v|V)\d+$", name).group()
+	new_v = str(int(old_v) + i).zfill(len(old_v))
 	return old_name + new_v
+	# TODO test it
 
 import addon_utils
 def get_addon_version(addon_name):

@@ -3,7 +3,7 @@ bl_info = {
 	"author": "Vladislav Macíček (Aeraglyx)",
 	"description": "All kinds of tools",
 	"blender": (3, 4, 0),
-	"version": (0, 1, 24),
+	"version": (0, 1, 25),
 	"location": "Everywhere. Mostly in node editor and 3D viewport.",
 	"doc_url": "https://github.com/aeraglyx/fulcrum",
 	"category": 'User Interface',
@@ -49,7 +49,8 @@ from .ops.render import (
 	FULCRUM_OT_set_output_directory,
 	FULCRUM_OT_prepare_for_render,
 	FULCRUM_OT_compositor_increment_version,
-	FULCRUM_OT_view_layers_to_muted_nodes)
+	FULCRUM_OT_view_layers_to_muted_nodes,
+	FULCRUM_OT_remove_unused_output_sockets)
 from .ops.node_versioning import FULCRUM_OT_version_encode, FULCRUM_OT_version_decode
 from .ops.three_d import (
 	FULCRUM_OT_locate_vertex,
@@ -149,6 +150,7 @@ classes = (
 	FULCRUM_OT_prepare_for_render,
 	FULCRUM_OT_compositor_increment_version,
 	FULCRUM_OT_view_layers_to_muted_nodes,
+	FULCRUM_OT_remove_unused_output_sockets,
 
 	FULCRUM_OT_dof_setup,
 	FULCRUM_OT_isometric_setup,

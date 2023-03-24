@@ -759,29 +759,37 @@ class FULCRUM_OT_color_node_flow(bpy.types.Operator):
 class FULCRUM_OT_add_todo_note(bpy.types.Operator):
 	
 	bl_idname = "fulcrum.add_todo_note"
-	bl_label = "Add TODO Note"
+	bl_label = "Add Note"
 	bl_description = ""
+	bl_property = "text"
 	
 	@classmethod
 	def poll(cls, context):
 		return hasattr(context, "selected_nodes")
 	
-	note: bpy.props.StringProperty(
+	text: bpy.props.StringProperty(
 		name = "Note",
-		default = "",
+		default = "TODO",
 	)
 
 	def execute(self, context):
+		tree = context.space_data.edit_tree
+		nodes = tree.nodes
+		node = nodes.new(type='NodeFrame')
+		
+		node.label = self.text
+		node.width = 420
+		node.height = 69
+		node.location = tree.view_center + mathutils.Vector((-210, 34.5))
+		node.use_custom_color = True
+		node.color = [0.53, 0.04, 0.15]
+		
+		for node in nodes:
+			node.select = False
+		node.select = True
+		nodes.active = node
 
-		nodes = context.space_data.edit_tree.nodes
-
-		todo_node = nodes.new(type='NodeFrame')
-		todo_node.label = self.note
-		todo_node.width = 400
-		todo_node.height = 100
-		# bpy.ops.node.add_search(use_transform=True, node_item='92')
-
-		# TODO WIP
+		# TODO modal to place the node?
 		
 		return {'FINISHED'}
 	
@@ -790,13 +798,11 @@ class FULCRUM_OT_add_todo_note(bpy.types.Operator):
 		return wm.invoke_props_dialog(self)
 	
 	def draw(self, context):
-		
 		layout = self.layout
 		# layout.use_property_split = True
 		# layout.use_property_decorate = False
-
 		col = layout.column(align=True)
-		col.prop(self, "note")
+		col.prop(self, "text")
 
 class FULCRUM_OT_tex_to_name(bpy.types.Operator):
 	
