@@ -20,6 +20,7 @@ Blender addon consisting of random tools. Mostly harmless. Contains a rudimentar
 - Passepartout presets
 
 ## 3D Stuff
+- Hold `ctrl + alt + middle` to zoom viewport camera
 - Proportionally edit light intensities of all selected lights
 - Convert duplicated meshes to instances (experimental)
 - Lock certain axis

@@ -217,6 +217,7 @@ class FULCRUM_PT_compositor(NodePanel, bpy.types.Panel):
 		layout = self.layout
 		col = layout.column(align=True)
 		col.operator("fulcrum.set_render_passes", icon='NODE_COMPOSITING')
+		col.operator("fulcrum.copy_passes", icon='DUPLICATE')
 		col.operator("fulcrum.remove_unused_output_sockets", icon='REMOVE')
 		col = layout.column(align=True)
 		col.operator("fulcrum.set_output_directory", icon='FILE_FOLDER')

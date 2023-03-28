@@ -3,7 +3,7 @@ bl_info = {
 	"author": "Vladislav Macíček (Aeraglyx)",
 	"description": "All kinds of tools",
 	"blender": (3, 4, 0),
-	"version": (0, 1, 25),
+	"version": (0, 1, 26),
 	"location": "Everywhere. Mostly in node editor and 3D viewport.",
 	"doc_url": "https://github.com/aeraglyx/fulcrum",
 	"category": 'User Interface',
@@ -50,7 +50,8 @@ from .ops.render import (
 	FULCRUM_OT_prepare_for_render,
 	FULCRUM_OT_compositor_increment_version,
 	FULCRUM_OT_view_layers_to_muted_nodes,
-	FULCRUM_OT_remove_unused_output_sockets)
+	FULCRUM_OT_remove_unused_output_sockets,
+	FULCRUM_OT_copy_passes)
 from .ops.node_versioning import FULCRUM_OT_version_encode, FULCRUM_OT_version_decode
 from .ops.three_d import (
 	FULCRUM_OT_locate_vertex,
@@ -59,7 +60,8 @@ from .ops.three_d import (
 	FULCRUM_OT_edit_light_power,
 	FULCRUM_OT_obj_backup,
 	FULCRUM_OT_vert_group_2_col,
-	FULCRUM_OT_reduce_materials)
+	FULCRUM_OT_reduce_materials,
+	FULCRUM_OT_viewport_zoom)
 from .ops.camera import (
 	FULCRUM_OT_dof_setup,
 	FULCRUM_OT_isometric_setup,
@@ -151,6 +153,7 @@ classes = (
 	FULCRUM_OT_compositor_increment_version,
 	FULCRUM_OT_view_layers_to_muted_nodes,
 	FULCRUM_OT_remove_unused_output_sockets,
+	FULCRUM_OT_copy_passes,
 
 	FULCRUM_OT_dof_setup,
 	FULCRUM_OT_isometric_setup,
@@ -167,6 +170,7 @@ classes = (
 	FULCRUM_OT_obj_backup,
 	FULCRUM_OT_edit_light_power,
 	FULCRUM_OT_reduce_materials,
+	FULCRUM_OT_viewport_zoom,
 
 	# FULCRUM_PT_versioning,
 	FULCRUM_PT_fulcrum_3d,
@@ -286,10 +290,21 @@ def register():
 
 	# bpy.app.handlers.depsgraph_update_post.append(ax_depsgraph_handler)
 	bpy.app.handlers.load_post.append(set_restart_needed_flag)
+
+	wm = bpy.context.window_manager
+	kc = wm.keyconfigs.addon
+	if kc:
+		km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')
+		kmi = km.keymap_items.new(FULCRUM_OT_viewport_zoom.bl_idname, type='MIDDLEMOUSE', value='PRESS', ctrl=True, alt=True)
+		addon_keymaps.append((km, kmi))
 	
 	print("FULCRUM registered")
 
 def unregister():
+
+	for km, kmi in addon_keymaps:
+		km.keymap_items.remove(kmi)
+	addon_keymaps.clear()
 
 	for handler in bpy.app.handlers.load_post:
 		if handler.__name__ == 'set_restart_needed_flag':

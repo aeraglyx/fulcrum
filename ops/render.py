@@ -574,3 +574,62 @@ class FULCRUM_OT_remove_unused_output_sockets(bpy.types.Operator):
 					node.inputs.remove(input)
 
 		return {'FINISHED'}
+
+class FULCRUM_OT_copy_passes(bpy.types.Operator):
+
+	bl_idname = "fulcrum.copy_passes"
+	bl_label = "Copy Passes"
+	bl_description = ""
+	bl_options = {'REGISTER', 'UNDO'}
+
+	@classmethod
+	def poll(cls, context):
+		return len(context.scene.view_layers) > 1
+
+	def execute(self, context):
+
+		view_layer_active = context.view_layer
+		other_view_layers = [l for l in context.scene.view_layers if l != view_layer_active]
+
+		for layer in other_view_layers:
+
+			layer.use_pass_combined 				= view_layer_active.use_pass_combined
+			layer.use_pass_z 						= view_layer_active.use_pass_z
+			layer.use_pass_mist 					= view_layer_active.use_pass_mist
+			layer.use_pass_position 				= view_layer_active.use_pass_position
+			layer.use_pass_normal 					= view_layer_active.use_pass_normal
+			layer.use_pass_vector 					= view_layer_active.use_pass_vector
+			layer.use_pass_uv 						= view_layer_active.use_pass_uv
+			layer.use_pass_diffuse_color 			= view_layer_active.use_pass_diffuse_color
+			layer.use_pass_diffuse_direct 			= view_layer_active.use_pass_diffuse_direct
+			layer.use_pass_diffuse_indirect 		= view_layer_active.use_pass_diffuse_indirect
+			layer.use_pass_glossy_color 			= view_layer_active.use_pass_glossy_color
+			layer.use_pass_glossy_direct 			= view_layer_active.use_pass_glossy_direct
+			layer.use_pass_glossy_indirect 			= view_layer_active.use_pass_glossy_indirect
+			layer.use_pass_transmission_color 		= view_layer_active.use_pass_transmission_color
+			layer.use_pass_transmission_direct 		= view_layer_active.use_pass_transmission_direct
+			layer.use_pass_transmission_indirect 	= view_layer_active.use_pass_transmission_indirect
+			layer.use_pass_subsurface_color 		= view_layer_active.use_pass_subsurface_color
+			layer.use_pass_subsurface_direct 		= view_layer_active.use_pass_subsurface_direct
+			layer.use_pass_subsurface_indirect 		= view_layer_active.use_pass_subsurface_indirect
+			layer.use_pass_emit 					= view_layer_active.use_pass_emit
+			layer.use_pass_environment 				= view_layer_active.use_pass_environment
+			layer.use_pass_shadow 					= view_layer_active.use_pass_shadow
+			layer.use_pass_ambient_occlusion 		= view_layer_active.use_pass_ambient_occlusion
+			layer.use_pass_cryptomatte_accurate 	= view_layer_active.use_pass_cryptomatte_accurate
+			layer.use_pass_cryptomatte_asset 		= view_layer_active.use_pass_cryptomatte_asset
+			layer.use_pass_cryptomatte_material 	= view_layer_active.use_pass_cryptomatte_material
+			layer.use_pass_cryptomatte_object 		= view_layer_active.use_pass_cryptomatte_object
+			layer.use_pass_object_index 			= view_layer_active.use_pass_object_index
+			layer.use_pass_material_index 			= view_layer_active.use_pass_material_index
+			
+			layer.cycles.use_pass_volume_direct 	= view_layer_active.cycles.use_pass_volume_direct
+			layer.cycles.use_pass_volume_indirect 	= view_layer_active.cycles.use_pass_volume_indirect
+			layer.cycles.use_pass_shadow_catcher 	= view_layer_active.cycles.use_pass_shadow_catcher
+			layer.cycles.denoising_store_passes 	= view_layer_active.cycles.denoising_store_passes
+			layer.cycles.pass_debug_sample_count 	= view_layer_active.cycles.pass_debug_sample_count
+			
+			layer.pass_alpha_threshold 				= view_layer_active.pass_alpha_threshold
+			layer.pass_cryptomatte_depth 			= view_layer_active.pass_cryptomatte_depth
+
+		return {'FINISHED'}
