@@ -271,7 +271,9 @@ class FULCRUM_PT_utility_node(NodePanel, bpy.types.Panel):
 		col.operator("fulcrum.open_blend_dir", icon='FILE_BACKUP')
 		col.operator("fulcrum.open_script_dir", icon='SCRIPT')  # FOLDER_REDIRECT  SCRIPT
 		
-		layout.operator("wm.console_toggle", icon='CONSOLE')
+		col = layout.column(align=True)
+		col.operator("fulcrum.open_addon_preferences", text="Addon Preferences", icon='PREFERENCES')
+		col.operator("wm.console_toggle", icon='CONSOLE')
 
 
 
