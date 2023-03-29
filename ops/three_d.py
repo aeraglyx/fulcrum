@@ -391,28 +391,53 @@ class FULCRUM_OT_octane_set_id(bpy.types.Operator):
 		layout = self.layout
 		layout.prop(self, "id")
 
-class FULCRUM_OT_viewport_zoom(bpy.types.Operator):
+class FULCRUM_OT_zoom(bpy.types.Operator):
 
-	bl_idname = "fulcrum.viewport_zoom"
+	bl_idname = "fulcrum.zoom"
 	bl_label = "Viewport Zoom"
 	bl_description = "Interactively zoom viewport camera"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	def execute(self, context):
 		mult = math.exp((self.y - self.y_orig) * 0.01)
-		context.space_data.lens = self.lens_orig * mult
+		lens_new = self.lens_orig * mult
+		if self.snap:
+			focal_lengths = [8, 14, 18, 24, 35, 50, 85, 105, 135, 200, 300]
+			lens_new = min(focal_lengths, key=lambda x:abs(x-lens_new))
+		view = context.space_data.region_3d.view_perspective
+		if view == 'PERSP':
+			context.space_data.lens = lens_new
+		elif view == 'CAMERA':
+			cam = context.scene.camera.data
+			if cam.type == 'PERSP':
+				cam.lens = lens_new
+			if cam.type == 'ORTHO':
+				mult = math.exp((self.y - self.y_orig) * -0.01)
+				cam.ortho_scale = self.lens_orig * mult
+		# TODO draw focal length on screen
 		return {'FINISHED'}
 
 	def modal(self, context, event):
 		if event.type == 'MOUSEMOVE':
 			self.y = event.mouse_y
+			self.snap = event.shift
 			self.execute(context)
 		elif event.type == 'MIDDLEMOUSE' and event.value == 'RELEASE':
-				return {'FINISHED'}
+			return {'FINISHED'}
 		return {'RUNNING_MODAL'}
 
 	def invoke(self, context, event):
-		self.lens_orig = context.space_data.lens
+		view = context.space_data.region_3d.view_perspective
+		if view == 'ORTHO':
+			return {'FINISHED'}
+		elif view == 'PERSP':
+			self.lens_orig = context.space_data.lens
+		elif view == 'CAMERA':
+			cam = context.scene.camera.data
+			if cam.type == 'PERSP':
+				self.lens_orig = cam.lens
+			if cam.type == 'ORTHO':
+				self.lens_orig = cam.ortho_scale
 		self.y_orig = event.mouse_y
 		self.y = event.mouse_y
 		context.window_manager.modal_handler_add(self)

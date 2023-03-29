@@ -61,7 +61,7 @@ from .ops.three_d import (
 	FULCRUM_OT_obj_backup,
 	FULCRUM_OT_vert_group_2_col,
 	FULCRUM_OT_reduce_materials,
-	FULCRUM_OT_viewport_zoom)
+	FULCRUM_OT_zoom)
 from .ops.camera import (
 	FULCRUM_OT_dof_setup,
 	FULCRUM_OT_isometric_setup,
@@ -170,7 +170,7 @@ classes = (
 	FULCRUM_OT_obj_backup,
 	FULCRUM_OT_edit_light_power,
 	FULCRUM_OT_reduce_materials,
-	FULCRUM_OT_viewport_zoom,
+	FULCRUM_OT_zoom,
 
 	# FULCRUM_PT_versioning,
 	FULCRUM_PT_fulcrum_3d,
@@ -295,7 +295,7 @@ def register():
 	kc = wm.keyconfigs.addon
 	if kc:
 		km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')
-		kmi = km.keymap_items.new(FULCRUM_OT_viewport_zoom.bl_idname, type='MIDDLEMOUSE', value='PRESS', ctrl=True, alt=True)
+		kmi = km.keymap_items.new(FULCRUM_OT_zoom.bl_idname, type='MIDDLEMOUSE', value='PRESS', ctrl=True, alt=True)
 		addon_keymaps.append((km, kmi))
 	
 	print("FULCRUM registered")
