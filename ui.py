@@ -1,10 +1,9 @@
 import bpy
-from .functions import *
 
+from .functions import *
+from .ops.file_stuff import is_current_file_version
 
 # ---------------- TOPBAR ----------------
-
-from .ops.file_stuff import is_current_file_version
 
 
 def draw_topbar(self, context):
@@ -50,7 +49,8 @@ def draw_outliner(self, context):
 def draw_timeline(self, context):
     if context.area.ui_type == "TIMELINE":
         frame_count = context.scene.frame_end - context.scene.frame_start + 1
-        self.layout.label(text=f"{frame_count}")
+        seconds = frame_count / context.scene.render.fps
+        self.layout.label(text=f"{frame_count} | {seconds:.2f}s")
 
 
 def draw_material(self, context):
