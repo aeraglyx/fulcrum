@@ -444,7 +444,7 @@ class FULCRUM_OT_zoom(bpy.types.Operator):
 
 class FULCRUM_OT_mirror(bpy.types.Operator):
     bl_idname = "fulcrum.mirror"
-    bl_label = "Mirror (X)"
+    bl_label = "Mirror"
     bl_description = ""
     bl_options = {"REGISTER", "UNDO"}
 
@@ -475,24 +475,30 @@ class FULCRUM_OT_mirror(bpy.types.Operator):
                 obj.rotation_euler = mathutils.Euler(rot_new, "XYZ")
             elif self.axis == "Y":
                 loc_mult = [1, -1, 1]
-                rot_mult = [-1, 1, -1]
+                rot_mult = [1, -1, -1]
 
                 obj.location = (obj.location - cursor_loc) * mathutils.Vector(
                     loc_mult
                 ) + cursor_loc
 
-                rot_offset = mathutils.Vector((0, -math.tau * 0.25, 0))
-                rot_new = (
-                    mathutils.Vector(obj.rotation_euler) - rot_offset
-                ) * mathutils.Vector(rot_mult) + rot_offset
-                obj.rotation_euler = mathutils.Euler(rot_new, "XYZ")
+                rot_offset_1 = mathutils.Euler((0, 0, math.tau * 0.25), "XYZ")
+                rot_offset_2 = mathutils.Euler((0, 0, -math.tau * 0.25), "XYZ")
+
+                rot_orig = obj.rotation_euler
+                rot_orig.rotate(rot_offset_1)
+                rot_new = (mathutils.Vector(list(rot_orig))) * mathutils.Vector(
+                    rot_mult
+                )
+                rot = mathutils.Euler(rot_new, "XYZ")
+                rot.rotate(rot_offset_2)
+                obj.rotation_euler = rot
 
         return {"FINISHED"}
 
-    # def invoke(self, context, event):
-    #     wm = context.window_manager
-    #     return wm.invoke_props_dialog(self)
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)
 
-    # def draw(self, context):
-    #     layout = self.layout
-    #     layout.prop(self, "axis", expand=True)
+    def draw(self, context):
+        layout = self.layout
+        layout.prop(self, "axis", expand=True)

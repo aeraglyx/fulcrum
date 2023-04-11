@@ -58,6 +58,20 @@ def draw_material(self, context):
     )  # REMOVE TRASH MATERIAL
 
 
+def register_menus_and_headers():
+    bpy.types.TOPBAR_HT_upper_bar.append(draw_topbar)
+    bpy.types.OUTLINER_HT_header.append(draw_outliner)
+    bpy.types.DOPESHEET_HT_header.append(draw_timeline)
+    bpy.types.MATERIAL_MT_context_menu.append(draw_material)
+
+
+def unregister_menus_and_headers():
+    bpy.types.TOPBAR_HT_upper_bar.remove(draw_topbar)
+    bpy.types.OUTLINER_HT_header.remove(draw_outliner)
+    bpy.types.DOPESHEET_HT_header.remove(draw_timeline)
+    bpy.types.MATERIAL_MT_context_menu.remove(draw_material)
+
+
 # ---------------- PROPERTIES ----------------
 
 
