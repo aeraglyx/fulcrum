@@ -1,12 +1,13 @@
-import bpy
-import bmesh
-import re
-import random
 import math
+import random
+import re
+
+import bmesh
+import bpy
+import mathutils
 
 
 class FULCRUM_OT_locate_vertex(bpy.types.Operator):
-
     bl_idname = "fulcrum.locate_vertex"
     bl_label = "Locate Vertex"
     bl_description = "Select a vertex based on its ID"
@@ -19,7 +20,6 @@ class FULCRUM_OT_locate_vertex(bpy.types.Operator):
     index: bpy.props.IntProperty(name="Index", min=0, default=0)
 
     def execute(self, context):
-
         mode_prev = context.object.mode
         bpy.ops.object.mode_set(mode="EDIT")
 
@@ -27,7 +27,6 @@ class FULCRUM_OT_locate_vertex(bpy.types.Operator):
         total_verts = int(re.search("Verts:\d+/(\d+)", statistics_str).groups()[0])
 
         if self.index < total_verts:  # len(verts)
-
             obj = context.active_object
             bm = bmesh.from_edit_mesh(obj.data)
 
@@ -65,7 +64,6 @@ class FULCRUM_OT_locate_vertex(bpy.types.Operator):
 
 
 class FULCRUM_OT_locate_vertices(bpy.types.Operator):
-
     bl_idname = "fulcrum.locate_vertices"
     bl_label = "Locate Vertices"
     bl_description = "Select vertices based on a list of IDs"
@@ -78,7 +76,6 @@ class FULCRUM_OT_locate_vertices(bpy.types.Operator):
     indices_str: bpy.props.StringProperty(name="Indices", default="")
 
     def execute(self, context):
-
         mode_prev = context.object.mode
         bpy.ops.object.mode_set(mode="EDIT")
 
@@ -116,7 +113,6 @@ class FULCRUM_OT_locate_vertices(bpy.types.Operator):
 
 
 class FULCRUM_OT_vert_group_2_col(bpy.types.Operator):
-
     bl_idname = "fulcrum.vert_group_2_col"
     bl_label = "Groups to Colors"
     bl_description = ""
@@ -126,7 +122,6 @@ class FULCRUM_OT_vert_group_2_col(bpy.types.Operator):
         return len(bpy.context.active_object.vertex_groups)  # HACK idk
 
     def execute(self, context):
-
         groups = bpy.context.active_object.vertex_groups
         colors = bpy.context.active_object.data.vertex_colors
 
@@ -136,7 +131,6 @@ class FULCRUM_OT_vert_group_2_col(bpy.types.Operator):
             need_to_switch_back = True
 
         for group in groups:
-
             # FIXME max 8 vert. colours
 
             col = colors.new()
@@ -156,7 +150,6 @@ class FULCRUM_OT_vert_group_2_col(bpy.types.Operator):
 
 
 class FULCRUM_OT_duplicates_to_instances(bpy.types.Operator):
-
     bl_idname = "fulcrum.duplicates_to_instances"
     bl_label = "Duplicates to Instances"
     bl_description = "Find objects with with duplicate meshes, make them use the same instance of mesh and remove the redundant data"
@@ -167,7 +160,6 @@ class FULCRUM_OT_duplicates_to_instances(bpy.types.Operator):
 
     def execute(self, context):
         def same_mesh(mesh_1, mesh_2):  # TODO make more robust
-
             size = len(mesh_1.vertices)
             if size != len(mesh_2.vertices):
                 return False
@@ -217,7 +209,6 @@ class FULCRUM_OT_duplicates_to_instances(bpy.types.Operator):
 
 
 class FULCRUM_OT_obj_backup(bpy.types.Operator):
-
     bl_idname = "fulcrum.obj_backup"
     bl_label = "Backup Object"
     bl_description = ""
@@ -227,7 +218,6 @@ class FULCRUM_OT_obj_backup(bpy.types.Operator):
         return True
 
     def execute(self, context):
-
         obj_orig = context.active_object
         obj_copy = obj_orig.copy()
 
@@ -251,7 +241,6 @@ class FULCRUM_OT_obj_backup(bpy.types.Operator):
 
 
 class FULCRUM_OT_edit_light_power(bpy.types.Operator):
-
     bl_idname = "fulcrum.edit_light_power"
     bl_label = "Edit Light Power"
     bl_description = "Proportionally edit light intensities of all selected lights"
@@ -282,7 +271,6 @@ class FULCRUM_OT_edit_light_power(bpy.types.Operator):
 
 
 class FULCRUM_OT_reduce_materials(bpy.types.Operator):
-
     bl_idname = "fulcrum.reduce_materials"
     bl_label = "(Reduce Materials)"
     bl_description = "Remove duplicate materials. It's bugged"
@@ -296,7 +284,6 @@ class FULCRUM_OT_reduce_materials(bpy.types.Operator):
     )
 
     def execute(self, context):
-
         base_names_dict = {}
         new_dict = {}
         slots_to_remove = []
@@ -341,7 +328,6 @@ class FULCRUM_OT_reduce_materials(bpy.types.Operator):
             slots = obj.material_slots
             slot_names = [slot.material.name for slot in slots]
             for slot in slots:
-
                 name = slot.material.name
                 if name[-3:].isdigit() and name[-4] == ".":
                     base_name = name[:-4]
@@ -381,7 +367,6 @@ class FULCRUM_OT_reduce_materials(bpy.types.Operator):
 
 
 class FULCRUM_OT_octane_set_id(bpy.types.Operator):
-
     bl_idname = "fulcrum.octane_set_id"
     bl_label = "(Set ID)"
     bl_description = ""
@@ -390,7 +375,6 @@ class FULCRUM_OT_octane_set_id(bpy.types.Operator):
     id: bpy.props.IntProperty(name="ID", description="", min=1, default=2, max=255)
 
     def execute(self, context):
-
         # TODO
 
         return {"FINISHED"}
@@ -405,7 +389,6 @@ class FULCRUM_OT_octane_set_id(bpy.types.Operator):
 
 
 class FULCRUM_OT_zoom(bpy.types.Operator):
-
     bl_idname = "fulcrum.zoom"
     bl_label = "Viewport Zoom"
     bl_description = "Interactively zoom viewport camera"
@@ -457,3 +440,59 @@ class FULCRUM_OT_zoom(bpy.types.Operator):
         return {"RUNNING_MODAL"}
 
     # ('NONE', 'LEFTMOUSE', 'MIDDLEMOUSE', 'RIGHTMOUSE', 'BUTTON4MOUSE', 'BUTTON5MOUSE', 'BUTTON6MOUSE', 'BUTTON7MOUSE', 'PEN', 'ERASER', 'MOUSEMOVE', 'INBETWEEN_MOUSEMOVE', 'TRACKPADPAN', 'TRACKPADZOOM', 'MOUSEROTATE', 'MOUSESMARTZOOM', 'WHEELUPMOUSE', 'WHEELDOWNMOUSE', 'WHEELINMOUSE', 'WHEELOUTMOUSE', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'ZERO', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'LEFT_CTRL', 'LEFT_ALT', 'LEFT_SHIFT', 'RIGHT_ALT', 'RIGHT_CTRL', 'RIGHT_SHIFT', 'OSKEY', 'APP', 'GRLESS', 'ESC', 'TAB', 'RET', 'SPACE', 'LINE_FEED', 'BACK_SPACE', 'DEL', 'SEMI_COLON', 'PERIOD', 'COMMA', 'QUOTE', 'ACCENT_GRAVE', 'MINUS', 'PLUS', 'SLASH', 'BACK_SLASH', 'EQUAL', 'LEFT_BRACKET', 'RIGHT_BRACKET', 'LEFT_ARROW', 'DOWN_ARROW', 'RIGHT_ARROW', 'UP_ARROW', 'NUMPAD_2', 'NUMPAD_4', 'NUMPAD_6', 'NUMPAD_8', 'NUMPAD_1', 'NUMPAD_3', 'NUMPAD_5', 'NUMPAD_7', 'NUMPAD_9', 'NUMPAD_PERIOD', 'NUMPAD_SLASH', 'NUMPAD_ASTERIX', 'NUMPAD_0', 'NUMPAD_MINUS', 'NUMPAD_ENTER', 'NUMPAD_PLUS', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12', 'F13', 'F14', 'F15', 'F16', 'F17', 'F18', 'F19', 'F20', 'F21', 'F22', 'F23', 'F24', 'PAUSE', 'INSERT', 'HOME', 'PAGE_UP', 'PAGE_DOWN', 'END', 'MEDIA_PLAY', 'MEDIA_STOP', 'MEDIA_FIRST', 'MEDIA_LAST', 'TEXTINPUT', 'WINDOW_DEACTIVATE', 'TIMER', 'TIMER0', 'TIMER1', 'TIMER2', 'TIMER_JOBS', 'TIMER_AUTOSAVE', 'TIMER_REPORT', 'TIMERREGION', 'NDOF_MOTION', 'NDOF_BUTTON_MENU', 'NDOF_BUTTON_FIT', 'NDOF_BUTTON_TOP', 'NDOF_BUTTON_BOTTOM', 'NDOF_BUTTON_LEFT', 'NDOF_BUTTON_RIGHT', 'NDOF_BUTTON_FRONT', 'NDOF_BUTTON_BACK', 'NDOF_BUTTON_ISO1', 'NDOF_BUTTON_ISO2', 'NDOF_BUTTON_ROLL_CW', 'NDOF_BUTTON_ROLL_CCW', 'NDOF_BUTTON_SPIN_CW', 'NDOF_BUTTON_SPIN_CCW', 'NDOF_BUTTON_TILT_CW', 'NDOF_BUTTON_TILT_CCW', 'NDOF_BUTTON_ROTATE', 'NDOF_BUTTON_PANZOOM', 'NDOF_BUTTON_DOMINANT', 'NDOF_BUTTON_PLUS', 'NDOF_BUTTON_MINUS', 'NDOF_BUTTON_V1', 'NDOF_BUTTON_V2', 'NDOF_BUTTON_V3', 'NDOF_BUTTON_1', 'NDOF_BUTTON_2', 'NDOF_BUTTON_3', 'NDOF_BUTTON_4', 'NDOF_BUTTON_5', 'NDOF_BUTTON_6', 'NDOF_BUTTON_7', 'NDOF_BUTTON_8', 'NDOF_BUTTON_9', 'NDOF_BUTTON_10', 'NDOF_BUTTON_A', 'NDOF_BUTTON_B', 'NDOF_BUTTON_C', 'ACTIONZONE_AREA', 'ACTIONZONE_REGION', 'ACTIONZONE_FULLSCREEN', 'XR_ACTION')
+
+
+class FULCRUM_OT_mirror(bpy.types.Operator):
+    bl_idname = "fulcrum.mirror"
+    bl_label = "Mirror (X)"
+    bl_description = ""
+    bl_options = {"REGISTER", "UNDO"}
+
+    axis: bpy.props.EnumProperty(
+        name="Axis",
+        description="...",
+        items=[
+            ("X", "X", ""),
+            ("Y", "Y", ""),
+            # ("Y", "Y", ""),
+        ],
+        default="X",
+    )
+
+    def execute(self, context):
+        cursor_loc = context.scene.cursor.location
+        for obj in context.selected_objects:
+            if self.axis == "X":
+                loc_mult = [-1, 1, 1]
+                rot_mult = [1, -1, -1]
+
+                obj.location = (obj.location - cursor_loc) * mathutils.Vector(
+                    loc_mult
+                ) + cursor_loc
+                rot_new = mathutils.Vector(obj.rotation_euler) * mathutils.Vector(
+                    rot_mult
+                )
+                obj.rotation_euler = mathutils.Euler(rot_new, "XYZ")
+            elif self.axis == "Y":
+                loc_mult = [1, -1, 1]
+                rot_mult = [-1, 1, -1]
+
+                obj.location = (obj.location - cursor_loc) * mathutils.Vector(
+                    loc_mult
+                ) + cursor_loc
+
+                rot_offset = mathutils.Vector((0, -math.tau * 0.25, 0))
+                rot_new = (
+                    mathutils.Vector(obj.rotation_euler) - rot_offset
+                ) * mathutils.Vector(rot_mult) + rot_offset
+                obj.rotation_euler = mathutils.Euler(rot_new, "XYZ")
+
+        return {"FINISHED"}
+
+    # def invoke(self, context, event):
+    #     wm = context.window_manager
+    #     return wm.invoke_props_dialog(self)
+
+    # def draw(self, context):
+    #     layout = self.layout
+    #     layout.prop(self, "axis", expand=True)

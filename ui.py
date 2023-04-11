@@ -7,7 +7,6 @@ from .ops.file_stuff import is_current_file_version
 
 
 def draw_topbar(self, context):
-
     # red - 	SEQUENCE_COLOR_01
     # orange - 	SEQUENCE_COLOR_02
     # yellow - 	SEQUENCE_COLOR_03
@@ -346,7 +345,9 @@ class FULCRUM_PT_3d_stuff(View3DPanel, bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
 
-        layout.operator("fulcrum.edit_light_power", icon="LIGHT")
+        col = layout.column(align=True)
+        col.operator("fulcrum.edit_light_power", icon="LIGHT")
+        col.operator("fulcrum.mirror", icon="MOD_MIRROR")
 
         col = layout.column(align=True)
         col.operator("fulcrum.obj_backup", icon="DUPLICATE")
@@ -446,7 +447,6 @@ class FULCRUM_PT_paint(View3DPanel, bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         if bpy.context.mode == "PAINT_VERTEX":
-
             col = layout.column(align=True)
             row = col.row(align=True)
             props = row.operator("fulcrum.set_paint_brush", text="R", icon="NONE")
@@ -465,7 +465,6 @@ class FULCRUM_PT_paint(View3DPanel, bpy.types.Panel):
             props.color = (1.0, 1.0, 1.0)
 
         if bpy.context.mode == "PAINT_WEIGHT":
-
             row = layout.row(align=True)
             props = row.operator("fulcrum.set_weight_brush", text="0.0", icon="NONE")
             props.weight = 0.0

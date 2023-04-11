@@ -1,7 +1,8 @@
-import bpy
 import math
-import mathutils
 import os
+
+import bpy
+import mathutils
 
 
 def get_output_node(nodes):
@@ -14,7 +15,6 @@ def get_output_node(nodes):
 
 
 class FULCRUM_OT_dof_setup(bpy.types.Operator):
-
     bl_idname = "fulcrum.dof_setup"
     bl_label = "DOF Setup"
     bl_description = "Add an empty and make it the active camera's Focus Object"
@@ -34,7 +34,6 @@ class FULCRUM_OT_dof_setup(bpy.types.Operator):
     )
 
     def execute(self, context):
-
         camera_loc = context.scene.camera.location  # should be normalized
         cursor_loc = context.scene.cursor.location
 
@@ -67,14 +66,12 @@ class FULCRUM_OT_dof_setup(bpy.types.Operator):
         return {"FINISHED"}
 
     def draw(self, context):
-
         layout = self.layout
         col = layout.column(align=True)
         col.prop(self, "alignment")
 
 
 class FULCRUM_OT_isometric_setup(bpy.types.Operator):
-
     bl_idname = "fulcrum.isometric_setup"
     bl_label = "Isometric Setup"
     bl_description = "Set up an orthographic camera for isometric view"
@@ -114,7 +111,6 @@ class FULCRUM_OT_isometric_setup(bpy.types.Operator):
     )
 
     def execute(self, context):
-
         if context.scene.camera:
             cam_obj = context.scene.camera
         else:
@@ -164,7 +160,6 @@ class FULCRUM_OT_isometric_setup(bpy.types.Operator):
         return {"FINISHED"}
 
     def draw(self, context):
-
         layout = self.layout
 
         row = layout.row()
@@ -181,7 +176,6 @@ from bpy_extras.io_utils import ImportHelper
 
 
 class FULCRUM_OT_projection_setup(bpy.types.Operator, ImportHelper):
-
     bl_idname = "fulcrum.projection_setup"
     bl_label = "Projection Setup"
     bl_description = "Set up camera projection"
@@ -215,12 +209,10 @@ class FULCRUM_OT_projection_setup(bpy.types.Operator, ImportHelper):
     )
 
     def execute(self, context):
-
         obj = context.object
         cam_obj = context.scene.camera  # TODO selected cam ?
 
         if self.subdivision:
-
             smooth_subdiv = round(self.subdivision * self.sharp_or_smooth)
             sharp_subdiv = self.subdivision - smooth_subdiv
 
@@ -288,7 +280,6 @@ class FULCRUM_OT_projection_setup(bpy.types.Operator, ImportHelper):
         return {"FINISHED"}
 
     def draw(self, context):
-
         layout = self.layout
 
         layout.use_property_split = True
@@ -302,7 +293,6 @@ class FULCRUM_OT_projection_setup(bpy.types.Operator, ImportHelper):
 
 
 class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
-
     bl_idname = "fulcrum.frame_range_from_cam"
     bl_label = "Frame Range from Cameras"
     bl_description = "Set scene frame range from selected cameras. Expected format blabla_startframe_endframe"
@@ -314,6 +304,7 @@ class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
         return context.selected_objects or context.scene.camera
 
     def execute(self, context):
+        # TODO scene. frame_preview_start, end + use_preview_range
         def get_cams():
             # cam_obj = context.scene.camera
             cams = [obj for obj in context.selected_objects if obj.type == "CAMERA"]
@@ -371,7 +362,6 @@ class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
 
 
 class FULCRUM_OT_set_resolution(bpy.types.Operator):
-
     bl_idname = "fulcrum.set_resolution"
     bl_label = "Set Resolution"
     bl_description = "Changes resolution proportionally"
@@ -383,7 +373,6 @@ class FULCRUM_OT_set_resolution(bpy.types.Operator):
     )
 
     def execute(self, context):
-
         x = context.scene.render.resolution_x
         y = context.scene.render.resolution_y
 
@@ -394,7 +383,6 @@ class FULCRUM_OT_set_resolution(bpy.types.Operator):
 
 
 class FULCRUM_OT_set_aspect_ratio(bpy.types.Operator):
-
     bl_idname = "fulcrum.set_aspect_ratio"
     bl_label = "Set Aspect Ratio"
     bl_description = "Sets aspect ratio while keeping Resolution X the same"
@@ -406,7 +394,6 @@ class FULCRUM_OT_set_aspect_ratio(bpy.types.Operator):
     )
 
     def execute(self, context):
-
         x = context.scene.render.resolution_x
         y_new = int(x / self.aspect_ratio)
         context.scene.render.resolution_y = y_new
@@ -415,7 +402,6 @@ class FULCRUM_OT_set_aspect_ratio(bpy.types.Operator):
 
 
 class FULCRUM_OT_passepartout(bpy.types.Operator):
-
     bl_idname = "fulcrum.passepartout"
     bl_label = "Set Passepartout"
     bl_description = "Sets passepartout opacity"
@@ -430,7 +416,6 @@ class FULCRUM_OT_passepartout(bpy.types.Operator):
     )
 
     def execute(self, context):
-
         cams = [
             cam for cam in bpy.data.objects if cam.type == "CAMERA"
         ]  # and cam.name.startswith("cam_")
@@ -442,14 +427,12 @@ class FULCRUM_OT_passepartout(bpy.types.Operator):
 
 
 class FULCRUM_OT_center_render_region(bpy.types.Operator):
-
     bl_idname = "fulcrum.center_render_region"
     bl_label = "Center Render Region"
     bl_description = ""
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-
         render = context.scene.render
         x = 0.5 * (render.border_min_x + render.border_max_x) - 0.5
         y = 0.5 * (render.border_min_y + render.border_max_y) - 0.5
