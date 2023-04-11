@@ -445,19 +445,22 @@ class FULCRUM_OT_zoom(bpy.types.Operator):
 class FULCRUM_OT_mirror(bpy.types.Operator):
     bl_idname = "fulcrum.mirror"
     bl_label = "Mirror"
-    bl_description = ""
+    bl_description = "Mirror selected objects around 3D cursor without using scale, changes only orientation. Useful for mirroring lights"
     bl_options = {"REGISTER", "UNDO"}
 
     axis: bpy.props.EnumProperty(
         name="Axis",
-        description="...",
+        description="Mirror around this axis",
         items=[
             ("X", "X", ""),
             ("Y", "Y", ""),
-            # ("Y", "Y", ""),
         ],
         default="X",
     )
+
+    @classmethod
+    def poll(cls, context):
+        return context.selected_objects
 
     def execute(self, context):
         cursor_loc = context.scene.cursor.location
