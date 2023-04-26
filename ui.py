@@ -47,8 +47,15 @@ def draw_outliner(self, context):
 
 def draw_timeline(self, context):
     if context.area.ui_type == "TIMELINE":
-        frame_count = context.scene.frame_end - context.scene.frame_start + 1
-        seconds = frame_count / context.scene.render.fps
+        scene = context.scene
+        if scene.use_preview_range:
+            frame_start = scene.frame_preview_start
+            frame_end = scene.frame_preview_end
+        else:
+            frame_start = scene.frame_start
+            frame_end = scene.frame_end
+        frame_count = frame_end - frame_start + 1
+        seconds = frame_count / scene.render.fps
         self.layout.label(text=f"{frame_count} | {seconds:.2f}s")
 
 

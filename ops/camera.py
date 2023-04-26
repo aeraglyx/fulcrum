@@ -311,40 +311,37 @@ class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
             return cams
 
         def get_cam_min_max(cam):
-            min_frame = int(cam.name.split("_")[-2])
-            max_frame = int(cam.name.split("_")[-1])
-            return min_frame, max_frame
+            frame_min = int(cam.name.split("_")[-2])
+            frame_max = int(cam.name.split("_")[-1])
+            return frame_min, frame_max
 
         cams = get_cams()
 
         if len(cams) == 1:
             context.scene.camera = cams[0]
 
-        min_frame = max_frame = None
+        frame_min = frame_max = None
         for cam in cams:
             try:
                 min_cam, max_cam = get_cam_min_max(cam)
             except:
                 self.report({"WARNING"}, f"Expected format: blabla_startframe_endframe")
                 return {"CANCELLED"}
-            if min_frame is None or min_cam < min_frame:
-                min_frame = min_cam
-            if max_frame is None or max_cam > max_frame:
-                max_frame = max_cam
+            if frame_min is None or min_cam < frame_min:
+                frame_min = min_cam
+            if frame_max is None or max_cam > frame_max:
+                frame_max = max_cam
 
-        if max_frame < min_frame:
+        if frame_max < frame_min:
             # ERROR WARNING ERROR_INVALID_INPUT
             self.report(
                 {"WARNING"}, f"Make sure that end_frame isn't lower than start_frame."
             )
             return {"CANCELLED"}
 
-        bpy.context.scene.frame_start = min_frame
-        bpy.context.scene.frame_end = max_frame
-
-        frame_orig = bpy.context.scene.frame_current
-        new_frame = max(min_frame, min(frame_orig, max_frame))
-        bpy.context.scene.frame_current = new_frame
+        bpy.context.scene.frame_start = frame_min
+        bpy.context.scene.frame_end = frame_max
+        bpy.context.scene.frame_current = int((frame_min + frame_max) / 2)
 
         for area in bpy.context.screen.areas:
             if area.type in ["DOPESHEET_EDITOR", "GRAPH_EDITOR", "NLA_EDITOR"]:
@@ -352,11 +349,15 @@ class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
                     if region.type == "WINDOW":
                         override = {"area": area, "region": region}
                         if area.type == "DOPESHEET_EDITOR":
-                            bpy.ops.action.view_all(override)
+                            bpy.ops.action.view_frame(override)
                         if area.type == "GRAPH_EDITOR":
-                            bpy.ops.graph.view_all(override)
+                            bpy.ops.graph.view_frame(override)
                         if area.type == "NLA_EDITOR":
-                            bpy.ops.nla.view_all(override)
+                            bpy.ops.nla.view_frame(override)
+
+        frame_orig = bpy.context.scene.frame_current
+        new_frame = max(frame_min, min(frame_orig, frame_max))
+        bpy.context.scene.frame_current = new_frame
 
         return {"FINISHED"}
 

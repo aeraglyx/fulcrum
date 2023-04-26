@@ -1,11 +1,12 @@
-import bpy
 import os
-from ..functions import version_up
 import re
+
+import bpy
+
+from ..functions import version_up
 
 
 class FULCRUM_OT_anim_time_limit(bpy.types.Operator):
-
     bl_idname = "fulcrum.anim_time_limit"
     bl_label = "Animation Time Limit"
     bl_description = "Estimate samples so that render takes a certain time"
@@ -46,7 +47,6 @@ class FULCRUM_OT_anim_time_limit(bpy.types.Operator):
     )
 
     def execute(self, context):
-
         if self.custom_range:
             frames = self.frames
         else:
@@ -67,12 +67,10 @@ class FULCRUM_OT_anim_time_limit(bpy.types.Operator):
         # TODO number of nodes etc. for render farm?
 
     def invoke(self, context, event):
-
         wm = context.window_manager
         return wm.invoke_props_dialog(self)
 
     def draw(self, context):
-
         layout = self.layout
         layout.use_property_split = True
         layout.use_property_decorate = False
@@ -93,7 +91,6 @@ class FULCRUM_OT_anim_time_limit(bpy.types.Operator):
 
 
 def check_if_render_slot_is_used(slot):
-
     tmp_path = os.path.join(bpy.path.abspath("//"), "tmp_img.png")
 
     try:
@@ -107,14 +104,12 @@ def check_if_render_slot_is_used(slot):
 
 
 class FULCRUM_OT_render_to_new_slot(bpy.types.Operator):
-
     bl_idname = "fulcrum.render_to_new_slot"
     bl_label = "Render to New Slot"
     bl_description = "Render to Next Available Render Slot"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-
         render_result = bpy.data.images["Render Result"]
         render_slots = render_result.render_slots
 
@@ -125,7 +120,6 @@ class FULCRUM_OT_render_to_new_slot(bpy.types.Operator):
 
 
 class FULCRUM_OT_set_render_passes(bpy.types.Operator):
-
     bl_idname = "fulcrum.set_render_passes"
     bl_label = "(Set Render Passes)"
     bl_description = "Set-up compositor nodes."
@@ -136,49 +130,122 @@ class FULCRUM_OT_set_render_passes(bpy.types.Operator):
     # 	return bool(context.scene.camera)
 
     combine_dir_ind: bpy.props.BoolProperty(
-        name="Combine Direct & Indirect", description="", default=True
+        name="Combine Direct & Indirect",
+        description="",
+        default=True,
     )
     combine_light_color: bpy.props.BoolProperty(
-        name="Combine Light & Color", description="", default=True
+        name="Combine Light & Color",
+        description="",
+        default=True,
     )
     transparent: bpy.props.BoolProperty(
-        name="Transparent", description="", default=True
+        name="Transparent",
+        description="",
+        default=True,
     )
-    denoise: bpy.props.BoolProperty(name="Denoise", description="", default=True)
+    denoise: bpy.props.BoolProperty(
+        name="Denoise",
+        description="",
+        default=True,
+    )
 
-    diffuse: bpy.props.BoolProperty(name="Diffuse", description="", default=True)
-    glossy: bpy.props.BoolProperty(name="Glossy", description="", default=True)
+    diffuse: bpy.props.BoolProperty(
+        name="Diffuse",
+        description="",
+        default=True,
+    )
+    glossy: bpy.props.BoolProperty(
+        name="Glossy",
+        description="",
+        default=True,
+    )
     transmission: bpy.props.BoolProperty(
-        name="Transmission", description="", default=False
+        name="Transmission",
+        description="",
+        default=False,
     )
-    volume: bpy.props.BoolProperty(name="Volume", description="", default=False)
-    emit: bpy.props.BoolProperty(name="Emission", description="", default=False)
-    env: bpy.props.BoolProperty(name="Environment", description="", default=False)
-    shadow: bpy.props.BoolProperty(name="Shadow", description="", default=False)
-    ao: bpy.props.BoolProperty(name="Ambient Occlusion", description="", default=False)
+    volume: bpy.props.BoolProperty(
+        name="Volume",
+        description="",
+        default=False,
+    )
+    emit: bpy.props.BoolProperty(
+        name="Emission",
+        description="",
+        default=False,
+    )
+    env: bpy.props.BoolProperty(
+        name="Environment",
+        description="",
+        default=False,
+    )
+    shadow: bpy.props.BoolProperty(
+        name="Shadow",
+        description="",
+        default=False,
+    )
+    ao: bpy.props.BoolProperty(
+        name="Ambient Occlusion",
+        description="",
+        default=False,
+    )
     shadow_catcher: bpy.props.BoolProperty(
-        name="Shadow Catcher", description="", default=False
+        name="Shadow Catcher",
+        description="",
+        default=False,
+    )
+    z: bpy.props.BoolProperty(
+        name="Z",
+        description="",
+        default=True,
+    )
+    mist: bpy.props.BoolProperty(
+        name="Mist",
+        description="",
+        default=False,
+    )
+    position: bpy.props.BoolProperty(
+        name="Position",
+        description="",
+        default=False,
+    )
+    normal: bpy.props.BoolProperty(
+        name="Normal",
+        description="",
+        default=False,
+    )
+    vector: bpy.props.BoolProperty(
+        name="Vector",
+        description="",
+        default=False,
+    )
+    uv: bpy.props.BoolProperty(
+        name="UV",
+        description="",
+        default=False,
     )
 
-    z: bpy.props.BoolProperty(name="Z", description="", default=True)
-    mist: bpy.props.BoolProperty(name="Mist", description="", default=False)
-    position: bpy.props.BoolProperty(name="Position", description="", default=False)
-    normal: bpy.props.BoolProperty(name="Normal", description="", default=False)
-    vector: bpy.props.BoolProperty(name="Vector", description="", default=False)
-    uv: bpy.props.BoolProperty(name="UV", description="", default=False)
-
-    crypto_asset: bpy.props.BoolProperty(name="Asset", description="", default=False)
+    crypto_asset: bpy.props.BoolProperty(
+        name="Asset",
+        description="",
+        default=False,
+    )
     crypto_material: bpy.props.BoolProperty(
-        name="Material", description="", default=False
+        name="Material",
+        description="",
+        default=False,
     )
-    crypto_object: bpy.props.BoolProperty(name="Object", description="", default=False)
+    crypto_object: bpy.props.BoolProperty(
+        name="Object",
+        description="",
+        default=False,
+    )
 
     def execute(self, context):
-
         context.scene.render.film_transparent = self.transparent
 
         def set_render_passes(view_layer):
-
             view_layer.use_pass_combined = True
 
             view_layer.use_pass_diffuse_color = self.diffuse
@@ -274,7 +341,6 @@ class FULCRUM_OT_set_render_passes(bpy.types.Operator):
 
         view_layers = context.scene.view_layers
         for view_layer in view_layers:
-
             set_render_passes(view_layer)
 
             input_node = nodes.new(type="CompositorNodeRLayers")
@@ -338,7 +404,6 @@ class FULCRUM_OT_set_render_passes(bpy.types.Operator):
         return wm.invoke_props_dialog(self)
 
     def draw(self, context):
-
         layout = self.layout
         layout.use_property_split = True
         layout.use_property_decorate = False
@@ -380,7 +445,6 @@ from bpy_extras.io_utils import ImportHelper
 
 
 class FULCRUM_OT_set_output_directory(bpy.types.Operator, ImportHelper):
-
     bl_idname = "fulcrum.set_output_directory"
     bl_label = "Set Output Directory"
     bl_description = "Change path in Output Properties and all File Output nodes"
@@ -393,7 +457,6 @@ class FULCRUM_OT_set_output_directory(bpy.types.Operator, ImportHelper):
     )
 
     def execute(self, context):
-
         old_name = os.path.split(context.scene.render.filepath)[1]
         new_dir, input_name = os.path.split(self.filepath)
 
@@ -413,21 +476,18 @@ class FULCRUM_OT_set_output_directory(bpy.types.Operator, ImportHelper):
         return {"FINISHED"}
 
     def invoke(self, context, event):
-
         self.filepath = context.scene.render.filepath
         wm = context.window_manager.fileselect_add(self)
         return {"RUNNING_MODAL"}
 
 
 class FULCRUM_OT_compositor_increment_version(bpy.types.Operator):
-
     bl_idname = "fulcrum.compositor_increment_version"
     bl_label = "Increment Version"
     bl_description = "Change filename for all File Output nodes"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-
         if not context.scene.node_tree:
             return {"FINISHED"}
 
@@ -444,14 +504,12 @@ class FULCRUM_OT_compositor_increment_version(bpy.types.Operator):
 
 
 class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
-
     bl_idname = "fulcrum.prepare_for_render"
     bl_label = "Prep for Beaming"
     bl_description = "..."
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-
         bpy.context.scene.render.use_compositing = True
         bpy.context.scene.render.use_sequencer = False
         bpy.context.scene.render.use_persistent_data = True
@@ -466,14 +524,12 @@ class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
 
 
 class FULCRUM_OT_view_layers_to_muted_nodes(bpy.types.Operator):
-
     bl_idname = "fulcrum.view_layers_to_muted_nodes"
     bl_label = "View Layers to Muted Nodes"
     bl_description = "If File Output nodes are named correctly, this will mute any output nodes whose corresponding View Layer isn't used for rendering"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-
         node_tree = context.scene.node_tree
 
         if not node_tree:
@@ -490,14 +546,12 @@ class FULCRUM_OT_view_layers_to_muted_nodes(bpy.types.Operator):
 
 
 class FULCRUM_OT_remove_unused_output_sockets(bpy.types.Operator):
-
     bl_idname = "fulcrum.remove_unused_output_sockets"
     bl_label = "Remove Unused Outputs"
     bl_description = "Remove unused sockets of selected File Output nodes (or all if none are selected)"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-
         if not context.scene.node_tree:
             return {"FINISHED"}
 
@@ -513,7 +567,6 @@ class FULCRUM_OT_remove_unused_output_sockets(bpy.types.Operator):
 
 
 class FULCRUM_OT_copy_passes(bpy.types.Operator):
-
     bl_idname = "fulcrum.copy_passes"
     bl_label = "Copy Passes"
     bl_description = ""
@@ -524,14 +577,12 @@ class FULCRUM_OT_copy_passes(bpy.types.Operator):
         return len(context.scene.view_layers) > 1
 
     def execute(self, context):
-
         view_layer_active = context.view_layer
         other_view_layers = [
             l for l in context.scene.view_layers if l != view_layer_active
         ]
 
         for layer in other_view_layers:
-
             layer.use_pass_combined = view_layer_active.use_pass_combined
             layer.use_pass_z = view_layer_active.use_pass_z
             layer.use_pass_mist = view_layer_active.use_pass_mist
