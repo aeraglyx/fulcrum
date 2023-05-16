@@ -81,6 +81,10 @@ from .ops.three_d import (
     FULCRUM_OT_vert_group_2_col,
     FULCRUM_OT_zoom,
 )
+from .ops.tracking import (
+    FULCRUM_OT_auto_marker_weight,
+    FULCRUM_OT_clip_to_scene_resolution,
+)
 from .prefs import FulcrumPreferences
 from .props import fulcrum_props
 from .ui import (
@@ -166,6 +170,8 @@ classes = (
     FULCRUM_OT_edit_light_power,
     FULCRUM_OT_reduce_materials,
     FULCRUM_OT_zoom,
+    FULCRUM_OT_clip_to_scene_resolution,
+    FULCRUM_OT_auto_marker_weight,
     # FULCRUM_PT_versioning,
     FULCRUM_PT_fulcrum_3d,
     FULCRUM_PT_3d_stuff,
