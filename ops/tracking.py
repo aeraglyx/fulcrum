@@ -40,8 +40,8 @@ class FULCRUM_OT_auto_marker_weight(bpy.types.Operator):
         # TODO
 
     error_threshold: bpy.props.FloatProperty(
-        name="Half Life",
-        description="Track weight decreases exponentially with increasing average error, this specifies what error has 0.5 weight. Lower values should yield smaller error but will rely on fewer tracks",
+        name="Target Error",
+        description="Decrease track weight exponentially with increasing average error. This specifies what error has 0.5 weight. Lower values should yield smaller error but will rely on fewer tracks",
         min=0.0,
         default=1.0,
         soft_max=10.0,
@@ -50,31 +50,15 @@ class FULCRUM_OT_auto_marker_weight(bpy.types.Operator):
         name="Smoothing",
         description="Number of frames to fade in/out track weights to reduce jumps",
         min=1,
-        default=8,
+        default=10,
         soft_max=100,
     )
     prioritize_center: bpy.props.FloatProperty(
         name="Prioritize Center",
         description="Gaussian function. 1.0 means 0.5 at horizontal edge",
         min=0.0,
-        default=0.5,
+        default=1.0,
         soft_max=10.0,
-    )
-    edge_weight: bpy.props.FloatProperty(
-        name="Edge Weight",
-        description="Uses Safe Areas",
-        min=0.0,
-        default=0.5,
-        max=1.0,
-        subtype="FACTOR",
-    )
-    keyed_mult: bpy.props.FloatProperty(
-        name="Keyed Mult",
-        description="How strongly are manual keyframes considered",
-        min=0.0,
-        default=0.5,
-        soft_max=1.0,
-        subtype="FACTOR",
     )
 
     def execute(self, context):
@@ -136,32 +120,21 @@ class FULCRUM_OT_auto_marker_weight(bpy.types.Operator):
                         closest_key_dist = min([abs(key - frame) for key in keyframes])
                         mult_trans = map_range(closest_key_dist, -1, self.smooth - 1)
                         weight *= smoothstep(mult_trans)
-                    # mult_manual = marker.is_keyed
+                        # TODO fade bad tracks longer?
+                    # marker.is_keyed
 
-                    safe_areas = context.scene.safe_areas
-                    # title - closer to center
-                    # action - closer to edges
-                    aspect = clip.tracking.camera.pixel_aspect
-                    # TODO
+                    aspect = scene.render.resolution_y / scene.render.resolution_x
+                    x = 2.0 * (marker.co.x - 0.5)
+                    y = 2.0 * (marker.co.y - 0.5) * aspect
+                    r = math.sqrt(x**2.0 + y**2.0)
 
-                    co_to_safe_areas_x = 1 - 2 * abs(marker.co.x - 0.5)
-                    co_to_safe_areas_y = 1 - 2 * abs(marker.co.y - 0.5)
-
-                    mult_safe_x = map_range(
-                        co_to_safe_areas_x,
-                        safe_areas.action.x,
-                        safe_areas.title.x,
+                    mult_center = math.pow(
+                        2.0, -math.pow(self.prioritize_center * r, 2.0)
                     )
-                    mult_safe_y = map_range(
-                        co_to_safe_areas_y,
-                        safe_areas.action.y,
-                        safe_areas.title.y,
-                    )
-
-                    mult_safe = smoothstep(mult_safe_x * mult_safe_y)
-                    weight *= mult_safe
+                    weight *= mult_center
                 else:
                     weight = 0.0
+                    # TODO if not needed, don't write keyframe
 
                 fcurve.keyframe_points.insert(frame, weight, options={"FAST"})
 
@@ -173,6 +146,7 @@ class FULCRUM_OT_auto_marker_weight(bpy.types.Operator):
         layout.use_property_split = True
         layout.use_property_decorate = False
 
-        # col = layout.column(align=True)
-        layout.prop(self, "error_threshold")
-        layout.prop(self, "smooth")
+        col = layout.column(align=True)
+        col.prop(self, "error_threshold")
+        col.prop(self, "smooth")
+        col.prop(self, "prioritize_center")
