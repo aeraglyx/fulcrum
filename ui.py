@@ -514,3 +514,23 @@ class FULCRUM_PT_utility_3d(View3DPanel, bpy.types.Panel):
             icon="PREFERENCES",
         )
         col.operator("wm.console_toggle", icon="CONSOLE")
+
+
+# ---------------- VIEW 3D ----------------
+
+# class ClipEditorPanel(bpy.types.Panel):
+#     bl_space_type = "CLIP_EDITOR"
+#     bl_region_type = "TOOLS"  # left - TOOLS, right - UI
+#     bl_category = "Fulcrum"
+
+
+class FULCRUM_PT_fulcrum_3d(bpy.types.Panel):
+    bl_space_type = "CLIP_EDITOR"
+    bl_region_type = "TOOLS"  # left - TOOLS, right - UI
+    bl_category = "Solve"
+    bl_label = "Fulcrum"
+
+    def draw(self, context):
+        layout = self.layout
+        # col = layout.column(align=True)
+        layout.operator("fulcrum.auto_marker_weight", icon="TRACKER")

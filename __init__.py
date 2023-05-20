@@ -190,6 +190,7 @@ classes = (
     FULCRUM_PT_utility_node,
     FULCRUM_PT_render,
     FULCRUM_PT_data,
+    FULCRUM_PT_fulcrum_3d,
 )
 
 addon_keymaps = []

@@ -506,7 +506,7 @@ class FULCRUM_OT_compositor_increment_version(bpy.types.Operator):
 class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
     bl_idname = "fulcrum.prepare_for_render"
     bl_label = "Prep for Beaming"
-    bl_description = "..."
+    bl_description = "Absolute paths, Compositing nodes ON, Sequencer OFF, Persistent data ON, Use border OFF, file format - .png, Animated seed ON"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):

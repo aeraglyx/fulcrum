@@ -48,10 +48,17 @@ class FULCRUM_OT_auto_marker_weight(bpy.types.Operator):
     )
     smooth: bpy.props.IntProperty(
         name="Smoothing",
-        description="Number of frames to fade in/out track weights",
+        description="Number of frames to fade in/out track weights to reduce jumps",
         min=1,
         default=8,
         soft_max=100,
+    )
+    prioritize_center: bpy.props.FloatProperty(
+        name="Prioritize Center",
+        description="Gaussian function. 1.0 means 0.5 at horizontal edge",
+        min=0.0,
+        default=0.5,
+        soft_max=10.0,
     )
     edge_weight: bpy.props.FloatProperty(
         name="Edge Weight",
@@ -134,6 +141,8 @@ class FULCRUM_OT_auto_marker_weight(bpy.types.Operator):
                     safe_areas = context.scene.safe_areas
                     # title - closer to center
                     # action - closer to edges
+                    aspect = clip.tracking.camera.pixel_aspect
+                    # TODO
 
                     co_to_safe_areas_x = 1 - 2 * abs(marker.co.x - 0.5)
                     co_to_safe_areas_y = 1 - 2 * abs(marker.co.y - 0.5)
