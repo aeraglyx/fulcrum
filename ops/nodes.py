@@ -1,13 +1,14 @@
-import bpy
-import mathutils
+import itertools
 import math
 import random
-import itertools
+
+import bpy
+import mathutils
+
 from ..functions import *
 
 
 class FULCRUM_OT_align_nodes(bpy.types.Operator):
-
     # layered graph drawing
 
     bl_idname = "fulcrum.align_nodes"
@@ -117,7 +118,6 @@ class FULCRUM_OT_align_nodes(bpy.types.Operator):
 
 
 class FULCRUM_OT_align_nodes_v2(bpy.types.Operator):
-
     # layered graph drawing
 
     bl_idname = "fulcrum.align_nodes_v2"
@@ -300,7 +300,6 @@ class FULCRUM_OT_align_nodes_v2(bpy.types.Operator):
 
 
 class FULCRUM_OT_align_nodes_v3(bpy.types.Operator):
-
     # layered graph drawing
 
     bl_idname = "fulcrum.align_nodes_v3"
@@ -357,7 +356,6 @@ class FULCRUM_OT_align_nodes_v3(bpy.types.Operator):
     )
 
     def execute(self, context):
-
         tree = context.space_data.edit_tree  # BUG doesn't work in compositor
         nodes = tree.nodes
         links = tree.links
@@ -432,7 +430,6 @@ class FULCRUM_OT_align_nodes_v3(bpy.types.Operator):
 
 
 class FULCRUM_OT_center_nodes(bpy.types.Operator):
-
     bl_idname = "fulcrum.center_nodes"
     bl_label = "Center Nodes"
     bl_description = ""
@@ -442,7 +439,6 @@ class FULCRUM_OT_center_nodes(bpy.types.Operator):
         return hasattr(context, "selected_nodes")
 
     def execute(self, context):
-
         nodes = context.space_data.edit_tree.nodes
         # FIXME takes nodes inside groups as well (does it?)
 
@@ -469,7 +465,6 @@ class FULCRUM_OT_center_nodes(bpy.types.Operator):
 
 
 class FULCRUM_OT_nodes_to_grid(bpy.types.Operator):
-
     bl_idname = "fulcrum.nodes_to_grid"
     bl_label = "Nodes to Grid"
     bl_description = ""
@@ -487,7 +482,6 @@ class FULCRUM_OT_nodes_to_grid(bpy.types.Operator):
 
 
 class FULCRUM_OT_hide_group_inputs(bpy.types.Operator):
-
     bl_idname = "fulcrum.hide_group_inputs"
     bl_label = "Hide Group Inputs"
     bl_description = ""
@@ -507,14 +501,12 @@ class FULCRUM_OT_hide_group_inputs(bpy.types.Operator):
 
 
 class FULCRUM_OT_remove_unused_group_inputs(bpy.types.Operator):
-
     bl_idname = "fulcrum.remove_unused_group_inputs"
     bl_label = "Remove Unused Group Inputs"
     bl_description = ""
     bl_options = {"UNDO"}
 
     def execute(self, context):
-
         nodes = context.space_data.edit_tree.nodes
         group = nodes.id_data
 
@@ -537,7 +529,6 @@ class FULCRUM_OT_remove_unused_group_inputs(bpy.types.Operator):
 
 
 class FULCRUM_OT_select_node_inputs(bpy.types.Operator):
-
     bl_idname = "fulcrum.select_node_inputs"
     bl_label = "Select Node Inputs"
     bl_description = "Show all nodes used by the selected nodes"
@@ -547,7 +538,6 @@ class FULCRUM_OT_select_node_inputs(bpy.types.Operator):
         return hasattr(context, "selected_nodes")
 
     def execute(self, context):
-
         nodes = bpy.context.space_data.edit_tree.nodes
         selected = context.selected_nodes
 
@@ -579,7 +569,6 @@ class FULCRUM_OT_select_node_inputs(bpy.types.Operator):
 
 
 class FULCRUM_OT_select_node_dependencies(bpy.types.Operator):
-
     bl_idname = "fulcrum.select_node_dependencies"
     bl_label = "Select Node Dependencies"
     bl_description = "Show all nodes used by the selected nodes"
@@ -589,7 +578,6 @@ class FULCRUM_OT_select_node_dependencies(bpy.types.Operator):
         return hasattr(context, "selected_nodes")
 
     def execute(self, context):
-
         nodes = context.space_data.edit_tree.nodes
         selected = context.selected_nodes
 
@@ -620,13 +608,11 @@ class FULCRUM_OT_select_node_dependencies(bpy.types.Operator):
 
 
 class FULCRUM_OT_select_group_inputs(bpy.types.Operator):
-
     bl_idname = "fulcrum.select_group_inputs"
     bl_label = "Select Group Inputs"
     bl_description = ""
 
     def execute(self, context):
-
         nodes = context.space_data.edit_tree.nodes
         for node in nodes:
             if node.type == "GROUP_INPUT":
@@ -640,7 +626,6 @@ class FULCRUM_OT_select_group_inputs(bpy.types.Operator):
 
 
 class FULCRUM_OT_select_unused_nodes(bpy.types.Operator):
-
     bl_idname = "fulcrum.select_unused_nodes"
     bl_label = "Select Unused Nodes"
     bl_description = "Show all nodes used by the selected nodes"
@@ -652,7 +637,6 @@ class FULCRUM_OT_select_unused_nodes(bpy.types.Operator):
     # TODO make it work for inside of node groups
 
     def execute(self, context):
-
         tree = context.space_data.edit_tree  # context.active_node.id_data
         nodes = tree.nodes
 
@@ -688,7 +672,6 @@ class FULCRUM_OT_select_unused_nodes(bpy.types.Operator):
 
 
 class FULCRUM_OT_randomize_node_color(bpy.types.Operator):
-
     bl_idname = "fulcrum.randomize_node_color"
     bl_label = "Randomize Node Color"
     bl_description = "..."
@@ -707,7 +690,6 @@ class FULCRUM_OT_randomize_node_color(bpy.types.Operator):
     )
 
     def execute(self, context):
-
         tree = context.space_data.edit_tree  # BUG doesn't work in compositor
         nodes = tree.nodes
 
@@ -735,7 +717,6 @@ class Node:
 
 
 class FULCRUM_OT_color_node_flow(bpy.types.Operator):
-
     # layered graph drawing
 
     bl_idname = "fulcrum.color_node_flow"
@@ -791,7 +772,6 @@ class FULCRUM_OT_color_node_flow(bpy.types.Operator):
     )
 
     def execute(self, context):
-
         tree = context.space_data.edit_tree  # BUG doesn't work in compositor
         nodes = tree.nodes
         links = tree.links
@@ -809,7 +789,6 @@ class FULCRUM_OT_color_node_flow(bpy.types.Operator):
         }
 
         for i in range(self.iter):
-
             cooling_factor = 2 ** (-self.cool * i)
             force_field = {node: mathutils.Vector((0.0, 0.0)) for node in nodes}
 
@@ -853,7 +832,6 @@ class FULCRUM_OT_color_node_flow(bpy.types.Operator):
 
 
 class FULCRUM_OT_add_todo_note(bpy.types.Operator):
-
     bl_idname = "fulcrum.add_todo_note"
     bl_label = "Add Note"
     bl_description = ""
@@ -902,7 +880,6 @@ class FULCRUM_OT_add_todo_note(bpy.types.Operator):
 
 
 class FULCRUM_OT_tex_to_name(bpy.types.Operator):
-
     bl_idname = "fulcrum.tex_to_name"
     bl_label = "Tex > Mat Name"
     bl_description = (
@@ -957,7 +934,6 @@ class FULCRUM_OT_set_node_color(bpy.types.Operator):
     )
 
     def execute(self, context):
-
         nodes = context.selected_nodes  # context.active_node.id_data.nodes
         for node in nodes:
             node.use_custom_color = True
@@ -979,7 +955,6 @@ class FULCRUM_OT_reset_node_color(bpy.types.Operator):
         return context.area.type == "NODE_EDITOR"
 
     def execute(self, context):
-
         # nodes = context.space_data.edit_tree.nodes  # context.active_node.id_data.nodes
         for node in context.selected_nodes:
             # if node.bl_idname != 'NodeFrame':
@@ -989,7 +964,6 @@ class FULCRUM_OT_reset_node_color(bpy.types.Operator):
 
 
 class FULCRUM_OT_set_node_size(bpy.types.Operator):
-
     bl_idname = "fulcrum.set_node_size"
     bl_label = "Set Node Size"
     bl_description = ""
@@ -1002,7 +976,6 @@ class FULCRUM_OT_set_node_size(bpy.types.Operator):
     size: bpy.props.FloatProperty(name="Size", default=1.0)
 
     def execute(self, context):
-
         nodes = context.selected_nodes
         for node in nodes:
             node.width = node.bl_width_default * self.size
@@ -1011,7 +984,6 @@ class FULCRUM_OT_set_node_size(bpy.types.Operator):
 
 
 class FULCRUM_OT_set_gn_defaults(bpy.types.Operator):
-
     bl_idname = "fulcrum.set_gn_defaults"
     bl_label = "Set GN Defaults"
     bl_description = ""
@@ -1021,7 +993,6 @@ class FULCRUM_OT_set_gn_defaults(bpy.types.Operator):
         return context.area.type == "NODE_EDITOR"
 
     def execute(self, context):
-
         # group = context.space_data.edit_tree
         modif = context.object.modifiers.active
         group = modif.node_group
@@ -1034,7 +1005,6 @@ class FULCRUM_OT_set_gn_defaults(bpy.types.Operator):
 
 
 class FULCRUM_OT_reset_gn_defaults(bpy.types.Operator):
-
     bl_idname = "fulcrum.reset_gn_defaults"
     bl_label = "Reset GN Defaults"
     bl_description = ""
@@ -1044,7 +1014,6 @@ class FULCRUM_OT_reset_gn_defaults(bpy.types.Operator):
         return context.area.type == "NODE_EDITOR"
 
     def execute(self, context):
-
         # group = context.space_data.edit_tree
         modif = context.object.modifiers.active
         group = modif.node_group

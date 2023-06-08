@@ -1,7 +1,9 @@
-import bpy
 import os
 import re
 import subprocess
+
+import bpy
+
 from ..functions import *
 
 # import string
@@ -62,7 +64,6 @@ def is_current_file_version():
 
 
 class FULCRUM_OT_save_as_new_version(bpy.types.Operator):
-
     bl_idname = "fulcrum.save_as_new_version"
     bl_label = "Save as New Version"
     bl_description = "This will work even if the current file is not the latest version"
@@ -83,7 +84,6 @@ class FULCRUM_OT_save_as_new_version(bpy.types.Operator):
 
 
 class FULCRUM_OT_go_to_latest_version(bpy.types.Operator):
-
     bl_idname = "fulcrum.go_to_latest_version"
     bl_label = "Jump to Latest Version"
     bl_description = "Opens the latest version of this file from the same directory"
@@ -99,7 +99,6 @@ class FULCRUM_OT_go_to_latest_version(bpy.types.Operator):
 
 
 class FULCRUM_OT_open_blend_dir(bpy.types.Operator):
-
     bl_idname = "fulcrum.open_blend_dir"
     bl_label = "Find .blend File"
     bl_description = "Opens file explorer with the current Blender file selected"
@@ -114,8 +113,24 @@ class FULCRUM_OT_open_blend_dir(bpy.types.Operator):
         return {"FINISHED"}
 
 
-class FULCRUM_OT_open_script_dir(bpy.types.Operator):
+class FULCRUM_OT_copy_path_to_clipboard(bpy.types.Operator):
+    bl_idname = "fulcrum.copy_path_to_clipboard"
+    bl_label = "Copy File Path to Clipboard"
+    bl_description = ""
+    bl_options = {"REGISTER", "UNDO"}
 
+    @classmethod
+    def poll(cls, context):
+        return bpy.data.is_saved
+
+    def execute(self, context):
+        path = bpy.data.filepath
+        bpy.context.window_manager.clipboard = "`" + path + "`"
+        self.report({"INFO"}, "Copied to clipboard.")
+        return {"FINISHED"}
+
+
+class FULCRUM_OT_open_script_dir(bpy.types.Operator):
     bl_idname = "fulcrum.open_script_dir"
     bl_label = "Find Script Directory"
     bl_description = "Opens folder with addons and themes"
@@ -127,7 +142,6 @@ class FULCRUM_OT_open_script_dir(bpy.types.Operator):
 
 
 class FULCRUM_OT_open_addon_preferences(bpy.types.Operator):
-
     bl_idname = "fulcrum.open_addon_preferences"
     bl_label = "Open Addon Preferences"
     bl_description = "Open Preferences and Find Fulcrum"
@@ -140,11 +154,14 @@ class FULCRUM_OT_open_addon_preferences(bpy.types.Operator):
         return {"FINISHED"}
 
 
-import requests, zipfile, io, shutil
+import io
+import shutil
+import zipfile
+
+import requests
 
 
 class FULCRUM_OT_update_fulcrum(bpy.types.Operator):
-
     bl_idname = "fulcrum.update_fulcrum"
     bl_label = "Update Fulcrum"
     bl_description = "Update this addon. Blender will need to be restarted"
