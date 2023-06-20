@@ -510,12 +510,12 @@ class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-        bpy.context.scene.render.use_compositing = True
         bpy.context.scene.render.use_sequencer = False
-        bpy.context.scene.render.use_persistent_data = True
+        bpy.context.scene.render.use_compositing = True
+        # bpy.context.scene.render.use_persistent_data = True
         bpy.context.scene.render.use_border = False
         bpy.context.scene.render.image_settings.file_format = "PNG"
-        bpy.context.scene.cycles.use_animated_seed = True
+        bpy.context.scene.cycles.use_animated_seed = True  # XXX
         bpy.ops.file.make_paths_absolute()
 
         # TODO purge ?
