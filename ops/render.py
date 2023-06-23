@@ -506,7 +506,7 @@ class FULCRUM_OT_compositor_increment_version(bpy.types.Operator):
 class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
     bl_idname = "fulcrum.prepare_for_render"
     bl_label = "Prep for Beaming"
-    bl_description = "Absolute paths, Compositing nodes ON, Sequencer OFF, Persistent data ON, Use border OFF, file format - .png, Animated seed ON"
+    bl_description = "Absolute paths, Compositing nodes ON, Sequencer OFF, Use border OFF, file format - .png, Animated seed ON"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
@@ -519,6 +519,16 @@ class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
         bpy.ops.file.make_paths_absolute()
 
         # TODO purge ?
+
+        layers = context.scene.view_layers
+        layers_used = [layer.name for layer in layers if layer.use]
+        layers_used_str = " | ".join(layers_used)
+        layers_used_n = len(layers_used)
+        layers_n = len(layers)
+        used_out_of_total_str = f"{layers_used_n}/{layers_n}"
+        self.report(
+            {"INFO"}, f"Using {used_out_of_total_str} layers: {layers_used_str}."
+        )
 
         return {"FINISHED"}
 
