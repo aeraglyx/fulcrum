@@ -395,12 +395,16 @@ class FULCRUM_OT_zoom(bpy.types.Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-        mult = math.exp((self.y - self.y_orig) * 0.01)
+        SPEED = 0.01
+        mult = math.exp((self.y - self.y_orig) * SPEED)
         lens_new = self.lens_orig * mult
         if self.snap:
             focal_lengths = [8, 14, 18, 24, 35, 50, 85, 105, 135, 200, 300]
             lens_new = min(focal_lengths, key=lambda x: abs(x - lens_new))
-            self.report({"INFO"}, f"{lens_new} mm")
+            if lens_new != self.lens_last:
+                self.report({"INFO"}, f"{lens_new} mm")
+            self.lens_last = lens_new
+
         view = context.space_data.region_3d.view_perspective
         if view == "PERSP":
             context.space_data.lens = lens_new
@@ -409,7 +413,7 @@ class FULCRUM_OT_zoom(bpy.types.Operator):
             if cam.type == "PERSP":
                 cam.lens = lens_new
             if cam.type == "ORTHO":
-                mult = math.exp((self.y - self.y_orig) * -0.01)
+                mult = math.exp((self.y_orig - self.y) * SPEED)
                 cam.ortho_scale = self.lens_orig * mult
         # TODO draw focal length on screen
         return {"FINISHED"}
@@ -437,6 +441,7 @@ class FULCRUM_OT_zoom(bpy.types.Operator):
                 self.lens_orig = cam.ortho_scale
         self.y = event.mouse_y
         self.y_orig = self.y
+        self.lens_last = self.lens_orig
         context.window_manager.modal_handler_add(self)
         return {"RUNNING_MODAL"}
 

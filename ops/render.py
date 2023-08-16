@@ -556,10 +556,12 @@ class FULCRUM_OT_view_layers_to_muted_nodes(bpy.types.Operator):
         view_layers = context.scene.view_layers
         view_layer_names = [layer.name for layer in view_layers]
 
-        nodes = [node for node in node_tree.nodes if node.type == "OUTPUT_FILE"]
-        for node in nodes:
+        output_nodes = [node for node in node_tree.nodes if node.type == "OUTPUT_FILE"]
+        for node in output_nodes:
             if node.name in view_layer_names:
                 node.mute = not view_layers.get(node.name).use
+
+        # TODO backtrack and find render layers?
 
         return {"FINISHED"}
 
