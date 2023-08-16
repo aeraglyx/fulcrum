@@ -2,7 +2,6 @@ import bpy
 
 
 class FulcrumPreferences(bpy.types.AddonPreferences):
-
     bl_idname = __package__
 
     experimental: bpy.props.BoolProperty(
@@ -16,12 +15,11 @@ class FulcrumPreferences(bpy.types.AddonPreferences):
     # )
 
     def draw(self, context):
-
         layout = self.layout
         layout.prop(self, "experimental")
 
         layout.operator("fulcrum.update_fulcrum", text="Update", icon="FILE_REFRESH")
-        if context.scene.fulcrum.restart_needed:
-            layout.label(
-                text="Updated. Blender needs restarting.", icon="SEQUENCE_COLOR_07"
-            )
+        # if context.scene.fulcrum.restart_needed:
+        #     layout.label(
+        #         text="Updated. Blender needs restarting.", icon="SEQUENCE_COLOR_07"
+        #     )

@@ -126,10 +126,11 @@ class FULCRUM_PT_fulcrum_node(NodePanel, bpy.types.Panel):
         layout = self.layout
         # col = layout.column(align=True)
         layout.operator("fulcrum.update_fulcrum", text="Update", icon="FILE_REFRESH")
-        if context.scene.fulcrum.restart_needed:
-            layout.label(text="Blender restart needed.", icon="SEQUENCE_COLOR_07")
-        else:
-            layout.label(text=f"v{get_addon_version('Fulcrum')}")
+        # if context.scene.fulcrum.restart_needed:
+        #     layout.label(text="Blender restart needed.", icon="SEQUENCE_COLOR_07")
+        # else:
+        #     layout.label(text=f"v{get_addon_version('Fulcrum')}")
+        layout.label(text=f"v{get_addon_version('Fulcrum')}")
         # col.prop(context.scene.fulcrum, 'experimental')
 
 
@@ -526,7 +527,7 @@ class FULCRUM_PT_utility_3d(View3DPanel, bpy.types.Panel):
 #     bl_category = "Fulcrum"
 
 
-class FULCRUM_PT_fulcrum_3d(bpy.types.Panel):
+class FULCRUM_PT_tracker(bpy.types.Panel):
     bl_space_type = "CLIP_EDITOR"
     bl_region_type = "TOOLS"  # left - TOOLS, right - UI
     bl_category = "Solve"

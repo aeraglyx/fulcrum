@@ -91,17 +91,23 @@ def ax_depsgraph_handler(scene):
         print(f"handler - {time.perf_counter() - start_time}")
 
 
-@persistent
-def set_restart_needed_flag(scene):
-    use_node_handler = bpy.context.scene.fulcrum.restart_needed = False
+# @persistent
+# def set_restart_needed_flag(scene):
+#     use_node_handler = bpy.context.scene.fulcrum.restart_needed = False
 
 
 def register_handlers():
-    bpy.app.handlers.load_post.append(set_restart_needed_flag)
-    # bpy.app.handlers.depsgraph_update_post.append(ax_depsgraph_handler)
+    pass
+
+
+#     bpy.app.handlers.load_post.append(set_restart_needed_flag)
+#     # bpy.app.handlers.depsgraph_update_post.append(ax_depsgraph_handler)
 
 
 def unregister_handlers():
-    for handler in bpy.app.handlers.load_post:
-        if handler.__name__ == "set_restart_needed_flag":
-            bpy.app.handlers.load_post.remove(handler)
+    pass
+
+
+#     for handler in bpy.app.handlers.load_post:
+#         if handler.__name__ == "set_restart_needed_flag":
+#             bpy.app.handlers.load_post.remove(handler)

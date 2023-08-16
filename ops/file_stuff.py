@@ -192,7 +192,7 @@ class FULCRUM_OT_update_fulcrum(bpy.types.Operator):
 
         new_version = get_addon_version("Fulcrum")
 
-        context.scene.fulcrum.restart_needed = True
+        # context.scene.fulcrum.restart_needed = True
         self.report(
             {"INFO"},
             f"Updated from {old_version} to {new_version}. Blender restart needed.",

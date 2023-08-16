@@ -2,14 +2,13 @@ import bpy
 
 
 class fulcrum_props(bpy.types.PropertyGroup):
-
     dev: bpy.props.BoolProperty(
         name="More Stuff",
         default=False,
     )
-    restart_needed: bpy.props.BoolProperty(
-        name="Restart Needed", default=False, options={"SKIP_SAVE"}
-    )
+    # restart_needed: bpy.props.BoolProperty(
+    #     name="Restart Needed", default=False, options={"SKIP_SAVE"}
+    # )
     use_node_handler: bpy.props.BoolProperty(
         name="Node Visualizer",
         default=False,
