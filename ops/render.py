@@ -509,6 +509,20 @@ class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
     bl_description = "Absolute paths, Compositing nodes ON, Sequencer OFF, Use border OFF, file format - .png, Animated seed ON"
     bl_options = {"REGISTER", "UNDO"}
 
+    def get_transparent(self):
+        return bpy.context.scene.render.film_transparent
+
+    def set_transparent(self, value):
+        self["transparent"] = value
+
+    transparent: bpy.props.BoolProperty(
+        name="Transparent",
+        description="",
+        # default=True,
+        get=get_transparent,
+        set=set_transparent,
+    )
+
     def execute(self, context):
         bpy.context.scene.render.use_sequencer = False
         bpy.context.scene.render.use_compositing = True
@@ -531,6 +545,18 @@ class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
         )
 
         return {"FINISHED"}
+
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)
+
+    def draw(self, context):
+        layout = self.layout
+        layout.use_property_split = True
+        layout.use_property_decorate = False
+
+        col = layout.column(align=True)
+        col.prop(self, "transparent")
 
 
 class FULCRUM_OT_view_layers_to_muted_nodes(bpy.types.Operator):

@@ -14,6 +14,7 @@ def register_keymap(addon_keymaps):
             value="PRESS",
             ctrl=True,
             alt=True,
+            shift=-1,
         )
         addon_keymaps.append((km, kmi))
 

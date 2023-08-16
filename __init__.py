@@ -103,6 +103,7 @@ from .ui import (
     FULCRUM_PT_optimization,
     FULCRUM_PT_paint,
     FULCRUM_PT_render,
+    FULCRUM_PT_tracker,
     FULCRUM_PT_utility_3d,
     FULCRUM_PT_utility_node,
     register_menus_and_headers,
@@ -192,7 +193,7 @@ classes = (
     FULCRUM_PT_utility_node,
     FULCRUM_PT_render,
     FULCRUM_PT_data,
-    # FULCRUM_PT_tracker,
+    FULCRUM_PT_tracker,
 )
 
 addon_keymaps = []

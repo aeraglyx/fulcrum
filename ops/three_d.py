@@ -400,6 +400,7 @@ class FULCRUM_OT_zoom(bpy.types.Operator):
         if self.snap:
             focal_lengths = [8, 14, 18, 24, 35, 50, 85, 105, 135, 200, 300]
             lens_new = min(focal_lengths, key=lambda x: abs(x - lens_new))
+            self.report({"INFO"}, f"{lens_new} mm")
         view = context.space_data.region_3d.view_perspective
         if view == "PERSP":
             context.space_data.lens = lens_new
@@ -434,8 +435,8 @@ class FULCRUM_OT_zoom(bpy.types.Operator):
                 self.lens_orig = cam.lens
             if cam.type == "ORTHO":
                 self.lens_orig = cam.ortho_scale
-        self.y_orig = event.mouse_y
         self.y = event.mouse_y
+        self.y_orig = self.y
         context.window_manager.modal_handler_add(self)
         return {"RUNNING_MODAL"}
 

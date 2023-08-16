@@ -33,9 +33,11 @@ class FULCRUM_OT_auto_marker_weight(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return True
-        # if not context.edit_movieclip:
-        #     return False
+        # return True
+        if hasattr(context, "edit_movieclip"):
+            if hasattr(context.edit_movieclip, "tracking"):
+                return True
+        return False
         # context.edit_movieclip.tracking.reconstruction.is_valid
         # TODO
 
