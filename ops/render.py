@@ -506,43 +506,19 @@ class FULCRUM_OT_compositor_increment_version(bpy.types.Operator):
 class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
     bl_idname = "fulcrum.prepare_for_render"
     bl_label = "Prep for Beaming"
-    bl_description = "Absolute paths, Compositing nodes ON, Sequencer OFF, Use border OFF, file format - .png, Animated seed ON"
+    bl_description = "Absolute paths, Compositing nodes ON, Sequencer OFF, Use border OFF, File format .PNG"
     bl_options = {"REGISTER", "UNDO"}
-
-    def get_transparent(self):
-        return bpy.context.scene.render.film_transparent
-
-    def set_transparent(self, value):
-        self["transparent"] = value
-
-    transparent: bpy.props.BoolProperty(
-        name="Transparent",
-        description="",
-        # default=True,
-        get=get_transparent,
-        set=set_transparent,
-    )
 
     def execute(self, context):
         bpy.context.scene.render.use_sequencer = False
         bpy.context.scene.render.use_compositing = True
-        # bpy.context.scene.render.use_persistent_data = True
         bpy.context.scene.render.use_border = False
         bpy.context.scene.render.image_settings.file_format = "PNG"
-        bpy.context.scene.cycles.use_animated_seed = True  # XXX
+        # bpy.context.scene.cycles.use_animated_seed = True  # XXX
         bpy.ops.file.make_paths_absolute()
 
         # TODO purge ?
-
-        layers = context.scene.view_layers
-        layers_used = [layer.name for layer in layers if layer.use]
-        layers_used_str = " | ".join(layers_used)
-        layers_used_n = len(layers_used)
-        layers_n = len(layers)
-        used_out_of_total_str = f"{layers_used_n}/{layers_n}"
-        self.report(
-            {"INFO"}, f"Using {used_out_of_total_str} layers: {layers_used_str}."
-        )
+        # TODO check compositor output nodes for the same layers?
 
         return {"FINISHED"}
 
@@ -555,8 +531,15 @@ class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
         layout.use_property_split = True
         layout.use_property_decorate = False
 
-        col = layout.column(align=True)
-        col.prop(self, "transparent")
+        col = layout.column(heading="Settings", align=True)
+        col.prop(context.scene.render, "film_transparent")
+        col.prop(context.scene.cycles, "use_animated_seed")
+        col.prop(context.scene.render, "use_persistent_data")
+
+        col = layout.column(heading="View Layers", align=True)
+        layers = context.scene.view_layers
+        for layer in layers:
+            col.prop(layer, "use", text=f"{layer.name}")
 
 
 class FULCRUM_OT_view_layers_to_muted_nodes(bpy.types.Operator):

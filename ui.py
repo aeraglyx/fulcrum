@@ -377,8 +377,6 @@ class FULCRUM_PT_3d_stuff(View3DPanel, bpy.types.Panel):
 
         layout.operator("fulcrum.prepare_for_render", icon="RESTRICT_RENDER_OFF")
 
-        layout.prop(context.scene.render, "film_transparent")
-
         if context.preferences.addons["fulcrum"].preferences.experimental:
             col = layout.column(align=True)
             col.operator("fulcrum.locate_vertex", icon="VERTEXSEL")
