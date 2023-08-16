@@ -140,34 +140,39 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
 
+        # TODO once the node color matches themes, we can use strip colors, so it's more unified.
+        # theme = bpy.context.preferences.themes.items()[0][1]
+        # red_color = theme.strip_color.items()[0][1].color
+        # red.color = mathutils.Color(tuple([x ** (1 / 2.2) for x in red_color]))
+
         col = layout.column(align=True)
         # col.label(text="Color:", icon='COLOR')
         row = col.row(align=True)
         row.operator("fulcrum.reset_node_color", text="", icon="X")
         grey = row.operator("fulcrum.set_node_color", text="", icon="SEQUENCE_COLOR_09")
-        grey.color = [0.25, 0.25, 0.25]
+        grey.color = [0.35, 0.35, 0.35]
         red = row.operator("fulcrum.set_node_color", text="", icon="SEQUENCE_COLOR_01")
-        red.color = [0.33, 0.18, 0.19]
+        red.color = [0.55, 0.15, 0.20]
         orange = row.operator(
             "fulcrum.set_node_color", text="", icon="SEQUENCE_COLOR_02"
         )
-        orange.color = [0.40, 0.27, 0.19]
+        orange.color = [0.6, 0.3, 0.1]
         yellow = row.operator(
             "fulcrum.set_node_color", text="", icon="SEQUENCE_COLOR_03"
         )
-        yellow.color = [0.40, 0.40, 0.30]
+        yellow.color = [0.45, 0.40, 0.20]
         green = row.operator(
             "fulcrum.set_node_color", text="", icon="SEQUENCE_COLOR_04"
         )
-        green.color = [0.24, 0.35, 0.26]
+        green.color = [0.2, 0.5, 0.2]
         blue = row.operator("fulcrum.set_node_color", text="", icon="SEQUENCE_COLOR_05")
-        blue.color = [0.25, 0.34, 0.39]
+        blue.color = [0.2, 0.35, 0.45]
         purple = row.operator(
             "fulcrum.set_node_color", text="", icon="SEQUENCE_COLOR_06"
         )
-        purple.color = [0.28, 0.26, 0.40]
+        purple.color = [0.35, 0.2, 0.5]
         pink = row.operator("fulcrum.set_node_color", text="", icon="SEQUENCE_COLOR_07")
-        pink.color = [0.41, 0.30, 0.40]
+        pink.color = [0.5, 0.30, 0.40]
         # brown = row.operator("fulcrum.set_node_color", text="", icon='SEQUENCE_COLOR_08')
         # brown.color = [0.29, 0.25, 0.22]
 
@@ -240,6 +245,7 @@ class FULCRUM_PT_node_group(NodePanel, bpy.types.Panel):
 
         col = layout.column(align=True)
         col.operator("fulcrum.hide_group_inputs", icon="HIDE_ON")
+        col.operator("fulcrum.rename_group_input", icon="SORTALPHA")  # FONT_DATA
         col.operator(
             "fulcrum.remove_unused_group_inputs",
             text="Remove Unused Inputs",
