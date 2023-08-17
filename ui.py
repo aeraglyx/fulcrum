@@ -420,8 +420,8 @@ class FULCRUM_PT_camera_sub(View3DPanel, bpy.types.Panel):
         row = col.row(align=True)
         passepartout_none = row.operator("fulcrum.passepartout", text="None")
         passepartout_none.alpha = 0.0
-        passepartout_normal = row.operator("fulcrum.passepartout", text="0.8")
-        passepartout_normal.alpha = 0.8
+        passepartout_normal = row.operator("fulcrum.passepartout", text="0.9")
+        passepartout_normal.alpha = 0.9
         passepartout_full = row.operator("fulcrum.passepartout", text="Full")
         passepartout_full.alpha = 1.0
 
