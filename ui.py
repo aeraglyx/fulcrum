@@ -150,29 +150,29 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
         row = col.row(align=True)
         row.operator("fulcrum.reset_node_color", text="", icon="X")
         grey = row.operator("fulcrum.set_node_color", text="", icon="SEQUENCE_COLOR_09")
-        grey.color = [0.35, 0.35, 0.35]
+        grey.color = [0.34, 0.34, 0.34]
         red = row.operator("fulcrum.set_node_color", text="", icon="SEQUENCE_COLOR_01")
-        red.color = [0.55, 0.15, 0.20]
+        red.color = [0.59, 0.18, 0.22]
         orange = row.operator(
             "fulcrum.set_node_color", text="", icon="SEQUENCE_COLOR_02"
         )
-        orange.color = [0.6, 0.3, 0.1]
+        orange.color = [0.64, 0.38, 0.21]
         yellow = row.operator(
             "fulcrum.set_node_color", text="", icon="SEQUENCE_COLOR_03"
         )
-        yellow.color = [0.45, 0.40, 0.20]
+        yellow.color = [0.56, 0.51, 0.25]
         green = row.operator(
             "fulcrum.set_node_color", text="", icon="SEQUENCE_COLOR_04"
         )
-        green.color = [0.2, 0.5, 0.2]
+        green.color = [0.26, 0.50, 0.29]
         blue = row.operator("fulcrum.set_node_color", text="", icon="SEQUENCE_COLOR_05")
-        blue.color = [0.2, 0.35, 0.45]
+        blue.color = [0.22, 0.40, 0.50]
         purple = row.operator(
             "fulcrum.set_node_color", text="", icon="SEQUENCE_COLOR_06"
         )
-        purple.color = [0.35, 0.2, 0.5]
+        purple.color = [0.38, 0.28, 0.51]
         pink = row.operator("fulcrum.set_node_color", text="", icon="SEQUENCE_COLOR_07")
-        pink.color = [0.5, 0.30, 0.40]
+        pink.color = [0.52, 0.33, 0.44]
         # brown = row.operator("fulcrum.set_node_color", text="", icon='SEQUENCE_COLOR_08')
         # brown.color = [0.29, 0.25, 0.22]
 
