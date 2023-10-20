@@ -90,8 +90,7 @@ from .ops.tracking import (
 from .prefs import FulcrumPreferences
 from .props import fulcrum_props
 from .ui import (
-    FULCRUM_PT_3d_axis_selection,
-    FULCRUM_PT_3d_stuff,
+    FULCRUM_PT_3d_stuff,  # FULCRUM_PT_3d_axis_selection,
     FULCRUM_PT_camera,
     FULCRUM_PT_camera_sub,
     FULCRUM_PT_compositor,
@@ -182,7 +181,7 @@ classes = (
     FULCRUM_PT_3d_stuff,
     FULCRUM_PT_camera,
     FULCRUM_PT_camera_sub,
-    FULCRUM_PT_3d_axis_selection,
+    # FULCRUM_PT_3d_axis_selection,
     FULCRUM_PT_paint,
     FULCRUM_PT_utility_3d,
     FULCRUM_PT_fulcrum_node,

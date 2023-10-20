@@ -431,6 +431,7 @@ class FULCRUM_PT_camera_sub(View3DPanel, bpy.types.Panel):
 
 
 class FULCRUM_PT_3d_axis_selection(View3DPanel, bpy.types.Panel):
+    # FIXME
     bl_label = "Axis Selection"
     bl_options = {"DEFAULT_CLOSED"}
 

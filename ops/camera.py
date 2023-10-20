@@ -348,12 +348,13 @@ class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
                 for region in area.regions:
                     if region.type == "WINDOW":
                         override = {"area": area, "region": region}
-                        if area.type == "DOPESHEET_EDITOR":
-                            bpy.ops.action.view_frame(override)
-                        if area.type == "GRAPH_EDITOR":
-                            bpy.ops.graph.view_frame(override)
-                        if area.type == "NLA_EDITOR":
-                            bpy.ops.nla.view_frame(override)
+                        with bpy.context.temp_override(**override):
+                            if area.type == "DOPESHEET_EDITOR":
+                                bpy.ops.action.view_frame()
+                            if area.type == "GRAPH_EDITOR":
+                                bpy.ops.graph.view_frame()
+                            if area.type == "NLA_EDITOR":
+                                bpy.ops.nla.view_frame()
 
         frame_orig = bpy.context.scene.frame_current
         new_frame = max(frame_min, min(frame_orig, frame_max))
