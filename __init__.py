@@ -2,8 +2,8 @@ bl_info = {
     "name": "Fulcrum",
     "author": "Aeraglyx",
     "description": "All kinds of tools",
-    "blender": (3, 4, 0),
-    "version": (0, 1, 28),
+    "blender": (4, 0, 0),
+    "version": (0, 1, 29),
     "location": "Everywhere. Mostly in node editor and 3D viewport.",
     "doc_url": "https://github.com/aeraglyx/fulcrum",
     "category": "User Interface",
@@ -89,12 +89,13 @@ from .ops.tracking import (
 )
 from .prefs import FulcrumPreferences
 from .props import fulcrum_props
+from .ui import FULCRUM_PT_3d_stuff  # FULCRUM_PT_3d_axis_selection,
 from .ui import (
-    FULCRUM_PT_3d_stuff,  # FULCRUM_PT_3d_axis_selection,
     FULCRUM_PT_camera,
     FULCRUM_PT_camera_sub,
     FULCRUM_PT_compositor,
     FULCRUM_PT_data,
+    FULCRUM_PT_ease_of_access,
     FULCRUM_PT_find_nodes,
     FULCRUM_PT_fulcrum_3d,
     FULCRUM_PT_fulcrum_node,
@@ -178,8 +179,9 @@ classes = (
     FULCRUM_OT_copy_path_to_clipboard,
     # FULCRUM_PT_versioning,
     FULCRUM_PT_fulcrum_3d,
-    FULCRUM_PT_3d_stuff,
+    FULCRUM_PT_ease_of_access,
     FULCRUM_PT_camera,
+    FULCRUM_PT_3d_stuff,
     FULCRUM_PT_camera_sub,
     # FULCRUM_PT_3d_axis_selection,
     FULCRUM_PT_paint,

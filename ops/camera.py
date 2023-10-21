@@ -295,7 +295,7 @@ class FULCRUM_OT_projection_setup(bpy.types.Operator, ImportHelper):
 class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
     bl_idname = "fulcrum.frame_range_from_cam"
     bl_label = "Frame Range from Cameras"
-    bl_description = "Set scene frame range from selected cameras. Expected format blabla_startframe_endframe"
+    bl_description = "Set scene frame range from selected cameras or scene camera. Expected format: cam_name_###_###"
     bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
@@ -306,8 +306,9 @@ class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
     def execute(self, context):
         # TODO scene. frame_preview_start, end + use_preview_range
         def get_cams():
-            # cam_obj = context.scene.camera
             cams = [obj for obj in context.selected_objects if obj.type == "CAMERA"]
+            if not cams:
+                cams = [context.scene.camera]
             return cams
 
         def get_cam_min_max(cam):
@@ -325,7 +326,7 @@ class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
             try:
                 min_cam, max_cam = get_cam_min_max(cam)
             except:
-                self.report({"WARNING"}, f"Expected format: blabla_startframe_endframe")
+                self.report({"WARNING"}, f"Expected format: cam_name_###_###")
                 return {"CANCELLED"}
             if frame_min is None or min_cam < frame_min:
                 frame_min = min_cam
@@ -341,7 +342,12 @@ class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
 
         bpy.context.scene.frame_start = frame_min
         bpy.context.scene.frame_end = frame_max
-        bpy.context.scene.frame_current = int((frame_min + frame_max) / 2)
+
+        frame_orig = bpy.context.scene.frame_current
+        # XXX 3 options - keep frame_current / middle of new range / keep but constrained
+        # bpy.context.scene.frame_current = int((frame_min + frame_max) / 2)
+        new_frame = max(frame_min, min(frame_orig, frame_max))
+        bpy.context.scene.frame_current = new_frame
 
         for area in bpy.context.screen.areas:
             if area.type in ["DOPESHEET_EDITOR", "GRAPH_EDITOR", "NLA_EDITOR"]:
@@ -355,10 +361,6 @@ class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
                                 bpy.ops.graph.view_frame()
                             if area.type == "NLA_EDITOR":
                                 bpy.ops.nla.view_frame()
-
-        frame_orig = bpy.context.scene.frame_current
-        new_frame = max(frame_min, min(frame_orig, frame_max))
-        bpy.context.scene.frame_current = new_frame
 
         return {"FINISHED"}
 

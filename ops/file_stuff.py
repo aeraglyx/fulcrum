@@ -164,7 +164,7 @@ import requests
 class FULCRUM_OT_update_fulcrum(bpy.types.Operator):
     bl_idname = "fulcrum.update_fulcrum"
     bl_label = "Update Fulcrum"
-    bl_description = "Update this addon. Blender will need to be restarted"
+    bl_description = "Update this addon. Blender will need to be reloaded"
 
     def execute(self, context):
         repo_download_link = (
@@ -195,7 +195,7 @@ class FULCRUM_OT_update_fulcrum(bpy.types.Operator):
         # context.scene.fulcrum.restart_needed = True
         self.report(
             {"INFO"},
-            f"Updated from {old_version} to {new_version}. Blender restart needed.",
+            f"Updated from {old_version} to {new_version}. Blender reload needed.",
         )
         # bpy.ops.script.reload()
 

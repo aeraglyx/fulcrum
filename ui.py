@@ -124,14 +124,8 @@ class FULCRUM_PT_fulcrum_node(NodePanel, bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        # col = layout.column(align=True)
         layout.operator("fulcrum.update_fulcrum", text="Update", icon="FILE_REFRESH")
-        # if context.scene.fulcrum.restart_needed:
-        #     layout.label(text="Blender restart needed.", icon="SEQUENCE_COLOR_07")
-        # else:
-        #     layout.label(text=f"v{get_addon_version('Fulcrum')}")
         layout.label(text=f"v{get_addon_version('Fulcrum')}")
-        # col.prop(context.scene.fulcrum, 'experimental')
 
 
 class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
@@ -362,13 +356,35 @@ class FULCRUM_PT_fulcrum_3d(View3DPanel, bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        # col = layout.column(align=True)
         layout.operator("fulcrum.update_fulcrum", text="Update", icon="FILE_REFRESH")
-        # col.prop(context.scene.fulcrum, 'experimental')
+        layout.label(text=f"v{get_addon_version('Fulcrum')}")
+
+
+class FULCRUM_PT_ease_of_access(View3DPanel, bpy.types.Panel):
+    bl_label = "Ease of Access"
+
+    def draw(self, context):
+        layout = self.layout
+
+        layout.operator("fulcrum.prepare_for_render", icon="RESTRICT_RENDER_OFF")
+
+        layout.prop(bpy.data.scenes["Scene"].render, "film_transparent")
+        layout.prop(bpy.data.scenes["Scene"].view_settings, "exposure")
+
+
+class FULCRUM_PT_camera(View3DPanel, bpy.types.Panel):
+    bl_idname = "FULCRUM_PT_camera"
+    bl_label = "Camera"
+
+    def draw(self, context):
+        layout = self.layout
+        layout.operator("fulcrum.frame_range_from_cam", icon="ARROW_LEFTRIGHT")
+        layout.prop(context.area.spaces.active, "lock_camera")
 
 
 class FULCRUM_PT_3d_stuff(View3DPanel, bpy.types.Panel):
     bl_label = "Stuff"
+    bl_options = {"DEFAULT_CLOSED"}
 
     def draw(self, context):
         layout = self.layout
@@ -381,27 +397,11 @@ class FULCRUM_PT_3d_stuff(View3DPanel, bpy.types.Panel):
         col.operator("fulcrum.obj_backup", icon="DUPLICATE")
         col.operator("fulcrum.duplicates_to_instances", icon="MOD_INSTANCE")
 
-        layout.operator("fulcrum.prepare_for_render", icon="RESTRICT_RENDER_OFF")
-
-        layout.prop(bpy.data.scenes["Scene"].render, "film_transparent")
-        layout.prop(bpy.data.scenes["Scene"].view_settings, "exposure")
-        # TODO quick access
-
         if context.preferences.addons["fulcrum"].preferences.experimental:
             col = layout.column(align=True)
             col.operator("fulcrum.locate_vertex", icon="VERTEXSEL")
             col.operator("fulcrum.locate_vertices", icon="SNAP_VERTEX")
             col.operator("fulcrum.center_render_region", icon="BORDERMOVE")
-
-
-class FULCRUM_PT_camera(View3DPanel, bpy.types.Panel):
-    bl_idname = "FULCRUM_PT_camera"
-    bl_label = "Camera"
-
-    def draw(self, context):
-        layout = self.layout
-        layout.operator("fulcrum.frame_range_from_cam", icon="ARROW_LEFTRIGHT")
-        layout.prop(context.area.spaces.active, "lock_camera")
 
 
 class FULCRUM_PT_camera_sub(View3DPanel, bpy.types.Panel):

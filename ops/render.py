@@ -505,13 +505,13 @@ class FULCRUM_OT_compositor_increment_version(bpy.types.Operator):
 
 class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
     bl_idname = "fulcrum.prepare_for_render"
-    bl_label = "Prep for Beaming"
+    bl_label = "Prep for Render"
     bl_description = "Absolute paths, Compositing nodes ON, Sequencer OFF, Use border OFF, File format .PNG"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-        bpy.context.scene.render.use_sequencer = False
         bpy.context.scene.render.use_compositing = True
+        bpy.context.scene.render.use_sequencer = False
         bpy.context.scene.render.use_border = False
         bpy.context.scene.render.image_settings.file_format = "PNG"
         # bpy.context.scene.cycles.use_animated_seed = True  # XXX
