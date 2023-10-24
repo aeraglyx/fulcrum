@@ -27,7 +27,7 @@ class FULCRUM_OT_clip_to_scene_resolution(bpy.types.Operator):
 
 class FULCRUM_OT_auto_marker_weight(bpy.types.Operator):
     bl_idname = "fulcrum.auto_marker_weight"
-    bl_label = "(Auto Track Weight)"
+    bl_label = "Auto Track Weight"
     bl_description = ""
     bl_options = {"REGISTER", "UNDO"}
 
@@ -43,14 +43,14 @@ class FULCRUM_OT_auto_marker_weight(bpy.types.Operator):
 
     error_threshold: bpy.props.FloatProperty(
         name="Target Error",
-        description="Decrease track weight exponentially with increasing average error. This specifies what error has 0.5 weight. Lower values should yield smaller error but will rely on fewer tracks",
+        description="Decrease track weight exponentially with increasing average error. This specifies what error has 0.5 weight. Lower values yield smaller error but rely on fewer tracks",
         min=0.0,
         default=1.0,
         soft_max=10.0,
     )
     smooth: bpy.props.IntProperty(
         name="Smoothing",
-        description="Number of frames to fade in/out track weights to reduce jumps",
+        description="Number of frames to fade in/out track weights to reduce discontinuities",
         min=1,
         default=10,
         soft_max=100,
@@ -152,3 +152,43 @@ class FULCRUM_OT_auto_marker_weight(bpy.types.Operator):
         col.prop(self, "error_threshold")
         col.prop(self, "smooth")
         col.prop(self, "prioritize_center")
+
+
+class FULCRUM_OT_rolling_shutter(bpy.types.Operator):
+    bl_idname = "fulcrum.rolling_shutter"
+    bl_label = "(Rolling Shutter)"
+    bl_description = ""
+    bl_options = {"REGISTER", "UNDO"}
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    scan_time: bpy.props.FloatProperty(
+        name="Scan Time",
+        description="...",
+        subtype="FACTOR",
+        min=0.0,
+        default=1.0,
+        soft_max=10.0,
+    )
+
+    def execute(self, context):
+        scene = context.scene
+        clip = bpy.context.edit_movieclip
+        tracks = clip.tracking.tracks
+        frames = range(scene.frame_start, scene.frame_end + 1)
+
+        for frame in frames:
+            pass
+
+        return {"FINISHED"}
+
+    def draw(self, context):
+        layout = self.layout
+
+        layout.use_property_split = True
+        layout.use_property_decorate = False
+
+        col = layout.column(align=True)
+        col.prop(self, "scan_time")
