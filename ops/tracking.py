@@ -1,6 +1,7 @@
 import math
 
 import bpy
+import mathutils
 
 
 class FULCRUM_OT_clip_to_scene_resolution(bpy.types.Operator):
@@ -33,7 +34,6 @@ class FULCRUM_OT_auto_marker_weight(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        # return True
         if hasattr(context, "edit_movieclip"):
             if hasattr(context.edit_movieclip, "tracking"):
                 return True
@@ -166,21 +166,56 @@ class FULCRUM_OT_rolling_shutter(bpy.types.Operator):
 
     scan_time: bpy.props.FloatProperty(
         name="Scan Time",
-        description="...",
+        description="1.0 means the scanning takes the whole frame",
         subtype="FACTOR",
         min=0.0,
-        default=1.0,
-        soft_max=10.0,
+        default=0.25,
+        max=1.0,
     )
 
     def execute(self, context):
+        def cubic(x, a, b, c, d):
+            # https://danceswithcode.net/engineeringnotes/interpolation/interpolation.html
+            a3 = 0.5 * (-a + 3 * b - 3 * c + d)
+            a2 = 0.5 * (2 * a - 5 * b + 4 * c - d)
+            a1 = 0.5 * (-a + c)
+            y = a3 * x**3 + a2 * x**2 + a1 * x + b
+            return y
+
         scene = context.scene
         clip = bpy.context.edit_movieclip
         tracks = clip.tracking.tracks
         frames = range(scene.frame_start, scene.frame_end + 1)
 
         for frame in frames:
-            pass
+            for track in tracks:
+                markers = track.markers
+                # frames = [marker.frame for marker in markers]
+                for marker in markers:
+                    pass
+                new_name = "_" + track.name
+                tracks.new(name=new_name, frame=frame)
+                for frame in frames:
+                    markers = track.markers
+                    marker = markers.find_frame(frame)
+                    offset = (marker.co.x - 0.5) * self.scan_time
+                    # TODO check if nearby frames exist
+                    if offset < 0:
+                        a = markers.find_frame(frame - 2).co
+                        b = markers.find_frame(frame - 1).co
+                        c = marker.co
+                        d = markers.find_frame(frame + 1).co
+                        t = 1 + offset  # + because it's negative
+                    else:
+                        a = markers.find_frame(frame - 1).co
+                        b = marker.co
+                        c = markers.find_frame(frame + 1).co
+                        d = markers.find_frame(frame + 2).co
+                        t = offset
+                    x_new = cubic(t, a.x, b.x, c.x, d.x)
+                    y_new = cubic(t, a.y, b.y, c.y, d.y)
+
+                    marker.co = mathutils.Vector((x_new, y_new))
 
         return {"FINISHED"}
 
