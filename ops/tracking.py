@@ -185,37 +185,40 @@ class FULCRUM_OT_rolling_shutter(bpy.types.Operator):
         scene = context.scene
         clip = bpy.context.edit_movieclip
         tracks = clip.tracking.tracks
-        frames = range(scene.frame_start, scene.frame_end + 1)
+        # frames = range(scene.frame_start, scene.frame_end + 1)
 
-        for frame in frames:
-            for track in tracks:
-                markers = track.markers
-                # frames = [marker.frame for marker in markers]
-                for marker in markers:
-                    pass
-                new_name = "_" + track.name
-                tracks.new(name=new_name, frame=frame)
-                for frame in frames:
-                    markers = track.markers
-                    marker = markers.find_frame(frame)
-                    offset = (marker.co.x - 0.5) * self.scan_time
-                    # TODO check if nearby frames exist
-                    if offset < 0:
-                        a = markers.find_frame(frame - 2).co
-                        b = markers.find_frame(frame - 1).co
-                        c = marker.co
-                        d = markers.find_frame(frame + 1).co
-                        t = 1 + offset  # + because it's negative
-                    else:
-                        a = markers.find_frame(frame - 1).co
-                        b = marker.co
-                        c = markers.find_frame(frame + 1).co
-                        d = markers.find_frame(frame + 2).co
-                        t = offset
-                    x_new = cubic(t, a.x, b.x, c.x, d.x)
-                    y_new = cubic(t, a.y, b.y, c.y, d.y)
+        # for frame in frames:
+        for track in tracks:
+            markers = track.markers
+            new_name = "_" + track.name
+            tracks.new(name=new_name, frame=frame)
+            # TODO check if markers are ordered by frame or creation
+            # frames = [marker.frame for marker in markers]
+            for i, marker in enumerate(markers):
+                offset = (marker.co.x - 0.5) * self.scan_time
+                marker_last = markers[i - 1]
+                marker_next = markers[i + 1]
+                markers.insert_frame(marker.frame, (x_new, y_new))
+                pass
+            for frame in frames:
+                marker = markers.find_frame(frame)
+                # TODO check if nearby frames exist
+                if offset < 0:
+                    a = markers.find_frame(frame - 2).co
+                    b = markers.find_frame(frame - 1).co
+                    c = marker.co
+                    d = markers.find_frame(frame + 1).co
+                    t = 1 + offset  # + because it's negative
+                else:
+                    a = markers.find_frame(frame - 1).co
+                    b = marker.co
+                    c = markers.find_frame(frame + 1).co
+                    d = markers.find_frame(frame + 2).co
+                    t = offset
+                x_new = cubic(t, a.x, b.x, c.x, d.x)
+                y_new = cubic(t, a.y, b.y, c.y, d.y)
 
-                    marker.co = mathutils.Vector((x_new, y_new))
+                marker.co = mathutils.Vector((x_new, y_new))
 
         return {"FINISHED"}
 
