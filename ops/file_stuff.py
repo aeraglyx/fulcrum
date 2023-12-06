@@ -130,6 +130,26 @@ class FULCRUM_OT_copy_path_to_clipboard(bpy.types.Operator):
         return {"FINISHED"}
 
 
+class FULCRUM_OT_background_render_string(bpy.types.Operator):
+    bl_idname = "fulcrum.background_render_string"
+    bl_label = "Background Render"
+    bl_description = ""
+    bl_options = {"REGISTER", "UNDO"}
+
+    @classmethod
+    def poll(cls, context):
+        return bpy.data.is_saved
+
+    def execute(self, context):
+        path = bpy.data.filepath
+        string = "blender -b " + path + " -a"
+        bpy.context.window_manager.clipboard = string
+        cd = os.path.dirname(bpy.app.binary_path)
+        os.system("start cmd /k ; cd " + cd + " ^& blender -b " + path + " -a")
+        self.report({"INFO"}, "Copied to clipboard.")
+        return {"FINISHED"}
+
+
 class FULCRUM_OT_open_script_dir(bpy.types.Operator):
     bl_idname = "fulcrum.open_script_dir"
     bl_label = "Find Script Directory"

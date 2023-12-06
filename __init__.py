@@ -29,6 +29,7 @@ from .ops.camera import (
 from .ops.compare import FULCRUM_OT_benchmark, FULCRUM_OT_compare
 from .ops.copy_pasta import FULCRUM_OT_copy_nodes, FULCRUM_OT_paste_nodes
 from .ops.file_stuff import (
+    FULCRUM_OT_background_render_string,
     FULCRUM_OT_copy_path_to_clipboard,
     FULCRUM_OT_go_to_latest_version,
     FULCRUM_OT_open_addon_preferences,
@@ -177,6 +178,7 @@ classes = (
     FULCRUM_OT_clip_to_scene_resolution,
     FULCRUM_OT_auto_marker_weight,
     FULCRUM_OT_copy_path_to_clipboard,
+    FULCRUM_OT_background_render_string,
     # FULCRUM_PT_versioning,
     FULCRUM_PT_fulcrum_3d,
     FULCRUM_PT_ease_of_access,

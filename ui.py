@@ -520,6 +520,9 @@ class FULCRUM_PT_utility_3d(View3DPanel, bpy.types.Panel):
         col.operator(
             "fulcrum.open_script_dir", icon="SCRIPT"
         )  # FOLDER_REDIRECT  SCRIPT
+        col.operator(
+            "fulcrum.background_render_string", icon="SCRIPT"
+        )  # FOLDER_REDIRECT  SCRIPT
 
         col = layout.column(align=True)
         col.operator(
