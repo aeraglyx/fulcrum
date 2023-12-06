@@ -510,10 +510,12 @@ class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
-        bpy.context.scene.render.use_compositing = True
-        bpy.context.scene.render.use_sequencer = False
-        bpy.context.scene.render.use_border = False
-        bpy.context.scene.render.image_settings.file_format = "PNG"
+        render_settings = bpy.context.scene.render
+        render_settings.use_compositing = True
+        render_settings.use_sequencer = False
+        render_settings.use_border = False
+        render_settings.image_settings.file_format = "PNG"
+        # render_settings.use_single_layer = False
         # bpy.context.scene.cycles.use_animated_seed = True  # XXX
         bpy.ops.file.make_paths_absolute()
 
@@ -535,6 +537,7 @@ class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
         col.prop(context.scene.render, "film_transparent")
         col.prop(context.scene.cycles, "use_animated_seed")
         col.prop(context.scene.render, "use_persistent_data")
+        col.prop(context.scene.render, "use_single_layer")
 
         col = layout.column(heading="View Layers", align=True)
         layers = context.scene.view_layers
