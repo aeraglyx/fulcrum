@@ -45,21 +45,21 @@ class FULCRUM_OT_auto_marker_weight(bpy.types.Operator):
         name="Target Error",
         description="Decrease track weight exponentially with increasing average error. This specifies what error has 0.5 weight. Lower values yield smaller error but rely on fewer tracks",
         min=0.0,
-        default=1.0,
+        default=2.0,
         soft_max=10.0,
     )
     smooth: bpy.props.IntProperty(
         name="Smoothing",
         description="Number of frames to fade in/out track weights to reduce discontinuities",
         min=1,
-        default=10,
+        default=6,
         soft_max=100,
     )
     prioritize_center: bpy.props.FloatProperty(
         name="Prioritize Center",
         description="Gaussian function. 1.0 means 0.5 at horizontal edge",
         min=0.0,
-        default=1.0,
+        default=0.5,
         soft_max=10.0,
     )
 
@@ -101,10 +101,13 @@ class FULCRUM_OT_auto_marker_weight(bpy.types.Operator):
                 x = 3 * x**2 - 2 * x**3
                 return x
 
-            weight_base = track.weight_stab  # context this frame or sample at time
-
-            mult_error = math.pow(2.0, -track.average_error / self.error_threshold)
-            weight_base *= mult_error
+            weight_base = 0.0
+            avg_error = track.average_error
+            if not math.isnan(avg_error):
+                weight_base = track.weight_stab  # context this frame or sample at time
+                mult_error = math.pow(2.0, -avg_error / self.error_threshold)
+                weight_base = mult_error * mult_error
+            weight_base = 0.1 + 0.9 * weight_base
 
             data_path = track.path_from_id() + ".weight"
 
