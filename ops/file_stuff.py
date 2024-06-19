@@ -63,26 +63,6 @@ def is_current_file_version():
     return current_version == newest_version
 
 
-class FULCRUM_OT_save_as_new_version(bpy.types.Operator):
-    bl_idname = "fulcrum.save_as_new_version"
-    bl_label = "Save as New Version"
-    bl_description = "This will work even if the current file is not the latest version"
-
-    @classmethod
-    def poll(cls, context):
-        return bpy.data.is_saved
-
-    def execute(self, context):
-        latest_file = get_newest_file()
-        folder_path = bpy.path.abspath("//")
-        name = os.path.splitext(bpy.path.basename(latest_file))[0]
-        name = version_up(name) + ".blend"
-        new_filepath = os.path.join(folder_path, name)
-        bpy.ops.wm.save_as_mainfile(filepath=new_filepath)
-        # TODO save versions in a subfolder
-        return {"FINISHED"}
-
-
 class FULCRUM_OT_go_to_latest_version(bpy.types.Operator):
     bl_idname = "fulcrum.go_to_latest_version"
     bl_label = "Jump to Latest Version"

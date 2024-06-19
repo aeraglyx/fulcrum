@@ -31,9 +31,6 @@ def draw_topbar(self, context):
                     text="Go to Latest",
                     icon="LOOP_FORWARDS",
                 )
-            layout.operator(
-                "fulcrum.save_as_new_version", text="Save as New", icon="DUPLICATE"
-            )
         else:
             layout.label(text="File not saved!", icon="SEQUENCE_COLOR_01")
 

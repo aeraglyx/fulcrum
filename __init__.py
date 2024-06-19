@@ -35,7 +35,6 @@ from .ops.file_stuff import (
     FULCRUM_OT_open_addon_preferences,
     FULCRUM_OT_open_blend_dir,
     FULCRUM_OT_open_script_dir,
-    FULCRUM_OT_save_as_new_version,
     FULCRUM_OT_update_fulcrum,
 )
 from .ops.node_versioning import FULCRUM_OT_version_decode, FULCRUM_OT_version_encode
@@ -124,7 +123,6 @@ classes = (
     FULCRUM_OT_update_fulcrum,
     FULCRUM_OT_open_script_dir,
     FULCRUM_OT_open_blend_dir,
-    FULCRUM_OT_save_as_new_version,
     FULCRUM_OT_go_to_latest_version,
     FULCRUM_OT_open_addon_preferences,
     FULCRUM_OT_select_node_inputs,
