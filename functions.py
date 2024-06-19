@@ -188,30 +188,45 @@ def is_node_group(tree):
 def get_output_nodes(context):
     tree = context.space_data.edit_tree
     nodes = tree.nodes
-    if is_original_tree(tree, context):
-        if tree.type == "GEOMETRY":
-            output_nodes = (
-                node for node in nodes if node.bl_idname == "NodeGroupOutput"
-            )  # bl_idname = 'GeometryNodeTree'
-        if tree.type == "SHADER":
-            output_nodes = (
-                node
-                for node in nodes
-                if node.bl_idname in ["ShaderNodeTree", "ShaderNodeOutputWorld"]
-                and node.is_active_output == True
-            )  # 'ShaderNodeTree'
-        if tree.type == "TEXTURE":
-            output_nodes = (
-                node for node in nodes if node.bl_idname == "TextureNodeTree"
-            )  # doesn't have active outputs  # 'TextureNodeTree'
-        if tree.type == "COMPOSITING":  # 'COMPOSITE'
-            output_nodes = (
-                node
-                for node in nodes
-                if node.bl_idname in ["CompositorNodeTree", "CompositorNodeOutputFile"]
-            )  # well yes but actually no ^  # 'CompositorNodeTree'
-    else:
-        output_nodes = (node for node in nodes if node.bl_idname == "NodeGroupOutput")
+    output_nodes = set()
+    original_tree = is_original_tree(tree, context)
+
+    idnames_geometry = ["NodeGroupOutput"]
+    idnames_shader = [
+        "ShaderNodeOutputMaterial",
+        "ShaderNodeOutputWorld",
+        "ShaderNodeTree",
+    ]
+    idnames_compositing = [
+        "CompositorNodeComposite",  # main output
+        "CompositorNodeViewer",
+        "CompositorNodeOutputFile",
+        "CompositorNodeTree",  # the what?
+    ]
+    idnames_texture = ["TextureNodeTree"]
+    idnames_group = ["NodeGroupOutput"]
+
+    for node in nodes:
+        if original_tree:
+            match tree.type:
+                case "GEOMETRY":
+                    if node.bl_idname in idnames_geometry:
+                        output_nodes.add(node)
+                case "SHADER":
+                    if node.bl_idname in idnames_shader and node.is_active_output:
+                        output_nodes.add(node)
+                case "COMPOSITING":  # 'COMPOSITE'
+                    # well yes but actually no  # 'CompositorNodeTree'
+                    if node.bl_idname in idnames_compositing:
+                        output_nodes.add(node)
+                case "TEXTURE":
+                    # TODO texture doesn't work
+                    if node.bl_idname in idnames_texture:
+                        output_nodes.add(node)
+        else:
+            if node.bl_idname in idnames_group:
+                output_nodes.add(node)
+
     return output_nodes
 
 
