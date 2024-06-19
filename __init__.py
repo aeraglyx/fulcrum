@@ -3,7 +3,7 @@ bl_info = {
     "author": "Aeraglyx",
     "description": "All kinds of tools",
     "blender": (4, 0, 0),
-    "version": (0, 1, 29),
+    "version": (0, 1, 30),
     "location": "Everywhere. Mostly in node editor and 3D viewport.",
     "doc_url": "https://github.com/aeraglyx/fulcrum",
     "category": "User Interface",
