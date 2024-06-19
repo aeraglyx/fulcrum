@@ -544,6 +544,16 @@ class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
         for layer in layers:
             col.prop(layer, "use", text=f"{layer.name}")
 
+        res_mult = context.scene.render.resolution_percentage / 100
+        res_x = int(context.scene.render.resolution_x * res_mult)
+        res_y = int(context.scene.render.resolution_y * res_mult)
+        split = layout.split(factor=0.4)
+        col_01 = split.column(align=True)
+        col_02 = split.column(align=True)
+        col_01.alignment = "RIGHT"
+        col_01.label(text="Final Resolution")
+        col_02.label(text=f"{res_x} x {res_y} px")
+
 
 class FULCRUM_OT_view_layers_to_muted_nodes(bpy.types.Operator):
     bl_idname = "fulcrum.view_layers_to_muted_nodes"
