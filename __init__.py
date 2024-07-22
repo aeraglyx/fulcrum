@@ -2,8 +2,8 @@ bl_info = {
     "name": "Fulcrum",
     "author": "Aeraglyx",
     "description": "All kinds of tools",
-    "blender": (4, 0, 0),
-    "version": (0, 1, 30),
+    "blender": (4, 1, 0),
+    "version": (0, 1, 31),
     "location": "Everywhere. Mostly in node editor and 3D viewport.",
     "doc_url": "https://github.com/aeraglyx/fulcrum",
     "category": "User Interface",
@@ -25,6 +25,7 @@ from .ops.camera import (
     FULCRUM_OT_projection_setup,
     FULCRUM_OT_set_aspect_ratio,
     FULCRUM_OT_set_resolution,
+    FULCRUM_OT_set_cam_scale,
 )
 from .ops.compare import FULCRUM_OT_benchmark, FULCRUM_OT_compare
 from .ops.copy_pasta import FULCRUM_OT_copy_nodes, FULCRUM_OT_paste_nodes
@@ -166,6 +167,7 @@ classes = (
     FULCRUM_OT_center_render_region,
     FULCRUM_OT_set_aspect_ratio,
     FULCRUM_OT_set_resolution,
+    FULCRUM_OT_set_cam_scale,
     FULCRUM_OT_locate_vertex,
     FULCRUM_OT_locate_vertices,
     FULCRUM_OT_duplicates_to_instances,

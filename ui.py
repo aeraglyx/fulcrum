@@ -426,6 +426,9 @@ class FULCRUM_PT_camera_sub(View3DPanel, bpy.types.Panel):
         passepartout_full = row.operator("fulcrum.passepartout", text="Full")
         passepartout_full.alpha = 1.0
 
+        col = layout.column(align=True)
+        col.operator("fulcrum.set_cam_scale", icon="DRIVER_DISTANCE")
+
 
 class FULCRUM_PT_3d_axis_selection(View3DPanel, bpy.types.Panel):
     # FIXME

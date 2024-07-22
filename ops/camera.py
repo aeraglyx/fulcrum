@@ -453,3 +453,30 @@ class FULCRUM_OT_center_render_region(bpy.types.Operator):
 
 
 # regions[5].data.view_perspective == 'CAMERA'
+
+
+class FULCRUM_OT_set_cam_scale(bpy.types.Operator):
+    bl_idname = "fulcrum.set_cam_scale"
+    bl_label = "Scale Cameras"
+    bl_description = "Set visual scale of all cameras"
+    bl_options = {"REGISTER", "UNDO"}
+
+    scale: bpy.props.FloatProperty(
+        name="Scale",
+        description="",
+        min=0.0,
+        default=0.1,
+        soft_max=1.0,
+        max=100.0,
+        subtype='DISTANCE'
+    )
+
+    @classmethod
+    def poll(cls, context):
+        return bpy.data.cameras
+
+    def execute(self, context):
+        for cam in bpy.data.cameras:
+            cam.display_size = self.scale
+
+        return {"FINISHED"}
