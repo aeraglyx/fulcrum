@@ -375,7 +375,11 @@ class FULCRUM_PT_camera(View3DPanel, bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        layout.operator("fulcrum.frame_range_from_cam", icon="ARROW_LEFTRIGHT")
+
+        col = layout.column(align=True)
+        col.operator("fulcrum.frame_range_from_cam", icon="ARROW_LEFTRIGHT")
+        col.operator("fulcrum.cam_names_from_markers", icon="TRIA_RIGHT")
+
         layout.prop(context.area.spaces.active, "lock_camera")
 
 

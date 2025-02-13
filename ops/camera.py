@@ -344,6 +344,50 @@ class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
         return {"FINISHED"}
 
 
+class FULCRUM_OT_cam_names_from_markers(bpy.types.Operator):
+    bl_idname = "fulcrum.cam_names_from_markers"
+    bl_label = "Camera Names from Markers"
+    bl_description = "TODO"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+
+        def get_camera_markers():
+            markers = bpy.context.scene.timeline_markers
+            camera_markers = []
+            for marker in markers:
+                if not marker.camera:
+                    continue
+                if marker.camera.type != "CAMERA":
+                    continue
+                camera_markers.append(marker)
+            return camera_markers
+
+        def frame_to_string(frame):
+            return str(frame).zfill(3)
+
+        camera_markers = get_camera_markers()
+        frames = [m.frame for m in camera_markers]
+        
+        for marker in camera_markers:
+            camera = marker.camera
+            frame_start = marker.frame
+            suffix = "_" + frame_to_string(frame_start)
+
+            next_frames = [f for f in frames if f > frame_start]
+            if next_frames:
+                frame_end = min(next_frames) - 1
+            else:
+                frame_end = frame_start + 100
+            suffix += "_" + frame_to_string(frame_end)
+            
+            camera.name = camera.name + suffix
+        
+        # TODO update normal cam names
+
+        return {"FINISHED"}
+
+
 class FULCRUM_OT_set_resolution(bpy.types.Operator):
     bl_idname = "fulcrum.set_resolution"
     bl_label = "Set Resolution"
