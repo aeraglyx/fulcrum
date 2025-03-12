@@ -3,7 +3,7 @@ bl_info = {
     "author": "Aeraglyx",
     "description": "All kinds of tools",
     "blender": (4, 1, 0),
-    "version": (0, 1, 32),
+    "version": (0, 1, 33),
     "location": "Everywhere. Mostly in node editor and 3D viewport.",
     "doc_url": "https://github.com/aeraglyx/fulcrum",
     "category": "User Interface",
@@ -18,6 +18,7 @@ from .handlers import register_handlers, unregister_handlers
 from .keymap import register_keymap, unregister_keymap
 from .ops.camera import (
     FULCRUM_OT_cam_names_from_markers,
+    FULCRUM_OT_cameras_to_markers,
     FULCRUM_OT_center_render_region,
     FULCRUM_OT_dof_setup,
     FULCRUM_OT_frame_range_from_cam,
@@ -165,6 +166,7 @@ classes = (
     FULCRUM_OT_projection_setup,
     FULCRUM_OT_frame_range_from_cam,
     FULCRUM_OT_cam_names_from_markers,
+    FULCRUM_OT_cameras_to_markers,
     FULCRUM_OT_passepartout,
     FULCRUM_OT_center_render_region,
     FULCRUM_OT_set_aspect_ratio,

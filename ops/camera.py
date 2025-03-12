@@ -399,6 +399,42 @@ class FULCRUM_OT_cam_names_from_markers(bpy.types.Operator):
         return {"FINISHED"}
 
 
+class FULCRUM_OT_cameras_to_markers(bpy.types.Operator):
+    bl_idname = "fulcrum.cameras_to_markers"
+    bl_label = "Cameras to Markers"
+    bl_description = "Set camera markers from selected cameras or scene camera. Expected format: cam_name_###_###"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+
+        def delete_cam_markers(markers, camera):
+            markers_to_delete = []
+            for marker in markers:
+                if marker.camera == cam:
+                    markers_to_delete.append(marker)
+            
+            for marker in markers_to_delete:
+                markers.remove(marker)
+
+        markers = context.scene.timeline_markers
+        cams = get_cams(context)
+
+        # TODO refactor this shit
+        for cam in cams:
+            try:
+                min_cam, max_cam = get_cam_min_max(cam)
+            except:
+                self.report({"WARNING"}, f"Expected format: cam_name_###_###")
+                return {"CANCELLED"}
+
+            delete_cam_markers(markers, cam)
+            
+            marker_new = markers.new(cam.name, frame=min_cam)
+            marker_new.camera = cam
+
+        return {"FINISHED"}
+
+
 class FULCRUM_OT_set_resolution(bpy.types.Operator):
     bl_idname = "fulcrum.set_resolution"
     bl_label = "Set Resolution"
