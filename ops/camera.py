@@ -271,6 +271,17 @@ class FULCRUM_OT_projection_setup(bpy.types.Operator, ImportHelper):
         layout.prop(self, "shade_smooth")
 
 
+def get_cams(context):
+    cams = [obj for obj in context.selected_objects if obj.type == "CAMERA"]
+    if not cams:
+        cams = [context.scene.camera]
+    return cams
+
+def get_cam_min_max(cam):
+    frame_min = int(cam.name.split("_")[-2])
+    frame_max = int(cam.name.split("_")[-1])
+    return frame_min, frame_max
+
 class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
     bl_idname = "fulcrum.frame_range_from_cam"
     bl_label = "Frame Range from Cameras"
@@ -284,7 +295,7 @@ class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
 
     def execute(self, context):
         # TODO scene. frame_preview_start, end + use_preview_range
-        def get_cams():
+        def get_cams(context):
             cams = [obj for obj in context.selected_objects if obj.type == "CAMERA"]
             if not cams:
                 cams = [context.scene.camera]
@@ -295,7 +306,7 @@ class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
             frame_max = int(cam.name.split("_")[-1])
             return frame_min, frame_max
 
-        cams = get_cams()
+        cams = get_cams(context)
 
         if len(cams) == 1:
             context.scene.camera = cams[0]
