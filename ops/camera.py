@@ -355,9 +355,9 @@ class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
         return {"FINISHED"}
 
 
-class FULCRUM_OT_cam_names_from_markers(bpy.types.Operator):
-    bl_idname = "fulcrum.cam_names_from_markers"
-    bl_label = "Camera Names from Markers"
+class FULCRUM_OT_markers_to_cameras(bpy.types.Operator):
+    bl_idname = "fulcrum.markers_to_cameras"
+    bl_label = "Markers to Cameras"
     bl_description = "TODO"
     bl_options = {"REGISTER", "UNDO"}
 

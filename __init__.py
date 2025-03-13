@@ -17,12 +17,12 @@ from .functions import *
 from .handlers import register_handlers, unregister_handlers
 from .keymap import register_keymap, unregister_keymap
 from .ops.camera import (
-    FULCRUM_OT_cam_names_from_markers,
     FULCRUM_OT_cameras_to_markers,
     FULCRUM_OT_center_render_region,
     FULCRUM_OT_dof_setup,
     FULCRUM_OT_frame_range_from_cam,
     FULCRUM_OT_isometric_setup,
+    FULCRUM_OT_markers_to_cameras,
     FULCRUM_OT_passepartout,
     FULCRUM_OT_projection_setup,
     FULCRUM_OT_set_aspect_ratio,
@@ -165,7 +165,7 @@ classes = (
     FULCRUM_OT_isometric_setup,
     FULCRUM_OT_projection_setup,
     FULCRUM_OT_frame_range_from_cam,
-    FULCRUM_OT_cam_names_from_markers,
+    FULCRUM_OT_markers_to_cameras,
     FULCRUM_OT_cameras_to_markers,
     FULCRUM_OT_passepartout,
     FULCRUM_OT_center_render_region,
