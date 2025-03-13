@@ -271,6 +271,7 @@ class FULCRUM_PT_compositor(NodePanel, bpy.types.Panel):
         # row.operator("fulcrum.compositor_increment_version", text="Ver. Down", icon='TRIA_DOWN')
         # row.operator("fulcrum.compositor_increment_version", text="Ver. Up", icon='TRIA_UP')
         col = layout.column(align=True)
+        col.operator("fulcrum.compositor_output_path_to_node_name", icon="FONT_DATA")
         col.operator(
             "fulcrum.view_layers_to_muted_nodes",
             text="Layers to Muted Nodes",

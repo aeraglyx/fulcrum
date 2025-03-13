@@ -503,6 +503,26 @@ class FULCRUM_OT_compositor_increment_version(bpy.types.Operator):
         return {"FINISHED"}
 
 
+class FULCRUM_OT_compositor_output_path_to_node_name(bpy.types.Operator):
+    bl_idname = "fulcrum.compositor_output_path_to_node_name"
+    bl_label = "Path to Node Name"
+    bl_description = "If the node path is 'X:/path/to/the/render_', this will name the node to 'render' for render beamer"
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        if not context.scene.node_tree:
+            return {"FINISHED"}
+
+        nodes = context.selected_nodes or context.scene.node_tree.nodes
+        nodes = [node for node in nodes if node.type == "OUTPUT_FILE"]
+
+        for node in nodes:
+            node_path, node_filename = os.path.split(node.base_path)
+            node.name = node_filename.rstrip("_")
+
+        return {"FINISHED"}
+
+
 class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
     bl_idname = "fulcrum.prepare_for_render"
     bl_label = "Prep for Render"
