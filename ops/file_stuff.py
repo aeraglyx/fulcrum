@@ -96,18 +96,37 @@ class FULCRUM_OT_open_blend_dir(bpy.types.Operator):
 class FULCRUM_OT_copy_path_to_clipboard(bpy.types.Operator):
     bl_idname = "fulcrum.copy_path_to_clipboard"
     bl_label = "Copy File Path to Clipboard"
-    bl_description = ""
-    bl_options = {"REGISTER", "UNDO"}
+    bl_description = "Shift click to include the filename, Ctrl click for Discord formatting"
+
+    include_filename: bpy.props.BoolProperty(
+        name="Include Filename",
+        description="Use the full filepath (directory otherwise)",
+        default=False,
+    )
+    use_discord_formatting: bpy.props.BoolProperty(
+        name="Use Discord Formatting",
+        description="Adds backticks around the filepath",
+        default=False,
+    )
 
     @classmethod
     def poll(cls, context):
         return bpy.data.is_saved
 
     def execute(self, context):
-        path = bpy.data.filepath
-        bpy.context.window_manager.clipboard = "`" + path + "`"
-        self.report({"INFO"}, "Copied to clipboard.")
+        text = bpy.data.filepath
+        if not self.include_filename:
+            text = os.path.dirname(text)
+        if self.use_discord_formatting:
+            text = f"`{text}`"
+        context.window_manager.clipboard = text
+        self.report({"INFO"}, "Path copied to the clipboard.")
         return {"FINISHED"}
+
+    def invoke(self, context, event):
+        self.include_filename = event.shift
+        self.use_discord_formatting = event.ctrl
+        return self.execute(context)
 
 
 class FULCRUM_OT_background_render_string(bpy.types.Operator):
