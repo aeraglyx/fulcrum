@@ -447,7 +447,7 @@ from bpy_extras.io_utils import ImportHelper
 class FULCRUM_OT_set_output_directory(bpy.types.Operator, ImportHelper):
     bl_idname = "fulcrum.set_output_directory"
     bl_label = "Set Output Directory"
-    bl_description = "Change path in Output Properties and all File Output nodes"
+    bl_description = "Change path in Output Properties and selected File Output nodes"
     bl_options = {"REGISTER", "UNDO"}
 
     # https://docs.blender.org/api/current/bpy.types.FileSelectParams.html
@@ -456,19 +456,27 @@ class FULCRUM_OT_set_output_directory(bpy.types.Operator, ImportHelper):
         name="File Path", description="File path", maxlen=1024
     )
 
+    @classmethod
+    def poll(cls, context):
+        if context.space_data.tree_type != "CompositorNodeTree":
+            return False
+        if not hasattr(context, "selected_nodes"):
+            return False
+        return True
+
     def execute(self, context):
         old_name = os.path.split(context.scene.render.filepath)[1]
         new_dir, input_name = os.path.split(self.filepath)
 
         new_name = input_name if input_name else old_name
-        context.scene.render.filepath = os.path.join(new_dir, new_name)
+        # context.scene.render.filepath = os.path.join(new_dir, new_name)
 
         if not context.scene.node_tree:
             return {"FINISHED"}
 
-        nodes = [
-            node for node in context.scene.node_tree.nodes if node.type == "OUTPUT_FILE"
-        ]
+        nodes = context.selected_nodes
+        # nodes = context.scene.node_tree.nodes
+        nodes = [node for node in nodes if node.type == "OUTPUT_FILE"]
         for node in nodes:
             node_filename = os.path.split(node.base_path)[1]
             node.base_path = os.path.join(new_dir, node_filename)
