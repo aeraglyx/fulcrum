@@ -533,7 +533,7 @@ class FULCRUM_OT_compositor_output_path_to_node_name(bpy.types.Operator):
 
 class FULCRUM_OT_prepare_for_render(bpy.types.Operator):
     bl_idname = "fulcrum.prepare_for_render"
-    bl_label = "Prep for Render"
+    bl_label = "Prep for Render..."
     bl_description = "Absolute paths, Compositing nodes ON, Sequencer OFF, Use border OFF, File format .PNG"
     bl_options = {"REGISTER", "UNDO"}
 

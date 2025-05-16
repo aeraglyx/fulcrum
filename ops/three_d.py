@@ -212,6 +212,7 @@ class FULCRUM_OT_obj_backup(bpy.types.Operator):
     bl_idname = "fulcrum.obj_backup"
     bl_label = "Backup Object"
     bl_description = ""
+    bl_options = {"UNDO"}
 
     @classmethod
     def poll(cls, context):

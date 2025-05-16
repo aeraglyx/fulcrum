@@ -27,7 +27,8 @@ Blender addon consisting of random tools. Mostly harmless. Contains a rudimentar
 - Locate vertices by its indices
 
 ## Miscellaneous
-- Quickly find current .blend, script directory or system console.
+- Quickly find current .blend, script directory or system console
+- Copy .blend filepath to clipboard
 - Automatically set *Time Limit* based on target render time of full animation
 - Mass conversion of Vertex Groups to Vertex Colors
 - Swatches for main colors in Vertex Paint mode
