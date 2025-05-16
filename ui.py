@@ -7,32 +7,32 @@ from .ops.file_stuff import is_current_file_version
 
 
 def draw_topbar(self, context):
-    # red - 	SEQUENCE_COLOR_01
-    # orange - 	SEQUENCE_COLOR_02
-    # yellow - 	SEQUENCE_COLOR_03
-    # green - 	SEQUENCE_COLOR_04
-    # blue - 	SEQUENCE_COLOR_05
-    # purple - 	SEQUENCE_COLOR_06
-    # pink - 	SEQUENCE_COLOR_07
+    # red - 	STRIP_COLOR_01
+    # orange - 	STRIP_COLOR_02
+    # yellow - 	STRIP_COLOR_03
+    # green - 	STRIP_COLOR_04
+    # blue - 	STRIP_COLOR_05
+    # purple - 	STRIP_COLOR_06
+    # pink - 	STRIP_COLOR_07
 
     if context.region.alignment != "RIGHT":
         layout = self.layout
         if bpy.data.is_saved:
             if is_current_file_version():
                 if bpy.data.is_dirty:
-                    layout.label(text="Latest but not saved.", icon="SEQUENCE_COLOR_07")
+                    layout.label(text="Latest but not saved.", icon="STRIP_COLOR_07")
                 else:
-                    layout.label(text="DON'T PANIC!", icon="SEQUENCE_COLOR_05")
-                # layout.operator("fulcrum.go_to_latest_version", icon='SEQUENCE_COLOR_04')
+                    layout.label(text="DON'T PANIC!", icon="STRIP_COLOR_05")
+                # layout.operator("fulcrum.go_to_latest_version", icon='STRIP_COLOR_04')
             else:
-                layout.label(text="Not the latest version!", icon="SEQUENCE_COLOR_01")
+                layout.label(text="Not the latest version!", icon="STRIP_COLOR_01")
                 layout.operator(
                     "fulcrum.go_to_latest_version",
                     text="Go to Latest",
                     icon="LOOP_FORWARDS",
                 )
         else:
-            layout.label(text="File not saved!", icon="SEQUENCE_COLOR_01")
+            layout.label(text="File not saved!", icon="STRIP_COLOR_01")
 
 
 def draw_outliner(self, context):
@@ -63,14 +63,14 @@ def draw_material(self, context):
 
 
 def register_menus_and_headers():
-    bpy.types.TOPBAR_HT_upper_bar.append(draw_topbar)
+    # bpy.types.TOPBAR_HT_upper_bar.append(draw_topbar)
     bpy.types.OUTLINER_HT_header.append(draw_outliner)
     bpy.types.DOPESHEET_HT_header.append(draw_timeline)
     bpy.types.MATERIAL_MT_context_menu.append(draw_material)
 
 
 def unregister_menus_and_headers():
-    bpy.types.TOPBAR_HT_upper_bar.remove(draw_topbar)
+    # bpy.types.TOPBAR_HT_upper_bar.remove(draw_topbar)
     bpy.types.OUTLINER_HT_header.remove(draw_outliner)
     bpy.types.DOPESHEET_HT_header.remove(draw_timeline)
     bpy.types.MATERIAL_MT_context_menu.remove(draw_material)
@@ -130,6 +130,35 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
+
+        # col = layout.column(align=True)
+        # # col.label(text="Color:", icon='COLOR')
+        # row = col.row(align=True)
+        # row.operator("fulcrum.reset_node_color", text="", icon="X")
+        # grey = row.operator("fulcrum.set_node_color", text="", icon="STRIP_COLOR_09")
+        # grey.color = [0.34, 0.34, 0.34]
+        # red = row.operator("fulcrum.set_node_color", text="", icon="STRIP_COLOR_01")
+        # red.color = [0.59, 0.18, 0.22]
+        # orange = row.operator(
+        #     "fulcrum.set_node_color", text="", icon="STRIP_COLOR_02"
+        # )
+        # orange.color = [0.64, 0.38, 0.21]
+        # yellow = row.operator(
+        #     "fulcrum.set_node_color", text="", icon="STRIP_COLOR_03"
+        # )
+        # yellow.color = [0.56, 0.51, 0.25]
+        # green = row.operator(
+        #     "fulcrum.set_node_color", text="", icon="STRIP_COLOR_04"
+        # )
+        # green.color = [0.26, 0.50, 0.29]
+        # blue = row.operator("fulcrum.set_node_color", text="", icon="STRIP_COLOR_05")
+        # blue.color = [0.22, 0.40, 0.50]
+        # purple = row.operator(
+        #     "fulcrum.set_node_color", text="", icon="STRIP_COLOR_06"
+        # )
+        # purple.color = [0.38, 0.28, 0.51]
+        # pink = row.operator("fulcrum.set_node_color", text="", icon="STRIP_COLOR_07")
+        # pink.color = [0.52, 0.33, 0.44]
 
         # TODO once the node color matches themes, we can use strip colors, so it's more unified.
         # theme = bpy.context.preferences.themes.items()[0][1]
