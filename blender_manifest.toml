@@ -1,0 +1,19 @@
+schema_version = "1.0.0"
+
+id = "fulcrum"
+version = "0.2.0"
+name = "Fulcrum"
+tagline = "All kinds of tools"
+type = "add-on"
+tags = ["3D View", "Camera", "Development", "Node", "Pipeline", "Render", "Scene", "User Interface"]
+blender_version_min = "4.4.0"
+
+maintainer = "Aeraglyx"
+website = "https://github.com/aeraglyx/fulcrum"
+
+license = ["SPDX:GPL-2.0-or-later"]
+
+[permissions]
+files = "Open files and stuff"
+network = "Access internet for updating the addon"
+clipboard = "Copy paths to clipboard"

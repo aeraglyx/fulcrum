@@ -1,15 +1,3 @@
-bl_info = {
-    "name": "Fulcrum",
-    "author": "Aeraglyx",
-    "description": "All kinds of tools",
-    "blender": (4, 1, 0),
-    "version": (0, 1, 34),
-    "location": "Everywhere. Mostly in node editor and 3D viewport.",
-    "doc_url": "https://github.com/aeraglyx/fulcrum",
-    "category": "User Interface",
-    "support": "COMMUNITY",
-}
-
 import bpy
 from bpy.app.handlers import persistent
 
