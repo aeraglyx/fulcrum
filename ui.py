@@ -129,6 +129,7 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
     bl_label = "Node Tools"
 
     def draw(self, context):
+        experimental = context.preferences.addons[__package__].preferences.experimental
         layout = self.layout
 
         # col = layout.column(align=True)
@@ -212,7 +213,7 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
         row.operator("fulcrum.align_nodes", text="Auto")
         row.operator("fulcrum.center_nodes", text="Center")
         row.operator("fulcrum.nodes_to_grid", text="Grid")
-        if context.preferences.addons["fulcrum"].preferences.experimental:
+        if experimental:
             col.operator("fulcrum.align_nodes_v2", icon="ALIGN_CENTER")
             col.operator("fulcrum.color_node_flow", icon="COLOR")
             col.operator("fulcrum.randomize_node_color", icon="COLOR")
@@ -220,7 +221,7 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
         col = layout.column(align=True)
         layout.operator("fulcrum.add_todo_note", icon="TEXT")  # FONT_DATA EVENT_A
 
-        if context.preferences.addons["fulcrum"].preferences.experimental:
+        if experimental:
             col = layout.column(align=True)
             col.prop(context.scene.fulcrum, "use_node_handler")
             if context.scene.fulcrum.use_node_handler:
@@ -246,7 +247,7 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
                 both.mat = True
                 both.obj = True
 
-        if context.preferences.addons["fulcrum"].preferences.experimental:
+        if experimental:
             col = layout.column(align=True)
             row = col.row(align=True)
             row.operator("fulcrum.version_encode", text="Encode", icon="SYSTEM")
@@ -430,7 +431,7 @@ class FULCRUM_PT_3d_stuff(View3DPanel, bpy.types.Panel):
         col.operator("fulcrum.obj_backup", icon="DUPLICATE")
         col.operator("fulcrum.duplicates_to_instances", icon="MOD_INSTANCE")
 
-        if context.preferences.addons["fulcrum"].preferences.experimental:
+        if context.preferences.addons[__package__].preferences.experimental:
             col = layout.column(align=True)
             col.operator("fulcrum.locate_vertex", icon="VERTEXSEL")
             col.operator("fulcrum.locate_vertices", icon="SNAP_VERTEX")
