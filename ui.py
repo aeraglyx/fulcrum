@@ -1,4 +1,5 @@
 import bpy
+import sys
 
 from .functions import *
 from .ops.file_stuff import is_current_file_version
@@ -366,7 +367,8 @@ class FULCRUM_PT_utility_node(NodePanel, bpy.types.Panel):
             text="Addon Preferences",
             icon="PREFERENCES",
         )
-        col.operator("wm.console_toggle", icon="CONSOLE")
+        if sys.platform == "win32":
+            col.operator("wm.console_toggle", icon="CONSOLE")
 
 
 # ---------------- VIEW 3D ----------------
@@ -567,7 +569,8 @@ class FULCRUM_PT_utility_3d(View3DPanel, bpy.types.Panel):
             text="Addon Preferences",
             icon="PREFERENCES",
         )
-        col.operator("wm.console_toggle", icon="CONSOLE")
+        if sys.platform == "win32":
+            col.operator("wm.console_toggle", icon="CONSOLE")
 
 
 # ---------------- CLIP_EDITOR ----------------
