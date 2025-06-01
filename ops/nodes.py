@@ -509,10 +509,13 @@ class FULCRUM_OT_rename_group_input(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        if hasattr(context, "active_node"):
-            if context.active_node.type == "GROUP_INPUT":
-                return True
-        return False
+        if not hasattr(context, "active_node"):
+            return False
+        if not context.active_node:
+            return False
+        if context.active_node.type != "GROUP_INPUT":
+            return False
+        return True
 
     name: bpy.props.StringProperty(
         name="Name",
@@ -522,12 +525,9 @@ class FULCRUM_OT_rename_group_input(bpy.types.Operator):
 
     def execute(self, context):
         node = context.active_node
-        sockets = [
-            socket for socket in node.outputs if socket.enabled and not socket.hide
-        ]
-        if len(sockets) > 1:
-            return {"CANCELLED"}
-        sockets[0].name = self.name
+        # sockets = [socket for socket in node.outputs if socket.enabled and not socket.hide]
+        # TODO: trace back the socket so it works in all cases
+        node.id_data.interface.active.name = self.name
         return {"FINISHED"}
 
     # BUG it only renames the socket, not group input !!!
@@ -540,14 +540,6 @@ class FULCRUM_OT_rename_group_input(bpy.types.Operator):
         layout = self.layout
         layout.use_property_split = True
         layout.use_property_decorate = False
-
-        # TODO renaming all sockets?
-        # node = context.active_node
-        # for socket in node.outputs:
-        #     if socket.enabled:
-        #         # found_socket = socket
-        #         socket.name = self.name
-
         col = layout.column(align=True)
         col.prop(self, "name")
 
