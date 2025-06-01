@@ -27,7 +27,7 @@ class FULCRUM_OT_update_fulcrum(bpy.types.Operator):
         fulcrum_path = os.path.join(bpy.utils.script_path_user(), "addons", "fulcrum")
         nested_path = os.path.join(fulcrum_path, "fulcrum-master")
 
-        old_version = get_addon_version("Fulcrum")
+        old_version = get_addon_version()
 
         shutil.rmtree(fulcrum_path, ignore_errors=True)
 
@@ -44,7 +44,7 @@ class FULCRUM_OT_update_fulcrum(bpy.types.Operator):
 
         os.rmdir(nested_path)
 
-        new_version = get_addon_version("Fulcrum")
+        new_version = get_addon_version()
 
         # context.scene.fulcrum.restart_needed = True
         self.report(

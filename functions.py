@@ -2,6 +2,8 @@ import re
 import math
 import sys
 import subprocess
+import os
+import tomllib
 
 import bpy
 import mathutils
@@ -13,6 +15,18 @@ def open_file(filename):
     else:
         opener = "open" if sys.platform == "darwin" else "xdg-open"
         subprocess.call([opener, filename])
+
+
+def get_manifest():
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    filepath = os.path.join(current_dir, "blender_manifest.toml")
+    with open(filepath, "rb") as f:
+        manifest = tomllib.load(f)
+    return manifest
+
+
+def get_addon_version():
+    return get_manifest()["version"]
 
 
 def oklab_2_srgb(l, a, b):
@@ -252,15 +266,3 @@ def version_up(name, i=1):
     new_v = str(int(old_v) + i).zfill(len(old_v))
     return old_name + new_v
     # TODO test it
-
-
-import addon_utils
-
-
-def get_addon_version(addon_name):
-    version = [
-        addon.bl_info.get("version", (-1, -1, -1))
-        for addon in addon_utils.modules()
-        if addon.bl_info["name"] == addon_name
-    ][0]
-    return ".".join(map(str, version))

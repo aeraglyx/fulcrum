@@ -117,13 +117,12 @@ class NodePanel(bpy.types.Panel):
 
 
 class FULCRUM_PT_fulcrum_node(NodePanel, bpy.types.Panel):
-    bl_label = "FULCRUM"
+    bl_label = f"FULCRUM {get_addon_version()}"
     bl_options = {"DEFAULT_CLOSED"}
 
     def draw(self, context):
         layout = self.layout
         layout.operator("fulcrum.update_fulcrum", text="Update", icon="FILE_REFRESH")
-        layout.label(text=f"v{get_addon_version('Fulcrum')}")
 
 
 class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
@@ -336,13 +335,12 @@ class View3DPanel(bpy.types.Panel):
 
 
 class FULCRUM_PT_fulcrum_3d(View3DPanel, bpy.types.Panel):
-    bl_label = "FULCRUM"
+    bl_label = f"FULCRUM {get_addon_version()}"
     bl_options = {"DEFAULT_CLOSED"}
 
     def draw(self, context):
         layout = self.layout
         layout.operator("fulcrum.update_fulcrum", text="Update", icon="FILE_REFRESH")
-        layout.label(text=f"v{get_addon_version('Fulcrum')}")
 
 
 class FULCRUM_PT_ease_of_access(View3DPanel, bpy.types.Panel):
