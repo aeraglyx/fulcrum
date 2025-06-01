@@ -152,7 +152,7 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
         pink = row.operator("fulcrum.set_node_color", text="", icon="STRIP_COLOR_07")
         pink.color = [0.52, 0.33, 0.44]
 
-        # TODO use strip colors from theme?
+        # TODO: use strip colors from theme?
 
         col = layout.column(align=True)
         # col.label(text="Size:", icon='FIXED_SIZE')

@@ -185,6 +185,8 @@ def socket_loc(socket):
 
 
 def get_original_tree(tree, context):
+    # TODO: this relies on the fact that tree is in the current scene
+    original_tree = None
     if tree.type == "GEOMETRY":
         original_tree = context.object.modifiers.active.node_group
     if tree.type == "SHADER":
