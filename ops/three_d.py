@@ -24,7 +24,7 @@ class FULCRUM_OT_locate_vertex(bpy.types.Operator):
         bpy.ops.object.mode_set(mode="EDIT")
 
         statistics_str = context.scene.statistics(context.view_layer)
-        total_verts = int(re.search("Verts:\d+/(\d+)", statistics_str).groups()[0])
+        total_verts = int(re.search(r"Verts:\d+/(\d+)", statistics_str).groups()[0])
 
         if self.index < total_verts:  # len(verts)
             obj = context.active_object

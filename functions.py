@@ -235,8 +235,8 @@ def version_up(name, i=1):
     if not name[-1].isdigit():
         return name + "_v02"  # v001 or v002 ?
     # otherwise increment by 1
-    old_name = re.sub("(?<=v|V)\d+$", "", name)
-    old_v = re.search("(?<=v|V)\d+$", name).group()
+    old_name = re.sub(r"(?<=v|V)\d+$", "", name)
+    old_v = re.search(r"(?<=v|V)\d+$", name).group()
     new_v = str(int(old_v) + i).zfill(len(old_v))
     return old_name + new_v
     # TODO test it

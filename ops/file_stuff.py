@@ -13,8 +13,8 @@ def get_name_and_version(name):
     if not name[-1].isdigit():
         base_name = name.rstrip("_- ")  # string.punctuation
         return base_name, 0
-    base_name = re.sub("[\s_-]*[vV]?\d+$", "", name)
-    v = int(re.search("\d+$", name).group())
+    base_name = re.sub(r"[\s_-]*[vV]?\d+$", "", name)
+    v = int(re.search(r"\d+$", name).group())
     return base_name, v
 
 
