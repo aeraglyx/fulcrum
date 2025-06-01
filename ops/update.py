@@ -9,11 +9,10 @@ import requests
 from ..functions import get_addon_version
 
 
-# TODO: wtf, fix this
 class FULCRUM_OT_update_fulcrum(bpy.types.Operator):
     bl_idname = "fulcrum.update_fulcrum"
     bl_label = "Update Fulcrum"
-    bl_description = "Update this addon. Blender will need to be reloaded"
+    bl_description = "Update this addon. Requires a Blender restart"
 
     @classmethod
     def poll(cls, context):
@@ -21,19 +20,16 @@ class FULCRUM_OT_update_fulcrum(bpy.types.Operator):
         return online_access
 
     def execute(self, context):
-        repo_download_link = (
-            "https://github.com/aeraglyx/fulcrum/archive/refs/heads/master.zip"
-        )
-        fulcrum_path = os.path.join(bpy.utils.script_path_user(), "addons", "fulcrum")
+        archive_link = "https://github.com/aeraglyx/fulcrum/archive/refs/heads/master.zip"
+        extensions_path = bpy.utils.user_resource('EXTENSIONS')
+        fulcrum_path = os.path.join(extensions_path, "fulcrum")
         nested_path = os.path.join(fulcrum_path, "fulcrum-master")
 
         old_version = get_addon_version()
 
         shutil.rmtree(fulcrum_path, ignore_errors=True)
 
-        # with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
-        # 	zip_ref.extractall(fulcrum_path)
-        r = requests.get(repo_download_link)
+        r = requests.get(archive_link)
         z = zipfile.ZipFile(io.BytesIO(r.content))
         z.extractall(fulcrum_path)
 
@@ -46,11 +42,9 @@ class FULCRUM_OT_update_fulcrum(bpy.types.Operator):
 
         new_version = get_addon_version()
 
-        # context.scene.fulcrum.restart_needed = True
         self.report(
             {"INFO"},
-            f"Updated from {old_version} to {new_version}. Blender reload needed.",
+            f"Updated from {old_version} to {new_version}. Blender restart required.",
         )
-        # bpy.ops.script.reload()
 
         return {"FINISHED"}
