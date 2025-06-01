@@ -24,8 +24,8 @@ from .ops.file_stuff import (
     FULCRUM_OT_copy_path_to_clipboard,
     FULCRUM_OT_go_to_latest_version,
     FULCRUM_OT_open_addon_preferences,
-    FULCRUM_OT_open_blend_dir,
-    FULCRUM_OT_open_script_dir,
+    FULCRUM_OT_open_blend_file_dir,
+    FULCRUM_OT_open_blender_user_dir,
 )
 from .ops.update import FULCRUM_OT_update_fulcrum
 from .ops.node_versioning import FULCRUM_OT_version_decode, FULCRUM_OT_version_encode
@@ -113,8 +113,8 @@ classes = (
     FULCRUM_OT_set_paint_brush,
     FULCRUM_OT_set_weight_brush,
     FULCRUM_OT_update_fulcrum,
-    FULCRUM_OT_open_script_dir,
-    FULCRUM_OT_open_blend_dir,
+    FULCRUM_OT_open_blend_file_dir,
+    FULCRUM_OT_open_blender_user_dir,
     FULCRUM_OT_go_to_latest_version,
     FULCRUM_OT_open_addon_preferences,
     FULCRUM_OT_select_node_inputs,

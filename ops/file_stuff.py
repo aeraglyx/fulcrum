@@ -4,9 +4,7 @@ import subprocess
 
 import bpy
 
-from ..functions import *
-
-# import string
+from ..functions import open_file
 
 
 def get_name_and_version(name):
@@ -78,8 +76,8 @@ class FULCRUM_OT_go_to_latest_version(bpy.types.Operator):
         return {"FINISHED"}
 
 
-class FULCRUM_OT_open_blend_dir(bpy.types.Operator):
-    bl_idname = "fulcrum.open_blend_dir"
+class FULCRUM_OT_open_blend_file_dir(bpy.types.Operator):
+    bl_idname = "fulcrum.open_blend_file_dir"
     bl_label = "Find .blend File"
     bl_description = "Opens file explorer with the current Blender file selected"
 
@@ -88,6 +86,7 @@ class FULCRUM_OT_open_blend_dir(bpy.types.Operator):
         return bpy.data.is_saved
 
     def execute(self, context):
+        # TODO: make it cross platform
         path = bpy.data.filepath
         subprocess.Popen('explorer /select,"' + path + '"')
         return {"FINISHED"}
@@ -149,14 +148,14 @@ class FULCRUM_OT_background_render_string(bpy.types.Operator):
         return {"FINISHED"}
 
 
-class FULCRUM_OT_open_script_dir(bpy.types.Operator):
-    bl_idname = "fulcrum.open_script_dir"
-    bl_label = "Find Script Directory"
-    bl_description = "Opens folder with addons and themes"
+class FULCRUM_OT_open_blender_user_dir(bpy.types.Operator):
+    bl_idname = "fulcrum.open_blender_user_dir"
+    bl_label = "Open Blender Directory"
+    bl_description = "Opens a user directory with extensions and scripts"
 
     def execute(self, context):
-        path = bpy.utils.script_path_user()
-        os.startfile(path)
+        path = bpy.utils.resource_path('USER')
+        open_file(path)
         return {"FINISHED"}
 
 

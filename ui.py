@@ -313,10 +313,8 @@ class FULCRUM_PT_utility_node(NodePanel, bpy.types.Panel):
         layout = self.layout
 
         col = layout.column(align=True)
-        col.operator("fulcrum.open_blend_dir", icon="FILE_BACKUP")
-        col.operator(
-            "fulcrum.open_script_dir", icon="SCRIPT"
-        )  # FOLDER_REDIRECT  SCRIPT
+        col.operator("fulcrum.open_blend_file_dir", icon="FILE_BACKUP")
+        col.operator("fulcrum.open_blender_user_dir", icon="SCRIPT")  # FOLDER_REDIRECT  SCRIPT
 
         col = layout.column(align=True)
         col.operator(
@@ -511,14 +509,10 @@ class FULCRUM_PT_utility_3d(View3DPanel, bpy.types.Panel):
 
         col = layout.column(align=True)
         row = col.row(align=True)
-        row.operator("fulcrum.open_blend_dir", icon="FILE_BACKUP")
+        row.operator("fulcrum.open_blend_file_dir", icon="FILE_BACKUP")
         row.operator("fulcrum.copy_path_to_clipboard", text="", icon="COPYDOWN")
-        col.operator(
-            "fulcrum.open_script_dir", icon="SCRIPT"
-        )  # FOLDER_REDIRECT  SCRIPT
-        col.operator(
-            "fulcrum.background_render_string", icon="SCRIPT"
-        )  # FOLDER_REDIRECT  SCRIPT
+        col.operator("fulcrum.open_blender_user_dir", icon="SCRIPT")  # FOLDER_REDIRECT  SCRIPT
+        col.operator("fulcrum.background_render_string", icon="SCRIPT")  # FOLDER_REDIRECT  SCRIPT
 
         col = layout.column(align=True)
         col.operator(
