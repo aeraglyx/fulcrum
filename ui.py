@@ -351,9 +351,8 @@ class FULCRUM_PT_ease_of_access(View3DPanel, bpy.types.Panel):
 
         layout.operator("fulcrum.prepare_for_render", icon="RESTRICT_RENDER_OFF")
 
-        # TODO scene from context
-        layout.prop(bpy.data.scenes["Scene"].render, "film_transparent")
-        layout.prop(bpy.data.scenes["Scene"].view_settings, "exposure")
+        layout.prop(context.scene.render, "film_transparent")
+        layout.prop(context.scene.view_settings, "exposure")
 
 
 class FULCRUM_PT_camera(View3DPanel, bpy.types.Panel):
