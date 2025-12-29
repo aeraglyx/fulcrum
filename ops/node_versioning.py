@@ -6,7 +6,6 @@ import datetime
 
 def to62(x):
     letters = string.digits + string.ascii_lowercase + string.ascii_uppercase
-    # letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
     out = ""
     while x:
         m = x % 62
@@ -53,14 +52,14 @@ class FULCRUM_OT_version_encode(bpy.types.Operator):
     bl_label = "Encode Time"
     bl_description = "Append encoded time to the end of node group's name"
 
+    # FIXME: doesn't work in compositor?
     @classmethod
-    def poll(cls, context):  # doesn't work in compositor?
+    def poll(cls, context):
         if hasattr(context, "active_node"):
             node = context.active_node
             if node:
                 return hasattr(node, "node_tree")
         return False
-        # is_selected = context.active_node.select
 
     def execute(self, context):
         active = context.active_node
@@ -92,5 +91,5 @@ class FULCRUM_OT_version_decode(bpy.types.Operator):
         active = context.active_node
         name = active.node_tree.name
         date = decode(name[-5:])
-        self.report({"INFO"}, f"{name[:-7]} | {name[-5:]} | {date}")
+        self.report({"INFO"}, f"{date}")
         return {"FINISHED"}
