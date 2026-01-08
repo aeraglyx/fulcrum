@@ -3,7 +3,7 @@ from bpy.app.handlers import persistent
 
 from .functions import *
 from .handlers import register_handlers, unregister_handlers
-from .keymap import register_keymap, unregister_keymap
+from .keymap import register_keymaps, unregister_keymaps
 from .ops.camera import (
     FULCRUM_OT_cameras_to_markers,
     FULCRUM_OT_center_render_region,
@@ -204,12 +204,12 @@ def register():
     bpy.types.Scene.fulcrum = bpy.props.PointerProperty(type=fulcrum_props)
     register_menus_and_headers()
     register_handlers()
-    register_keymap(addon_keymaps)
+    register_keymaps(addon_keymaps)
     print("FULCRUM registered")
 
 
 def unregister():
-    unregister_keymap(addon_keymaps)
+    unregister_keymaps(addon_keymaps)
     unregister_handlers()
     unregister_menus_and_headers()
     del bpy.types.Scene.fulcrum
