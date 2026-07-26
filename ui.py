@@ -346,6 +346,8 @@ class FULCRUM_PT_ease_of_access(View3DPanel, bpy.types.Panel):
         layout.prop(context.scene.render, "film_transparent")
         layout.prop(context.scene.view_settings, "exposure")
 
+        layout.operator("fulcrum.backup", icon="FILE_BACKUP")
+
 
 class FULCRUM_PT_camera(View3DPanel, bpy.types.Panel):
     bl_idname = "FULCRUM_PT_camera"

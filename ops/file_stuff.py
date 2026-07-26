@@ -1,5 +1,6 @@
 import os
 import re
+import shutil
 import subprocess
 
 import bpy
@@ -16,22 +17,17 @@ def get_name_and_version(name):
     return base_name, v
 
 
-def get_newest_version():
-    folder_path = bpy.path.abspath("//")
-    # if not folder_path:
-    # 	return True
-    name = os.path.splitext(bpy.path.basename(bpy.data.filepath))[0]
-    current_name, current_version = get_name_and_version(name)
-    # newest_version = -1
-    for file in os.listdir(folder_path):
-        split = os.path.splitext(file)
-        if split[-1].lower() == ".blend":
-            new_name, new_version = get_name_and_version(split[0])
-            if current_name != new_name:
+def get_newest_version(dirname, filename):
+    version_found = 0
+    for file in os.listdir(dirname):
+        filename_new, ext = os.path.splitext(file)
+        if ext.lower() == ".blend":
+            new_name, version = get_name_and_version(filename_new)
+            if new_name != filename:
                 continue
-            if current_version < new_version:
-                current_version = new_version
-    return current_version
+            if version > version_found:
+                version_found = version
+    return version_found
 
 
 def get_newest_file():
@@ -55,9 +51,10 @@ def get_newest_file():
 def is_current_file_version():
     if not bpy.data.is_saved:
         return True
+    dirname = os.path.dirname(bpy.data.filepath)
     name = os.path.splitext(bpy.path.basename(bpy.data.filepath))[0]
     current_version = get_name_and_version(name)[1]
-    newest_version = get_newest_version()
+    newest_version = get_newest_version(dirname, name)
     return current_version == newest_version
 
 
@@ -73,6 +70,29 @@ class FULCRUM_OT_go_to_latest_version(bpy.types.Operator):
     def execute(self, context):
         latest_file = get_newest_file()
         bpy.ops.wm.open_mainfile(filepath=latest_file)
+        return {"FINISHED"}
+
+
+class FULCRUM_OT_backup(bpy.types.Operator):
+    bl_idname = "fulcrum.backup"
+    bl_label = "Backup"
+    bl_description = "Backup Saved File to the .versions Directory"
+
+    @classmethod
+    def poll(cls, context):
+        return bpy.data.is_saved
+
+    def execute(self, context):
+        filepath = bpy.data.filepath
+        version_dir = os.path.join(os.path.dirname(filepath), ".versions")
+        os.makedirs(version_dir, exist_ok=True)
+        filename, _ = os.path.splitext(os.path.basename(filepath))
+        version_next = get_newest_version(version_dir, filename) + 1
+        filename_new = f"{filename}_v{version_next:03}.blend"
+        filepath_new = os.path.join(version_dir, filename_new)
+        shutil.copy2(filepath, filepath_new)
+        # TODO: checksum versions?
+        self.report({"INFO"}, f"Backed up to .versions/{filename_new}")
         return {"FINISHED"}
 
 
