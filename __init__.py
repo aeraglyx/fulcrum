@@ -28,8 +28,8 @@ from .ops.file_stuff import (
     FULCRUM_OT_open_blender_user_dir,
 )
 from .ops.update import FULCRUM_OT_update_fulcrum
-from .ops.node_versioning import FULCRUM_OT_node_timestamp
-from .ops.nodes import (
+from .ops.nodes.timestamp import FULCRUM_OT_node_timestamp
+from .ops.nodes.main import (
     FULCRUM_OT_add_todo_note,
     FULCRUM_OT_align_nodes,
     FULCRUM_OT_align_nodes_v2,

@@ -5,7 +5,7 @@ import random
 import bpy
 import mathutils
 
-from ..functions import *
+from ...functions import *
 
 
 class FULCRUM_OT_align_nodes(bpy.types.Operator):
