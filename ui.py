@@ -135,24 +135,20 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
         col = layout.column(align=True)
         row = col.row(align=True)
         row.operator("fulcrum.reset_node_color", text="", icon="X")
-        grey = row.operator("fulcrum.set_node_color", text="", icon="STRIP_COLOR_09")
-        grey.color = [0.34, 0.34, 0.34]
-        red = row.operator("fulcrum.set_node_color", text="", icon="STRIP_COLOR_01")
-        red.color = [0.59, 0.18, 0.22]
-        orange = row.operator("fulcrum.set_node_color", text="", icon="STRIP_COLOR_02")
-        orange.color = [0.64, 0.38, 0.21]
-        yellow = row.operator("fulcrum.set_node_color", text="", icon="STRIP_COLOR_03")
-        yellow.color = [0.56, 0.51, 0.25]
-        green = row.operator("fulcrum.set_node_color", text="", icon="STRIP_COLOR_04")
-        green.color = [0.26, 0.50, 0.29]
-        blue = row.operator("fulcrum.set_node_color", text="", icon="STRIP_COLOR_05")
-        blue.color = [0.22, 0.40, 0.50]
-        purple = row.operator("fulcrum.set_node_color", text="", icon="STRIP_COLOR_06")
-        purple.color = [0.38, 0.28, 0.51]
-        pink = row.operator("fulcrum.set_node_color", text="", icon="STRIP_COLOR_07")
-        pink.color = [0.52, 0.33, 0.44]
-
-        # TODO: use strip colors from theme?
+        color_dict = {
+            1: [0.59, 0.18, 0.22],  # red
+            2: [0.64, 0.38, 0.21],  # orange
+            3: [0.56, 0.51, 0.25],  # yellow
+            4: [0.26, 0.50, 0.29],  # green
+            5: [0.22, 0.40, 0.50],  # blue
+            6: [0.38, 0.28, 0.51],  # purple
+            7: [0.52, 0.33, 0.44],  # pink
+            9: [0.34, 0.34, 0.34],  # grey
+        }
+        for i in [9, 1, 2, 3, 4, 5, 6, 7]:
+            color_entry = row.operator("fulcrum.set_node_color", text="", icon=f"STRIP_COLOR_0{i}")
+            color_entry.color = color_dict[i]
+            # TODO: use strip colors from theme?
 
         col = layout.column(align=True)
         # col.label(text="Size:", icon='FIXED_SIZE')
