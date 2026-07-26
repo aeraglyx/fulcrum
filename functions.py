@@ -14,7 +14,7 @@ def open_file(filename):
         os.startfile(filename)
     else:
         opener = "open" if sys.platform == "darwin" else "xdg-open"
-        subprocess.call([opener, filename])
+        subprocess.Popen([opener, filename])
 
 
 def get_manifest():
