@@ -134,7 +134,7 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
 
         col = layout.column(align=True)
         row = col.row(align=True)
-        row.operator("fulcrum.reset_node_color", text="", icon="X")
+        row.operator("fulcrum.reset_node_color", text=" ", icon="X")
         color_dict = {
             1: [0.59, 0.18, 0.22],  # red
             2: [0.64, 0.38, 0.21],  # orange
@@ -146,7 +146,7 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
             9: [0.34, 0.34, 0.34],  # grey
         }
         for i in [9, 1, 2, 3, 4, 5, 6, 7]:
-            color_entry = row.operator("fulcrum.set_node_color", text="", icon=f"STRIP_COLOR_0{i}")
+            color_entry = row.operator("fulcrum.set_node_color", text=" ", icon=f"STRIP_COLOR_0{i}")
             color_entry.color = color_dict[i]
             # TODO: use strip colors from theme?
 
