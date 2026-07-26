@@ -16,8 +16,10 @@ class FULCRUM_OT_update_fulcrum(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        online_access = bpy.app.online_access
-        return online_access
+        if not bpy.app.online_access:
+            cls.poll_message_set("Requires online access")
+            return False
+        return True
 
     def execute(self, context):
         archive_link = "https://github.com/aeraglyx/fulcrum/archive/refs/heads/master.zip"
