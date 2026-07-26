@@ -175,8 +175,10 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
             col.operator("fulcrum.color_node_flow", icon="COLOR")
             col.operator("fulcrum.randomize_node_color", icon="COLOR")
 
-        col = layout.column(align=True)
         layout.operator("fulcrum.add_todo_note", icon="TEXT")  # FONT_DATA EVENT_A
+        layout.operator("fulcrum.node_timestamp", icon="TAG")
+
+        col = layout.column(align=True)
 
         if experimental:
             col = layout.column(align=True)
@@ -203,12 +205,6 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
                 both = row.operator("fulcrum.tex_to_name", text="Both")
                 both.mat = True
                 both.obj = True
-
-        if experimental:
-            col = layout.column(align=True)
-            row = col.row(align=True)
-            row.operator("fulcrum.version_encode", text="Encode", icon="SYSTEM")
-            row.operator("fulcrum.version_decode", text="Decode", icon="ZOOM_ALL")
 
 
 class FULCRUM_PT_node_group(NodePanel, bpy.types.Panel):

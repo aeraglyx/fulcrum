@@ -28,7 +28,7 @@ from .ops.file_stuff import (
     FULCRUM_OT_open_blender_user_dir,
 )
 from .ops.update import FULCRUM_OT_update_fulcrum
-from .ops.node_versioning import FULCRUM_OT_version_decode, FULCRUM_OT_version_encode
+from .ops.node_versioning import FULCRUM_OT_node_timestamp
 from .ops.nodes import (
     FULCRUM_OT_add_todo_note,
     FULCRUM_OT_align_nodes,
@@ -132,8 +132,7 @@ classes = (
     FULCRUM_OT_set_gn_defaults,
     FULCRUM_OT_reset_gn_defaults,
     FULCRUM_OT_add_todo_note,
-    FULCRUM_OT_version_encode,
-    FULCRUM_OT_version_decode,
+    FULCRUM_OT_node_timestamp,
     FULCRUM_OT_copy_nodes,
     FULCRUM_OT_paste_nodes,
     FULCRUM_OT_align_nodes,
