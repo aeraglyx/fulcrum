@@ -77,8 +77,8 @@ class FULCRUM_OT_go_to_latest_version(bpy.types.Operator):
 
 class FULCRUM_OT_backup(bpy.types.Operator):
     bl_idname = "fulcrum.backup"
-    bl_label = "Backup"
-    bl_description = "Backup Saved File to the .versions Directory"
+    bl_label = "Backup .blend File"
+    bl_description = "Backup the saved file to .versions directory"
 
     @classmethod
     def poll(cls, context):
