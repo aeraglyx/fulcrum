@@ -27,50 +27,6 @@ class FULCRUM_OT_hide_group_inputs(bpy.types.Operator):
         return {"FINISHED"}
 
 
-class FULCRUM_OT_rename_group_input(bpy.types.Operator):
-    bl_idname = "fulcrum.rename_group_input"
-    bl_label = "(Rename Group Input)"
-    bl_description = "After adding a new group input, this lets you instantly rename it"
-    bl_options = {"REGISTER", "UNDO"}
-    bl_property = "name"
-
-    @classmethod
-    def poll(cls, context):
-        if not hasattr(context, "active_node"):
-            return False
-        if not context.active_node:
-            return False
-        if context.active_node.type != "GROUP_INPUT":
-            return False
-        return True
-
-    name: bpy.props.StringProperty(
-        name="Name",
-        description="New input name",
-        default="",
-    )
-
-    def execute(self, context):
-        node = context.active_node
-        # sockets = [socket for socket in node.outputs if socket.enabled and not socket.hide]
-        # TODO: trace back the socket so it works in all cases
-        node.id_data.interface.active.name = self.name
-        return {"FINISHED"}
-
-    # BUG it only renames the socket, not group input !!!
-
-    def invoke(self, context, event):
-        wm = context.window_manager
-        return wm.invoke_props_dialog(self)
-
-    def draw(self, context):
-        layout = self.layout
-        layout.use_property_split = True
-        layout.use_property_decorate = False
-        col = layout.column(align=True)
-        col.prop(self, "name")
-
-
 class FULCRUM_OT_remove_unused_group_inputs(bpy.types.Operator):
     bl_idname = "fulcrum.remove_unused_group_inputs"
     bl_label = "Remove Unused Group Inputs"

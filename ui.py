@@ -215,7 +215,6 @@ class FULCRUM_PT_node_group(NodePanel, bpy.types.Panel):
 
         col = layout.column(align=True)
         col.operator("fulcrum.hide_group_inputs", icon="HIDE_ON")
-        col.operator("fulcrum.rename_group_input", icon="SORTALPHA")  # FONT_DATA
         col.operator(
             "fulcrum.remove_unused_group_inputs",
             text="Remove Unused Inputs",
