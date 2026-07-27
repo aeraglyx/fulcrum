@@ -1,5 +1,3 @@
-import itertools
-import math
 import random
 
 import bpy
@@ -8,8 +6,6 @@ import mathutils
 from ...functions import (
     clear_node_color,
     get_output_nodes,
-    node_center,
-    node_size,
     oklab_2_srgb,
 )
 
@@ -18,10 +14,6 @@ class FULCRUM_OT_hide_group_inputs(bpy.types.Operator):
     bl_idname = "fulcrum.hide_group_inputs"
     bl_label = "Hide Group Inputs"
     bl_description = ""
-
-    # @classmethod
-    # def poll(cls, context):
-    # 	return hasattr(context, "selected_nodes")
 
     def execute(self, context):
         nodes = context.space_data.edit_tree.nodes
@@ -38,6 +30,8 @@ class FULCRUM_OT_remove_unused_group_inputs(bpy.types.Operator):
     bl_label = "Remove Unused Group Inputs"
     bl_description = ""
     bl_options = {"UNDO"}
+
+    # FIXME: GeometryNodeTree has no "inputs"
 
     def execute(self, context):
         nodes = context.space_data.edit_tree.nodes
@@ -180,9 +174,10 @@ class FULCRUM_OT_select_unused_nodes(bpy.types.Operator):
         def func(node_current):
             used.add(node_current)
             used.add(node_current.parent)
-            for input in (
-                x for x in node_current.inputs if x.enabled
-            ):  # TODO muted nodes and muted links
+            for input in node_current.inputs:
+                if not input.enabled:
+                    continue
+                # TODO: muted nodes and muted links
                 for link in input.links:
                     func(link.from_node)
 
@@ -220,10 +215,11 @@ class FULCRUM_OT_randomize_node_color(bpy.types.Operator):
         min=0.0,
         default=0.05,
         soft_max=1.0,
-    )
+    ) # type: ignore
 
     def execute(self, context):
-        tree = context.space_data.edit_tree  # BUG doesn't work in compositor
+        # BUG: doesn't work in compositor
+        tree = context.space_data.edit_tree
         nodes = tree.nodes
 
         for node in nodes:
@@ -241,12 +237,6 @@ class FULCRUM_OT_randomize_node_color(bpy.types.Operator):
         layout.use_property_split = True
         layout.use_property_decorate = False
         layout.prop(self, "strength")
-
-
-class Node:
-    def __init__(self, node):
-        self.center = node_center(node)
-        self.radius = node_size(node) * 0.5
 
 
 class FULCRUM_OT_add_todo_note(bpy.types.Operator):
@@ -314,8 +304,12 @@ class FULCRUM_OT_tex_to_name(bpy.types.Operator):
                         return bool(node.image)
         return False
 
-    mat: bpy.props.BoolProperty(name="Material", description="xxx", default=True)
-    obj: bpy.props.BoolProperty(name="Object", description="xxx", default=True)
+    mat: bpy.props.BoolProperty(
+        name="Material", description="xxx", default=True
+    ) # type: ignore
+    obj: bpy.props.BoolProperty(
+        name="Object", description="xxx", default=True
+    ) # type: ignore
 
     def execute(self, context):
         node = context.active_node
@@ -348,7 +342,7 @@ class FULCRUM_OT_set_node_color(bpy.types.Operator):
 
     color: bpy.props.FloatVectorProperty(
         name="Color", subtype="COLOR", default=[0.0, 0.0, 0.0]
-    )
+    ) # type: ignore
 
     def execute(self, context):
         nodes = context.selected_nodes  # context.active_node.id_data.nodes
@@ -390,7 +384,7 @@ class FULCRUM_OT_set_node_size(bpy.types.Operator):
     def poll(cls, context):
         return context.area.type == "NODE_EDITOR"
 
-    size: bpy.props.FloatProperty(name="Size", default=1.0)
+    size: bpy.props.FloatProperty(name="Size", default=1.0) # type: ignore
 
     def execute(self, context):
         nodes = context.selected_nodes
