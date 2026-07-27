@@ -371,7 +371,7 @@ class FULCRUM_OT_add_todo_note(bpy.types.Operator):
     text: bpy.props.StringProperty(
         name="Note",
         default="TODO",
-    )
+    ) # type: ignore
 
     def execute(self, context):
         tree = context.space_data.edit_tree
@@ -379,18 +379,17 @@ class FULCRUM_OT_add_todo_note(bpy.types.Operator):
         node = nodes.new(type="NodeFrame")
 
         node.label = self.text
-        node.width = 420
-        node.height = 69
-        node.location = tree.view_center + mathutils.Vector((-210, 34.5))
-        node.use_custom_color = True
-        node.color = [0.53, 0.04, 0.15]
+        node.width = 140
+        node.height = 40
+        node.location = tree.view_center + mathutils.Vector((-70, 20))
 
         for node in nodes:
             node.select = False
+
         node.select = True
         nodes.active = node
 
-        # TODO modal to place the node?
+        # TODO: modal to place the node?
 
         return {"FINISHED"}
 
