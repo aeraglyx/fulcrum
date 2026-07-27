@@ -1,8 +1,5 @@
 import bpy
-from bpy.app.handlers import persistent
 
-from .functions import *
-from .handlers import register_handlers, unregister_handlers
 from .keymap import register_keymaps, unregister_keymaps
 from .ops.camera import (
     FULCRUM_OT_cameras_to_markers,
@@ -169,13 +166,11 @@ classes = (
     FULCRUM_OT_auto_marker_weight,
     FULCRUM_OT_copy_path_to_clipboard,
     FULCRUM_OT_background_render_string,
-    # FULCRUM_PT_versioning,
     FULCRUM_PT_fulcrum_3d,
     FULCRUM_PT_ease_of_access,
     FULCRUM_PT_camera,
     FULCRUM_PT_camera_sub,
     FULCRUM_PT_3d_stuff,
-    # FULCRUM_PT_3d_axis_selection,
     FULCRUM_PT_paint,
     FULCRUM_PT_utility_3d,
     FULCRUM_PT_fulcrum_node,
@@ -183,7 +178,6 @@ classes = (
     FULCRUM_PT_node_group,
     FULCRUM_PT_compositor,
     FULCRUM_PT_find_nodes,
-    # FULCRUM_PT_node_group,
     FULCRUM_PT_optimization,
     FULCRUM_PT_utility_node,
     FULCRUM_PT_render,
@@ -199,14 +193,12 @@ def register():
         bpy.utils.register_class(cls)
     bpy.types.Scene.fulcrum = bpy.props.PointerProperty(type=fulcrum_props)
     register_menus_and_headers()
-    register_handlers()
     register_keymaps(addon_keymaps)
     print("FULCRUM registered")
 
 
 def unregister():
     unregister_keymaps(addon_keymaps)
-    unregister_handlers()
     unregister_menus_and_headers()
     del bpy.types.Scene.fulcrum
     for cls in classes:
