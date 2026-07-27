@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "fulcrum"
-version = "0.2.0"
+version = "0.2.2"
 name = "Fulcrum"
 tagline = "All kinds of tools"
 type = "add-on"
