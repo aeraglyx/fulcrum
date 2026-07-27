@@ -13,7 +13,9 @@ def get_name_and_version(name):
         base_name = name.rstrip("_- ")  # string.punctuation
         return base_name, 0
     base_name = re.sub(r"[\s_-]*[vV]?\d+$", "", name)
-    v = int(re.search(r"\d+$", name).group())
+    search = re.search(r"\d+$", name)
+    assert search
+    v = int(search.group())
     return base_name, v
 
 
@@ -121,12 +123,12 @@ class FULCRUM_OT_copy_path_to_clipboard(bpy.types.Operator):
         name="Include Filename",
         description="Use the full filepath (directory otherwise)",
         default=False,
-    )
+    ) # type: ignore
     use_discord_formatting: bpy.props.BoolProperty(
         name="Use Discord Formatting",
         description="Adds backticks around the filepath",
         default=False,
-    )
+    ) # type: ignore
 
     @classmethod
     def poll(cls, context):
@@ -188,5 +190,4 @@ class FULCRUM_OT_open_addon_preferences(bpy.types.Operator):
         bpy.ops.screen.userpref_show()
         bpy.context.preferences.active_section = "ADDONS"
         bpy.data.window_managers["WinMan"].addon_search = "fulcrum"
-        # bpy.ops.preferences.addon_expand(module="fulcrum")
         return {"FINISHED"}
