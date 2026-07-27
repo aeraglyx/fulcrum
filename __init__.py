@@ -18,7 +18,6 @@ from .ops.camera import (
     FULCRUM_OT_set_resolution,
 )
 from .ops.compare import FULCRUM_OT_benchmark, FULCRUM_OT_compare
-from .ops.copy_pasta import FULCRUM_OT_copy_nodes, FULCRUM_OT_paste_nodes
 from .ops.file_stuff import (
     FULCRUM_OT_background_render_string,
     FULCRUM_OT_copy_path_to_clipboard,
@@ -134,8 +133,6 @@ classes = (
     FULCRUM_OT_reset_gn_defaults,
     FULCRUM_OT_add_todo_note,
     FULCRUM_OT_node_timestamp,
-    FULCRUM_OT_copy_nodes,
-    FULCRUM_OT_paste_nodes,
     FULCRUM_OT_align_nodes,
     FULCRUM_OT_align_nodes_v2,
     FULCRUM_OT_randomize_node_color,
