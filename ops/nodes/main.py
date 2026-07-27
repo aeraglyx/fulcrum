@@ -5,7 +5,13 @@ import random
 import bpy
 import mathutils
 
-from ...functions import *
+from ...functions import (
+    clear_node_color,
+    get_output_nodes,
+    node_center,
+    node_size,
+    oklab_2_srgb,
+)
 
 
 class FULCRUM_OT_hide_group_inputs(bpy.types.Operator):
