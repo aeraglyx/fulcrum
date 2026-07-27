@@ -16,7 +16,6 @@ def draw_topbar(self, context):
                     layout.label(text="Latest but not saved.", icon="STRIP_COLOR_07")
                 else:
                     layout.label(text="DON'T PANIC!", icon="STRIP_COLOR_05")
-                # layout.operator("fulcrum.go_to_latest_version", icon='STRIP_COLOR_04')
             else:
                 layout.label(text="Not the latest version!", icon="STRIP_COLOR_01")
                 layout.operator(
@@ -270,8 +269,14 @@ class FULCRUM_PT_utility_node(NodePanel, bpy.types.Panel):
         layout = self.layout
 
         col = layout.column(align=True)
-        col.operator("fulcrum.open_blend_file_dir", icon="FILE_BACKUP")
-        col.operator("fulcrum.open_blender_user_dir", icon="SCRIPT")  # FOLDER_REDIRECT  SCRIPT
+        row = col.row(align=True)
+        row.operator("fulcrum.open_blend_file_dir", icon="FILE_BLEND")
+        row.operator("fulcrum.copy_path_to_clipboard", text="", icon="COPYDOWN")
+        col.operator("fulcrum.backup", icon="FILE_BACKUP")
+
+        col = layout.column(align=True)
+        col.operator("fulcrum.open_blender_user_dir", icon="FILE_SCRIPT")
+        col.operator("fulcrum.background_render_string", icon="SCRIPT")
 
         col = layout.column(align=True)
         col.operator(
@@ -310,8 +315,6 @@ class FULCRUM_PT_ease_of_access(View3DPanel, bpy.types.Panel):
 
         layout.prop(context.scene.render, "film_transparent")
         layout.prop(context.scene.view_settings, "exposure")
-
-        layout.operator("fulcrum.backup", icon="FILE_BACKUP")
 
 
 class FULCRUM_PT_camera(View3DPanel, bpy.types.Panel):
@@ -467,10 +470,13 @@ class FULCRUM_PT_utility_3d(View3DPanel, bpy.types.Panel):
 
         col = layout.column(align=True)
         row = col.row(align=True)
-        row.operator("fulcrum.open_blend_file_dir", icon="FILE_BACKUP")
+        row.operator("fulcrum.open_blend_file_dir", icon="FILE_BLEND")
         row.operator("fulcrum.copy_path_to_clipboard", text="", icon="COPYDOWN")
-        col.operator("fulcrum.open_blender_user_dir", icon="SCRIPT")  # FOLDER_REDIRECT  SCRIPT
-        col.operator("fulcrum.background_render_string", icon="SCRIPT")  # FOLDER_REDIRECT  SCRIPT
+        col.operator("fulcrum.backup", icon="FILE_BACKUP")
+
+        col = layout.column(align=True)
+        col.operator("fulcrum.open_blender_user_dir", icon="FILE_SCRIPT")
+        col.operator("fulcrum.background_render_string", icon="SCRIPT")
 
         col = layout.column(align=True)
         col.operator(
