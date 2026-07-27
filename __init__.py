@@ -32,12 +32,8 @@ from .ops.update import FULCRUM_OT_update_fulcrum
 from .ops.nodes.timestamp import FULCRUM_OT_node_timestamp
 from .ops.nodes.main import (
     FULCRUM_OT_add_todo_note,
-    FULCRUM_OT_align_nodes,
-    FULCRUM_OT_align_nodes_v2,
-    FULCRUM_OT_center_nodes,
     FULCRUM_OT_color_node_flow,
     FULCRUM_OT_hide_group_inputs,
-    FULCRUM_OT_nodes_to_grid,
     FULCRUM_OT_randomize_node_color,
     FULCRUM_OT_remove_unused_group_inputs,
     FULCRUM_OT_rename_group_input,
@@ -51,6 +47,12 @@ from .ops.nodes.main import (
     FULCRUM_OT_set_node_color,
     FULCRUM_OT_set_node_size,
     FULCRUM_OT_tex_to_name,
+)
+from .ops.nodes.align import (
+    FULCRUM_OT_align_nodes,
+    FULCRUM_OT_align_nodes_v2,
+    FULCRUM_OT_center_nodes,
+    FULCRUM_OT_nodes_to_grid,
 )
 from .ops.paint import FULCRUM_OT_set_paint_brush, FULCRUM_OT_set_weight_brush
 from .ops.render import (
