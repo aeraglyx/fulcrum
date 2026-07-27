@@ -4,18 +4,10 @@ import sys
 from .functions import *
 from .ops.file_stuff import is_current_file_version
 
+
 # ---------------- TOPBAR ----------------
 
-
 def draw_topbar(self, context):
-    # red - 	STRIP_COLOR_01
-    # orange - 	STRIP_COLOR_02
-    # yellow - 	STRIP_COLOR_03
-    # green - 	STRIP_COLOR_04
-    # blue - 	STRIP_COLOR_05
-    # purple - 	STRIP_COLOR_06
-    # pink - 	STRIP_COLOR_07
-
     if context.region.alignment != "RIGHT":
         layout = self.layout
         if bpy.data.is_saved:
@@ -79,7 +71,6 @@ def unregister_menus_and_headers():
 
 # ---------------- PROPERTIES ----------------
 
-
 class FULCRUM_PT_render(bpy.types.Panel):
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
@@ -108,7 +99,6 @@ class FULCRUM_PT_data(bpy.types.Panel):
 
 
 # ---------------- NODE EDITOR ----------------
-
 
 class NodePanel(bpy.types.Panel):
     bl_space_type = "NODE_EDITOR"
@@ -151,17 +141,12 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
             # TODO: use strip colors from theme?
 
         col = layout.column(align=True)
-        # col.label(text="Size:", icon='FIXED_SIZE')
         row = col.row(align=True)
-        default = row.operator("fulcrum.set_node_size", text="Def.")
-        default.size = 1.0
-        two = row.operator("fulcrum.set_node_size", text="2x")
-        two.size = 2.0
-        four = row.operator("fulcrum.set_node_size", text="4x")
-        four.size = 4.0
+        for i in [1, 2, 4]:
+            size_entry = row.operator("fulcrum.set_node_size", text=f"{i}x")
+            size_entry.size = i
 
         col = layout.column(align=True)
-        # col.label(text="Alignment:", icon='ALIGN_CENTER')
         row = col.row(align=True)
         row.operator("fulcrum.align_nodes", text="Auto")
         row.operator("fulcrum.center_nodes", text="Center")
@@ -181,25 +166,19 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
             if context.scene.fulcrum.use_node_handler:
                 col.prop(context.scene.fulcrum, "node_vis_type", text="")
 
-        # col = layout.column(align=True)
-        # row = col.row(align=True)
-        # row.operator("fulcrum.copy_nodes", text="Copy", icon='COPYDOWN')
-        # row.operator("fulcrum.paste_nodes", text="Pasta", icon='PASTEDOWN')
-
         if context.area.ui_type == "ShaderNodeTree":
             if context.space_data.shader_type == "OBJECT":
                 col = layout.column(align=True)
                 col.label(text="Texture Name to:", icon="TEXTURE")
                 row = col.row(align=True)
-                mat = row.operator("fulcrum.tex_to_name", text="Mat")  # NODE_MATERIAL
-                mat.mat = True
-                mat.obj = False
-                obj = row.operator("fulcrum.tex_to_name", text="Obj")  # OBJECT_DATA
-                obj.mat = False
-                obj.obj = True
-                both = row.operator("fulcrum.tex_to_name", text="Both")
-                both.mat = True
-                both.obj = True
+                def tex_to_name(label: str, mat: bool, obj: bool):
+                    op = row.operator("fulcrum.tex_to_name", text=label)
+                    op.mat = mat
+                    op.obj = obj
+                tex_to_name("Mat", mat=True, obj=False)
+                tex_to_name("Obj", mat=False, obj=True)
+                tex_to_name("Both", mat=True, obj=True)
+                # TODO: data as well?
 
 
 class FULCRUM_PT_node_group(NodePanel, bpy.types.Panel):
@@ -220,13 +199,6 @@ class FULCRUM_PT_node_group(NodePanel, bpy.types.Panel):
             icon="REMOVE",
         )  # PANEL_CLOSE
 
-        # TODO
-        # col = layout.column(align=True)
-        # col.label(text="Defaults:")
-        # row = col.row(align=True)
-        # row.operator("fulcrum.set_gn_defaults", text="(Set Defaults)")
-        # row.operator("fulcrum.reset_gn_defaults", text="(Reset Defaults)")
-
 
 class FULCRUM_PT_compositor(NodePanel, bpy.types.Panel):
     bl_label = "Compositor"
@@ -244,9 +216,6 @@ class FULCRUM_PT_compositor(NodePanel, bpy.types.Panel):
         col = layout.column(align=True)
         col.operator("fulcrum.set_output_directory", icon="FILE_FOLDER")
         col.operator("fulcrum.compositor_increment_version", icon="LINENUMBERS_ON")
-        # row = col.row(align=True)
-        # row.operator("fulcrum.compositor_increment_version", text="Ver. Down", icon='TRIA_DOWN')
-        # row.operator("fulcrum.compositor_increment_version", text="Ver. Up", icon='TRIA_UP')
         col = layout.column(align=True)
         col.operator("fulcrum.compositor_output_path_to_node_name", icon="FONT_DATA")
         col.operator(
@@ -264,7 +233,6 @@ class FULCRUM_PT_find_nodes(NodePanel, bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         col = layout.column(align=True)
-        # col.label(text="Find:", icon='VIEWZOOM')
         row = col.row(align=True)
         row.operator("fulcrum.select_node_inputs", text="Inputs")
         row.operator("fulcrum.select_node_dependencies", text="Deps")
@@ -316,7 +284,6 @@ class FULCRUM_PT_utility_node(NodePanel, bpy.types.Panel):
 
 
 # ---------------- VIEW 3D ----------------
-
 
 class View3DPanel(bpy.types.Panel):
     bl_space_type = "VIEW_3D"
@@ -436,7 +403,8 @@ class FULCRUM_PT_3d_axis_selection(View3DPanel, bpy.types.Panel):
         col.label(text="Translation:")  # CON_LOCLIKE
         row = col.row(align=True)
         row.prop(
-            transform.properties, "constraint_axis", text="", toggle=True, slider=True
+            transform.properties, # type: ignore
+            "constraint_axis", text="", toggle=True, slider=True
         )
 
         for item in keymap_items:
@@ -447,7 +415,8 @@ class FULCRUM_PT_3d_axis_selection(View3DPanel, bpy.types.Panel):
         col.label(text="Rotation:")  # CON_ROTLIKE
         row = col.row(align=True)
         row.prop(
-            transform.properties, "constraint_axis", text="", toggle=True, slider=True
+            transform.properties, # type: ignore
+            "constraint_axis", text="", toggle=True, slider=True
         )
 
 
@@ -529,5 +498,4 @@ class FULCRUM_PT_tracker(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-        # col = layout.column(align=True)
         layout.operator("fulcrum.auto_marker_weight", icon="TRACKER")
