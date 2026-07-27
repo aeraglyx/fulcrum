@@ -168,7 +168,6 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
         row.operator("fulcrum.nodes_to_grid", text="Grid")
         if experimental:
             col.operator("fulcrum.align_nodes_v2", icon="ALIGN_CENTER")
-            col.operator("fulcrum.color_node_flow", icon="COLOR")
             col.operator("fulcrum.randomize_node_color", icon="COLOR")
 
         layout.operator("fulcrum.add_todo_note", icon="TEXT")  # FONT_DATA EVENT_A
