@@ -106,7 +106,6 @@ class FULCRUM_OT_align_nodes(bpy.types.Operator):
         layout = self.layout
         layout.use_property_split = True
         layout.use_property_decorate = False
-        # col = layout.column(align = True)
         layout.prop(self, "spacing")
         layout.prop(self, "test")
 
@@ -184,7 +183,8 @@ class FULCRUM_OT_align_nodes_v2(bpy.types.Operator):
         # 	pass
 
         tree = context.space_data.edit_tree
-        nodes = tree.nodes  # BUG doesn't work in compositor
+        # BUG: doesn't work in compositor
+        nodes = tree.nodes
         links = tree.links
         # bpy.context.space_data.edit_tree
         # nodes = context.active_node.id_data.nodes

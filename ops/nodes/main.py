@@ -13,6 +13,7 @@ class FULCRUM_OT_hide_group_inputs(bpy.types.Operator):
     bl_description = ""
 
     def execute(self, context):
+        # TODO: skip unused group input nodes
         nodes = context.space_data.edit_tree.nodes
         for node in nodes:
             if node.type == "GROUP_INPUT":
@@ -41,9 +42,8 @@ class FULCRUM_OT_remove_unused_group_inputs(bpy.types.Operator):
                     if socket.is_linked:  # socket.enabled
                         used_inputs.add(socket)
 
-        self.report(
-            {"INFO"}, f"Removed {len(group.inputs) - len(used_inputs)} unused inputs."
-        )
+        num_removed_inputs = len(group.inputs) - len(used_inputs)
+        self.report({"INFO"}, f"Removed {num_removed_inputs} unused inputs.")
 
         for group_input in group.inputs[:]:
             if group_input not in used_inputs:
