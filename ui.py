@@ -1,7 +1,7 @@
 import bpy
 import sys
 
-from .functions import *
+from .functions import get_addon_version
 from .ops.file_stuff import is_current_file_version
 
 
