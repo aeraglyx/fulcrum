@@ -29,25 +29,30 @@ class FULCRUM_OT_remove_unused_group_inputs(bpy.types.Operator):
     bl_description = ""
     bl_options = {"UNDO"}
 
-    # FIXME: GeometryNodeTree has no "inputs"
-
     def execute(self, context):
         nodes = context.space_data.edit_tree.nodes
         group = nodes.id_data
 
-        used_inputs = set()
+        used_input_ids = set()
         for node in nodes:
             if node.type == "GROUP_INPUT":
                 for socket in node.outputs:
-                    if socket.is_linked:  # socket.enabled
-                        used_inputs.add(socket)
+                    # TODO: socket.enabled etc
+                    if socket.is_linked:
+                        used_input_ids.add(socket.identifier)
 
-        num_removed_inputs = len(group.inputs) - len(used_inputs)
-        self.report({"INFO"}, f"Removed {num_removed_inputs} unused inputs.")
+        all_input_ids = [
+            i.identifier for i in group.interface.items_tree.values()
+            if hasattr(i, "in_out")
+            and i.in_out == "INPUT"
+        ]
 
-        for group_input in group.inputs[:]:
-            if group_input not in used_inputs:
-                group.inputs.remove(group_input)
+        for input_id in all_input_ids:
+            if input_id not in used_input_ids:
+                input = group.interface.items_tree.get(input_id)
+                group.interface.remove(input)
+
+        # TODO: remove empty group input nodes
 
         return {"FINISHED"}
 
