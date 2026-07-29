@@ -130,7 +130,7 @@ def get_original_tree(tree, context):
         if context.space_data.shader_type == "LINESTYLE":
             pass  # TODO
     if tree.type == "COMPOSITING":
-        original_tree = context.scene.node_tree
+        original_tree = context.scene.compositing_node_group
     # if tree.type == 'TEXTURE':
     # 	original_tree = context.
     return original_tree
@@ -162,6 +162,7 @@ def get_output_nodes(context):
         "CompositorNodeViewer",
         "CompositorNodeOutputFile",
         "CompositorNodeTree",  # the what?
+        "NodeGroupOutput",
     ]
     idnames_texture = ["TextureNodeTree"]
     idnames_group = ["NodeGroupOutput"]
