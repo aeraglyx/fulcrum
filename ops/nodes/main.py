@@ -148,7 +148,7 @@ class FULCRUM_OT_select_group_inputs(bpy.types.Operator):
 class FULCRUM_OT_select_unused_nodes(bpy.types.Operator):
     bl_idname = "fulcrum.select_unused_nodes"
     bl_label = "Select Unused Nodes"
-    bl_description = "Show all nodes used by the selected nodes"
+    bl_description = "Select all nodes not connected to any output nodes"
 
     # @classmethod
     # def poll(cls, context):
