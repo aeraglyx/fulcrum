@@ -143,10 +143,9 @@ def socket_loc(socket):
             return False
         if socket.is_linked:
             return False
-        # if socket.node.type == 'BSDF_PRINCIPLED' and socket.identifier == 'Subsurface Radius':
-        # 	return False  # an exception confirms a rule?
         return True
 
+    socket_loc = mathutils.Vector((0, 0))
     node = socket.node
     if socket.is_output:
         x = node.location.x + node_width(node) + X_OFFSET
@@ -155,7 +154,7 @@ def socket_loc(socket):
             if output.hide or not output.enabled:
                 continue
             if output == socket:
-                out = mathutils.Vector((x, y))
+                socket_loc = mathutils.Vector((x, y))
             y -= Y_OFFSET
     else:
         x = node.location.x
@@ -166,10 +165,10 @@ def socket_loc(socket):
             tall = is_tall(input)
             y += VEC_BOTTOM * tall
             if input == socket:
-                out = mathutils.Vector((x, y))
+                socket_loc = mathutils.Vector((x, y))
             y += Y_OFFSET + VEC_TOP * tall
 
-    return out
+    return socket_loc
 
 
 def get_original_tree(tree, context):
