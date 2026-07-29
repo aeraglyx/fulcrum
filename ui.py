@@ -158,14 +158,6 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
         layout.operator("fulcrum.add_todo_note", icon="TEXT")  # FONT_DATA EVENT_A
         layout.operator("fulcrum.node_timestamp", icon="TAG")
 
-        col = layout.column(align=True)
-
-        if experimental:
-            col = layout.column(align=True)
-            col.prop(context.scene.fulcrum, "use_node_handler")
-            if context.scene.fulcrum.use_node_handler:
-                col.prop(context.scene.fulcrum, "node_vis_type", text="")
-
         if context.area.ui_type == "ShaderNodeTree":
             if context.space_data.shader_type == "OBJECT":
                 col = layout.column(align=True)
