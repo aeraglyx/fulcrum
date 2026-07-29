@@ -123,7 +123,8 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
 
         col = layout.column(align=True)
         row = col.row(align=True)
-        row.operator("fulcrum.reset_node_color", text=" ", icon="X")
+        color_reset = row.operator("fulcrum.set_node_color", text=" ", icon="X")
+        color_reset.reset = True
         color_dict = {
             1: [0.59, 0.18, 0.22],  # red
             2: [0.64, 0.38, 0.21],  # orange
