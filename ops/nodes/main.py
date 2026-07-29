@@ -3,7 +3,7 @@ import random
 import bpy
 import mathutils
 
-from .utils import clear_node_color, get_output_nodes
+from .utils import get_output_nodes
 from ...functions import oklab_2_srgb
 
 
@@ -65,8 +65,6 @@ class FULCRUM_OT_select_node_inputs(bpy.types.Operator):
         nodes = bpy.context.space_data.edit_tree.nodes
         selected = context.selected_nodes
 
-        clear_node_color(nodes)
-
         nodes_out = []
 
         def get_input_node(input):
@@ -104,8 +102,6 @@ class FULCRUM_OT_select_node_dependencies(bpy.types.Operator):
     def execute(self, context):
         nodes = context.space_data.edit_tree.nodes
         selected = context.selected_nodes
-
-        clear_node_color(nodes)
 
         nodes_out = []
 
@@ -163,8 +159,6 @@ class FULCRUM_OT_select_unused_nodes(bpy.types.Operator):
     def execute(self, context):
         tree = context.space_data.edit_tree  # context.active_node.id_data
         nodes = tree.nodes
-
-        clear_node_color(nodes)
 
         used = set()
 
