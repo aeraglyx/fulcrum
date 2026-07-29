@@ -3,11 +3,8 @@ import random
 import bpy
 import mathutils
 
-from ...functions import (
-    clear_node_color,
-    get_output_nodes,
-    oklab_2_srgb,
-)
+from .utils import clear_node_color, get_output_nodes
+from ...functions import oklab_2_srgb
 
 
 class FULCRUM_OT_hide_group_inputs(bpy.types.Operator):

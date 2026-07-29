@@ -3,7 +3,7 @@ import itertools
 import bpy
 import mathutils
 
-from ...functions import socket_loc, node_height, node_width, node_center, node_intersection
+from .utils import socket_loc, node_height, node_width, node_center, node_intersection
 
 
 class FULCRUM_OT_align_nodes(bpy.types.Operator):
