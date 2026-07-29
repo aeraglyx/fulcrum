@@ -145,6 +145,29 @@ class FULCRUM_OT_select_group_inputs(bpy.types.Operator):
         return {"FINISHED"}
 
 
+def get_unused_nodes(node_tree):
+    nodes = node_tree.nodes
+    used = set()
+
+    def func(node_current):
+        used.add(node_current)
+        used.add(node_current.parent)
+        for input in node_current.inputs:
+            if not input.enabled:
+                continue
+            # TODO: muted nodes and muted links
+            for link in input.links:
+                func(link.from_node)
+
+    output_nodes = get_output_nodes(node_tree)
+    for output_node in output_nodes:
+        func(output_node)
+
+    # TODO: don't delete viewer (geo, shader, ...) - check if connected to used node, otherwise yeet
+    unused_nodes = [node for node in nodes if node not in used]
+    return unused_nodes
+
+
 class FULCRUM_OT_select_unused_nodes(bpy.types.Operator):
     bl_idname = "fulcrum.select_unused_nodes"
     bl_label = "Select Unused Nodes"
@@ -159,31 +182,10 @@ class FULCRUM_OT_select_unused_nodes(bpy.types.Operator):
     def execute(self, context):
         tree = context.space_data.edit_tree  # context.active_node.id_data
         nodes = tree.nodes
-
-        used = set()
-
-        def func(node_current):
-            used.add(node_current)
-            used.add(node_current.parent)
-            for input in node_current.inputs:
-                if not input.enabled:
-                    continue
-                # TODO: muted nodes and muted links
-                for link in input.links:
-                    func(link.from_node)
-
-        output_nodes = get_output_nodes(context)
-        for output_node in output_nodes:
-            func(output_node)
-
-        # TODO don't delete viewer (geo, shader, ...) - check if connected to used node, otherwise yeet
-        # unused = [node for node in nodes if node not in used]
+        unused_nodes = get_unused_nodes(tree)
 
         for node in nodes:
-            if node in used:
-                node.select = False
-            else:
-                node.select = True
+            node.select = node in unused_nodes
 
         bpy.ops.node.view_selected()
 

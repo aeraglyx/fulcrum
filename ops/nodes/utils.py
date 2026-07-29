@@ -145,11 +145,10 @@ def is_node_group(tree):
     return tree in bpy.data.node_groups
 
 
-def get_output_nodes(context):
-    tree = context.space_data.edit_tree
-    nodes = tree.nodes
+def get_output_nodes(node_tree):
+    nodes = node_tree.nodes
     output_nodes = set()
-    original_tree = is_original_tree(tree, context)
+    original_tree = is_original_tree(node_tree, bpy.context)
 
     idnames_geometry = ["NodeGroupOutput"]
     idnames_shader = [
@@ -169,7 +168,7 @@ def get_output_nodes(context):
 
     for node in nodes:
         if original_tree:
-            match tree.type:
+            match node_tree.type:
                 case "GEOMETRY":
                     if node.bl_idname in idnames_geometry:
                         output_nodes.add(node)
