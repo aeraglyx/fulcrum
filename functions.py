@@ -16,6 +16,10 @@ def open_file(filename):
         subprocess.Popen([opener, filename])
 
 
+def get_addon_dir():
+    return os.path.dirname(os.path.abspath(__file__))
+
+
 def get_manifest():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     filepath = os.path.join(current_dir, "blender_manifest.toml")
