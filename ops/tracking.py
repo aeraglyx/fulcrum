@@ -47,21 +47,21 @@ class FULCRUM_OT_auto_marker_weight(bpy.types.Operator):
         min=0.0,
         default=2.0,
         soft_max=10.0,
-    )
+    ) # type: ignore
     smooth: bpy.props.IntProperty(
         name="Smoothing",
         description="Number of frames to fade in/out track weights to reduce discontinuities",
         min=1,
         default=6,
         soft_max=100,
-    )
+    ) # type: ignore
     prioritize_center: bpy.props.FloatProperty(
         name="Prioritize Center",
         description="Gaussian function. 1.0 means 0.5 at horizontal edge",
         min=0.0,
         default=0.5,
         soft_max=10.0,
-    )
+    ) # type: ignore
 
     def execute(self, context):
         scene = context.scene
@@ -174,7 +174,7 @@ class FULCRUM_OT_rolling_shutter(bpy.types.Operator):
         min=0.0,
         default=0.25,
         max=1.0,
-    )
+    ) # type: ignore
 
     def execute(self, context):
         def cubic(x, a, b, c, d):

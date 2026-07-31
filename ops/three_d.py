@@ -17,7 +17,9 @@ class FULCRUM_OT_locate_vertex(bpy.types.Operator):
     def poll(cls, context):
         return context.object and context.object.type == "MESH"
 
-    index: bpy.props.IntProperty(name="Index", min=0, default=0)
+    index: bpy.props.IntProperty(
+        name="Index", min=0, default=0
+    ) # type: ignore
 
     def execute(self, context):
         mode_prev = context.object.mode
@@ -73,7 +75,9 @@ class FULCRUM_OT_locate_vertices(bpy.types.Operator):
     def poll(cls, context):
         return context.active_object and context.object.type == "MESH"
 
-    indices_str: bpy.props.StringProperty(name="Indices", default="")
+    indices_str: bpy.props.StringProperty(
+        name="Indices", default=""
+    ) # type: ignore
 
     def execute(self, context):
         mode_prev = context.object.mode
@@ -252,7 +256,7 @@ class FULCRUM_OT_edit_light_power(bpy.types.Operator):
         description="Light power multiplier. 2.0 means double the intensity etc",
         soft_min=0.0,
         default=1.0,
-    )
+    ) # type: ignore
 
     def execute(self, context):
         objects = context.selected_objects
@@ -282,7 +286,7 @@ class FULCRUM_OT_reduce_materials(bpy.types.Operator):
         description="...",
         items=[("FIRST", "First", ""), ("LAST", "Last", "")],
         default="FIRST",
-    )
+    ) # type: ignore
 
     def execute(self, context):
         base_names_dict = {}
@@ -373,7 +377,9 @@ class FULCRUM_OT_octane_set_id(bpy.types.Operator):
     bl_description = ""
     bl_options = {"REGISTER", "UNDO"}
 
-    id: bpy.props.IntProperty(name="ID", description="", min=1, default=2, max=255)
+    id: bpy.props.IntProperty(
+        name="ID", description="", min=1, default=2, max=255
+    ) # type: ignore
 
     def execute(self, context):
         # TODO
@@ -463,7 +469,7 @@ class FULCRUM_OT_mirror(bpy.types.Operator):
             ("Y", "Y", ""),
         ],
         default="X",
-    )
+    ) # type: ignore
 
     @classmethod
     def poll(cls, context):

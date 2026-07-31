@@ -75,14 +75,14 @@ class FULCRUM_OT_compare(bpy.types.Operator):
         description="Engine to use for rendering",
         items=[("BLENDER_EEVEE", "Eevee", ""), ("CYCLES", "Cycles", "")],
         default="CYCLES",
-    )
+    ) # type: ignore
     frames: bpy.props.IntProperty(
         name="Frames",
         description="Number of frames to render per dataset",
         min=2,
         default=6,
         soft_max=256,
-    )
+    ) # type: ignore
     resolution: bpy.props.IntProperty(
         name="Resolution",
         description="Resolution percentage",
@@ -90,19 +90,19 @@ class FULCRUM_OT_compare(bpy.types.Operator):
         min=1,
         default=20,
         max=100,
-    )
+    ) # type: ignore
     samples: bpy.props.IntProperty(
         name="Samples",
         description="Number of samples for each render",
         min=1,
         default=16,
         soft_max=1024,
-    )
+    ) # type: ignore
     use_base: bpy.props.BoolProperty(
         name="Baseline Render",
         description="Whether to render a shaderless image and use it as baseline for ratio",
         default=False,
-    )
+    ) # type: ignore
 
     def execute(self, context):
 
@@ -357,7 +357,7 @@ class FULCRUM_OT_benchmark(bpy.types.Operator):
         min=1,
         default=3,
         soft_max=16,
-    )
+    ) # type: ignore
 
     def execute(self, context):
         def get_render():

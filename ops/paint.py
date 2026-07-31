@@ -14,7 +14,7 @@ class FULCRUM_OT_set_paint_brush(bpy.types.Operator):
 
     color: bpy.props.FloatVectorProperty(
         name="Color", subtype="COLOR", default=(0.0, 0.0, 0.0)
-    )
+    ) # type: ignore
 
     def execute(self, context):
 
@@ -35,7 +35,9 @@ class FULCRUM_OT_set_weight_brush(bpy.types.Operator):
     def poll(cls, context):
         return context.mode == "PAINT_WEIGHT"
 
-    weight: bpy.props.FloatProperty(name="Weight", subtype="FACTOR", default=0.0)
+    weight: bpy.props.FloatProperty(
+        name="Weight", subtype="FACTOR", default=0.0
+    ) # type: ignore
 
     def execute(self, context):
 

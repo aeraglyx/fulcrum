@@ -26,25 +26,25 @@ class FULCRUM_OT_anim_time_limit(bpy.types.Operator):
         min=0,
         default=3600,
         soft_max=86400,
-    )
+    ) # type: ignore
     multiplier: bpy.props.FloatProperty(
         name="Multiplier",
         description="So there is some margin",
         soft_min=0.0,
         default=0.9,
         soft_max=1.0,
-    )
+    ) # type: ignore
     custom_range: bpy.props.BoolProperty(
         name="Custom Range",
         description="Otherwise use number of frames in scene",
         default=False,
-    )
+    ) # type: ignore
     frames: bpy.props.IntProperty(
         name="Custom Frame Range",
         description="Custom number of frames",
         min=1,
         default=100,
-    )
+    ) # type: ignore
 
     def execute(self, context):
         if self.custom_range:
@@ -133,114 +133,114 @@ class FULCRUM_OT_set_render_passes(bpy.types.Operator):
         name="Combine Direct & Indirect",
         description="",
         default=True,
-    )
+    ) # type: ignore
     combine_light_color: bpy.props.BoolProperty(
         name="Combine Light & Color",
         description="",
         default=True,
-    )
+    ) # type: ignore
     transparent: bpy.props.BoolProperty(
         name="Transparent",
         description="",
         default=True,
-    )
+    ) # type: ignore
     denoise: bpy.props.BoolProperty(
         name="Denoise",
         description="",
         default=True,
-    )
+    ) # type: ignore
 
     diffuse: bpy.props.BoolProperty(
         name="Diffuse",
         description="",
         default=True,
-    )
+    ) # type: ignore
     glossy: bpy.props.BoolProperty(
         name="Glossy",
         description="",
         default=True,
-    )
+    ) # type: ignore
     transmission: bpy.props.BoolProperty(
         name="Transmission",
         description="",
         default=False,
-    )
+    ) # type: ignore
     volume: bpy.props.BoolProperty(
         name="Volume",
         description="",
         default=False,
-    )
+    ) # type: ignore
     emit: bpy.props.BoolProperty(
         name="Emission",
         description="",
         default=False,
-    )
+    ) # type: ignore
     env: bpy.props.BoolProperty(
         name="Environment",
         description="",
         default=False,
-    )
+    ) # type: ignore
     shadow: bpy.props.BoolProperty(
         name="Shadow",
         description="",
         default=False,
-    )
+    ) # type: ignore
     ao: bpy.props.BoolProperty(
         name="Ambient Occlusion",
         description="",
         default=False,
-    )
+    ) # type: ignore
     shadow_catcher: bpy.props.BoolProperty(
         name="Shadow Catcher",
         description="",
         default=False,
-    )
+    ) # type: ignore
     z: bpy.props.BoolProperty(
         name="Z",
         description="",
         default=True,
-    )
+    ) # type: ignore
     mist: bpy.props.BoolProperty(
         name="Mist",
         description="",
         default=False,
-    )
+    ) # type: ignore
     position: bpy.props.BoolProperty(
         name="Position",
         description="",
         default=False,
-    )
+    ) # type: ignore
     normal: bpy.props.BoolProperty(
         name="Normal",
         description="",
         default=False,
-    )
+    ) # type: ignore
     vector: bpy.props.BoolProperty(
         name="Vector",
         description="",
         default=False,
-    )
+    ) # type: ignore
     uv: bpy.props.BoolProperty(
         name="UV",
         description="",
         default=False,
-    )
+    ) # type: ignore
 
     crypto_asset: bpy.props.BoolProperty(
         name="Asset",
         description="",
         default=False,
-    )
+    ) # type: ignore
     crypto_material: bpy.props.BoolProperty(
         name="Material",
         description="",
         default=False,
-    )
+    ) # type: ignore
     crypto_object: bpy.props.BoolProperty(
         name="Object",
         description="",
         default=False,
-    )
+    ) # type: ignore
 
     def execute(self, context):
         context.scene.render.film_transparent = self.transparent

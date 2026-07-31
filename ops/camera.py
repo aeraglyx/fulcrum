@@ -70,24 +70,24 @@ class FULCRUM_OT_isometric_setup(bpy.types.Operator):
             ("3", "+X -Y", ""),
         ],
         default="3",
-    )
+    ) # type: ignore
     from_below: bpy.props.BoolProperty(
         name="From Below", description="Camera will be tilted upwards", default=False
-    )
+    ) # type: ignore
     scale: bpy.props.FloatProperty(
         name="Scale",
         description="Orthographic Scale",
         min=0.0,
         default=8.0,
         soft_max=64,
-    )
+    ) # type: ignore
     distance: bpy.props.FloatProperty(
         name="Distance",
         description="How far from the center is the camera",
         soft_min=0.0,
         default=8.0,
         soft_max=64,
-    )
+    ) # type: ignore
 
     def execute(self, context):
         if context.scene.camera:
@@ -166,7 +166,7 @@ class FULCRUM_OT_projection_setup(bpy.types.Operator, ImportHelper):
 
     filter_glob: bpy.props.StringProperty(
         default="*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.bmp", options={"HIDDEN"}
-    )
+    ) # type: ignore
 
     subdivision: bpy.props.IntProperty(
         name="Subdivision",
@@ -174,7 +174,7 @@ class FULCRUM_OT_projection_setup(bpy.types.Operator, ImportHelper):
         min=0,
         default=4,
         soft_max=6,
-    )
+    ) # type: ignore
     sharp_or_smooth: bpy.props.FloatProperty(
         name="Sharp / Smooth",
         description="Number of total subdivisions",
@@ -182,10 +182,10 @@ class FULCRUM_OT_projection_setup(bpy.types.Operator, ImportHelper):
         default=0.5,
         max=1.0,
         subtype="FACTOR",
-    )
+    ) # type: ignore
     shade_smooth: bpy.props.BoolProperty(
         name="Shade Smooth", description="Turn on shade smoothing", default=True
-    )
+    ) # type: ignore
 
     def execute(self, context):
         obj = context.object
@@ -444,7 +444,7 @@ class FULCRUM_OT_set_resolution(bpy.types.Operator):
     width: bpy.props.IntProperty(
         name="Width",
         default=1920,
-    )
+    ) # type: ignore
 
     def execute(self, context):
         x = context.scene.render.resolution_x
@@ -465,7 +465,7 @@ class FULCRUM_OT_set_aspect_ratio(bpy.types.Operator):
     aspect_ratio: bpy.props.FloatProperty(
         name="Aspect Ratio",
         default=2.0,
-    )
+    ) # type: ignore
 
     def execute(self, context):
         x = context.scene.render.resolution_x
@@ -487,7 +487,7 @@ class FULCRUM_OT_passepartout(bpy.types.Operator):
 
     alpha: bpy.props.FloatProperty(
         name="Alpha", description="", min=0.0, default=0.8, max=1.0, subtype="FACTOR"
-    )
+    ) # type: ignore
 
     def execute(self, context):
         cams = [
@@ -539,7 +539,7 @@ class FULCRUM_OT_set_cam_scale(bpy.types.Operator):
         soft_max=1.0,
         max=100.0,
         subtype='DISTANCE'
-    )
+    ) # type: ignore
 
     @classmethod
     def poll(cls, context):
