@@ -57,3 +57,6 @@ class FULCRUM_OT_update_fulcrum(bpy.types.Operator):
         )
 
         return {"FINISHED"}
+
+
+registry = [FULCRUM_OT_update_fulcrum]

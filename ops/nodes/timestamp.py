@@ -43,3 +43,6 @@ class FULCRUM_OT_node_timestamp(bpy.types.Operator):
         node.node_tree.description = description
 
         return {"FINISHED"}
+
+
+registry = [FULCRUM_OT_node_timestamp]

@@ -439,3 +439,12 @@ class FULCRUM_OT_nodes_to_grid(bpy.types.Operator):
             node.location.x = int(node.location.x / 10) * 10
             node.location.y = int(node.location.y / 10) * 10
         return {"FINISHED"}
+
+
+registry = [
+    FULCRUM_OT_align_nodes,
+    FULCRUM_OT_align_nodes_v2,
+    FULCRUM_OT_align_nodes_v3,
+    FULCRUM_OT_center_nodes,
+    FULCRUM_OT_nodes_to_grid,
+]

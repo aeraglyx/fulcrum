@@ -1,186 +1,30 @@
 import bpy
 
+from . import ops, ui
+
 from .keymap import register_keymaps, unregister_keymaps
-from .ops.camera import (
-    FULCRUM_OT_cameras_to_markers,
-    FULCRUM_OT_center_render_region,
-    FULCRUM_OT_dof_setup,
-    FULCRUM_OT_frame_range_from_cam,
-    FULCRUM_OT_isometric_setup,
-    FULCRUM_OT_markers_to_cameras,
-    FULCRUM_OT_passepartout,
-    FULCRUM_OT_projection_setup,
-    FULCRUM_OT_set_aspect_ratio,
-    FULCRUM_OT_set_cam_scale,
-    FULCRUM_OT_set_resolution,
-)
-from .ops.compare import FULCRUM_OT_benchmark, FULCRUM_OT_compare
-from .ops.file_stuff import (
-    FULCRUM_OT_background_render_string,
-    FULCRUM_OT_copy_path_to_clipboard,
-    FULCRUM_OT_go_to_latest_version,
-    FULCRUM_OT_backup,
-    FULCRUM_OT_open_addon_preferences,
-    FULCRUM_OT_open_blend_file_dir,
-    FULCRUM_OT_open_blender_user_dir,
-)
-from .ops.update import FULCRUM_OT_update_fulcrum
-from .ops.nodes.timestamp import FULCRUM_OT_node_timestamp
-from .ops.nodes.main import (
-    FULCRUM_OT_add_todo_note,
-    FULCRUM_OT_hide_group_inputs,
-    FULCRUM_OT_randomize_node_color,
-    FULCRUM_OT_remove_unused_group_inputs,
-    FULCRUM_OT_reset_gn_defaults,
-    FULCRUM_OT_select_group_inputs,
-    FULCRUM_OT_select_node_dependencies,
-    FULCRUM_OT_select_node_inputs,
-    FULCRUM_OT_select_unused_nodes,
-    FULCRUM_OT_set_gn_defaults,
-    FULCRUM_OT_set_node_color,
-    FULCRUM_OT_set_node_size,
-    FULCRUM_OT_tex_to_name,
-)
-from .ops.nodes.align import (
-    FULCRUM_OT_align_nodes,
-    FULCRUM_OT_align_nodes_v2,
-    FULCRUM_OT_center_nodes,
-    FULCRUM_OT_nodes_to_grid,
-)
-from .ops.paint import FULCRUM_OT_set_paint_brush, FULCRUM_OT_set_weight_brush
-from .ops.render import (
-    FULCRUM_OT_anim_time_limit,
-    FULCRUM_OT_compositor_increment_version,
-    FULCRUM_OT_compositor_output_path_to_node_name,
-    FULCRUM_OT_copy_passes,
-    FULCRUM_OT_prepare_for_render,
-    FULCRUM_OT_remove_unused_output_sockets,
-    FULCRUM_OT_render_to_new_slot,
-    FULCRUM_OT_set_output_directory,
-    FULCRUM_OT_set_render_passes,
-    FULCRUM_OT_view_layers_to_muted_nodes,
-)
-from .ops.three_d import (
-    FULCRUM_OT_duplicates_to_instances,
-    FULCRUM_OT_edit_light_power,
-    FULCRUM_OT_locate_vertex,
-    FULCRUM_OT_locate_vertices,
-    FULCRUM_OT_mirror,
-    FULCRUM_OT_obj_backup,
-    FULCRUM_OT_reduce_materials,
-    FULCRUM_OT_vert_group_2_col,
-    FULCRUM_OT_zoom,
-)
-from .ops.tracking import (
-    FULCRUM_OT_auto_marker_weight,
-    FULCRUM_OT_clip_to_scene_resolution,
-)
 from .prefs import FulcrumPreferences
 from .props import fulcrum_props
 from .ui import (
-    FULCRUM_PT_camera,
-    FULCRUM_PT_camera_sub,
-    FULCRUM_PT_3d_stuff,
-    FULCRUM_PT_compositor,
-    FULCRUM_PT_data,
-    FULCRUM_PT_ease_of_access,
-    FULCRUM_PT_find_nodes,
-    FULCRUM_PT_fulcrum_3d,
-    FULCRUM_PT_fulcrum_node,
-    FULCRUM_PT_node_group,
-    FULCRUM_PT_node_tools,
-    FULCRUM_PT_optimization,
-    FULCRUM_PT_paint,
-    FULCRUM_PT_render,
-    FULCRUM_PT_tracker,
-    FULCRUM_PT_utility_3d,
-    FULCRUM_PT_utility_node,
     register_menus_and_headers,
     unregister_menus_and_headers,
 )
 
+
+def register_unregister_modules(modules, register: bool):
+    register_func = bpy.utils.register_class if register else bpy.utils.unregister_class
+    for module in modules:
+        if hasattr(module, "registry"):
+            for cls in module.registry:
+                    register_func(cls)
+        if hasattr(module, "modules"):
+            register_unregister_modules(module.modules, register)
+
+
+modules = [ops, ui]
 classes = (
     FulcrumPreferences,
     fulcrum_props,
-    FULCRUM_OT_mirror,
-    FULCRUM_OT_benchmark,
-    FULCRUM_OT_anim_time_limit,
-    FULCRUM_OT_vert_group_2_col,
-    FULCRUM_OT_set_paint_brush,
-    FULCRUM_OT_set_weight_brush,
-    FULCRUM_OT_update_fulcrum,
-    FULCRUM_OT_open_blend_file_dir,
-    FULCRUM_OT_open_blender_user_dir,
-    FULCRUM_OT_go_to_latest_version,
-    FULCRUM_OT_backup,
-    FULCRUM_OT_open_addon_preferences,
-    FULCRUM_OT_select_node_inputs,
-    FULCRUM_OT_select_node_dependencies,
-    FULCRUM_OT_select_group_inputs,
-    FULCRUM_OT_select_unused_nodes,
-    FULCRUM_OT_set_node_color,
-    FULCRUM_OT_compare,
-    FULCRUM_OT_center_nodes,
-    FULCRUM_OT_nodes_to_grid,
-    FULCRUM_OT_hide_group_inputs,
-    FULCRUM_OT_remove_unused_group_inputs,
-    FULCRUM_OT_set_gn_defaults,
-    FULCRUM_OT_reset_gn_defaults,
-    FULCRUM_OT_add_todo_note,
-    FULCRUM_OT_node_timestamp,
-    FULCRUM_OT_align_nodes,
-    FULCRUM_OT_align_nodes_v2,
-    FULCRUM_OT_randomize_node_color,
-    FULCRUM_OT_tex_to_name,
-    FULCRUM_OT_set_node_size,
-    FULCRUM_OT_render_to_new_slot,
-    FULCRUM_OT_set_render_passes,
-    FULCRUM_OT_set_output_directory,
-    FULCRUM_OT_prepare_for_render,
-    FULCRUM_OT_compositor_increment_version,
-    FULCRUM_OT_view_layers_to_muted_nodes,
-    FULCRUM_OT_remove_unused_output_sockets,
-    FULCRUM_OT_compositor_output_path_to_node_name,
-    FULCRUM_OT_copy_passes,
-    FULCRUM_OT_dof_setup,
-    FULCRUM_OT_isometric_setup,
-    FULCRUM_OT_projection_setup,
-    FULCRUM_OT_frame_range_from_cam,
-    FULCRUM_OT_markers_to_cameras,
-    FULCRUM_OT_cameras_to_markers,
-    FULCRUM_OT_passepartout,
-    FULCRUM_OT_center_render_region,
-    FULCRUM_OT_set_aspect_ratio,
-    FULCRUM_OT_set_resolution,
-    FULCRUM_OT_set_cam_scale,
-    FULCRUM_OT_locate_vertex,
-    FULCRUM_OT_locate_vertices,
-    FULCRUM_OT_duplicates_to_instances,
-    FULCRUM_OT_obj_backup,
-    FULCRUM_OT_edit_light_power,
-    FULCRUM_OT_reduce_materials,
-    FULCRUM_OT_zoom,
-    FULCRUM_OT_clip_to_scene_resolution,
-    FULCRUM_OT_auto_marker_weight,
-    FULCRUM_OT_copy_path_to_clipboard,
-    FULCRUM_OT_background_render_string,
-    FULCRUM_PT_fulcrum_3d,
-    FULCRUM_PT_ease_of_access,
-    FULCRUM_PT_camera,
-    FULCRUM_PT_camera_sub,
-    FULCRUM_PT_3d_stuff,
-    FULCRUM_PT_paint,
-    FULCRUM_PT_utility_3d,
-    FULCRUM_PT_fulcrum_node,
-    FULCRUM_PT_node_tools,
-    FULCRUM_PT_node_group,
-    FULCRUM_PT_compositor,
-    FULCRUM_PT_find_nodes,
-    FULCRUM_PT_optimization,
-    FULCRUM_PT_utility_node,
-    FULCRUM_PT_render,
-    FULCRUM_PT_data,
-    FULCRUM_PT_tracker,
 )
 
 addon_keymaps = []
@@ -189,6 +33,7 @@ addon_keymaps = []
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
+    register_unregister_modules(modules, register=True)
     bpy.types.Scene.fulcrum = bpy.props.PointerProperty(type=fulcrum_props)
     register_menus_and_headers()
     register_keymaps(addon_keymaps)
@@ -201,6 +46,7 @@ def unregister():
     del bpy.types.Scene.fulcrum
     for cls in classes:
         bpy.utils.unregister_class(cls)
+    register_unregister_modules(modules, register=False)
     print("FULCRUM unregistered")
 
 

@@ -719,3 +719,17 @@ class FULCRUM_OT_copy_passes(bpy.types.Operator):
             layer.pass_cryptomatte_depth = view_layer_active.pass_cryptomatte_depth
 
         return {"FINISHED"}
+
+
+registry = [
+    FULCRUM_OT_anim_time_limit,
+    FULCRUM_OT_render_to_new_slot,
+    FULCRUM_OT_set_render_passes,
+    FULCRUM_OT_set_output_directory,
+    FULCRUM_OT_compositor_increment_version,
+    FULCRUM_OT_compositor_output_path_to_node_name,
+    FULCRUM_OT_prepare_for_render,
+    FULCRUM_OT_view_layers_to_muted_nodes,
+    FULCRUM_OT_remove_unused_output_sockets,
+    FULCRUM_OT_copy_passes,
+]

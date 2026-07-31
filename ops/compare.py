@@ -398,3 +398,9 @@ class FULCRUM_OT_benchmark(bpy.types.Operator):
     def draw(self, context):
         layout = self.layout
         layout.prop(self, "frames")
+
+
+registry = [
+    FULCRUM_OT_compare,
+    FULCRUM_OT_benchmark,
+]

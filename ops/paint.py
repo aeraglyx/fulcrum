@@ -45,3 +45,9 @@ class FULCRUM_OT_set_weight_brush(bpy.types.Operator):
         context.scene.tool_settings.unified_paint_settings.weight = self.weight
 
         return {"FINISHED"}
+
+
+registry = [
+    FULCRUM_OT_set_paint_brush,
+    FULCRUM_OT_set_weight_brush,
+]

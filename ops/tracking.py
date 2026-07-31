@@ -233,3 +233,10 @@ class FULCRUM_OT_rolling_shutter(bpy.types.Operator):
 
         col = layout.column(align=True)
         col.prop(self, "scan_time")
+
+
+registry = [
+    FULCRUM_OT_clip_to_scene_resolution,
+    FULCRUM_OT_auto_marker_weight,
+    FULCRUM_OT_rolling_shutter,
+]

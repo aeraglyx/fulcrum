@@ -550,3 +550,18 @@ class FULCRUM_OT_set_cam_scale(bpy.types.Operator):
             cam.display_size = self.scale
 
         return {"FINISHED"}
+
+
+registry = [
+    FULCRUM_OT_dof_setup,
+    FULCRUM_OT_isometric_setup,
+    FULCRUM_OT_projection_setup,
+    FULCRUM_OT_frame_range_from_cam,
+    FULCRUM_OT_markers_to_cameras,
+    FULCRUM_OT_cameras_to_markers,
+    FULCRUM_OT_set_resolution,
+    FULCRUM_OT_set_aspect_ratio,
+    FULCRUM_OT_passepartout,
+    FULCRUM_OT_center_render_region,
+    FULCRUM_OT_set_cam_scale,
+]

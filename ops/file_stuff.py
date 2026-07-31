@@ -191,3 +191,14 @@ class FULCRUM_OT_open_addon_preferences(bpy.types.Operator):
         bpy.context.preferences.active_section = "ADDONS"
         bpy.data.window_managers["WinMan"].addon_search = "fulcrum"
         return {"FINISHED"}
+
+
+registry = [
+    FULCRUM_OT_go_to_latest_version,
+    FULCRUM_OT_backup,
+    FULCRUM_OT_open_blend_file_dir,
+    FULCRUM_OT_copy_path_to_clipboard,
+    FULCRUM_OT_background_render_string,
+    FULCRUM_OT_open_blender_user_dir,
+    FULCRUM_OT_open_addon_preferences,
+]

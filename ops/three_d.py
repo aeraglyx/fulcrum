@@ -518,3 +518,17 @@ class FULCRUM_OT_mirror(bpy.types.Operator):
     def draw(self, context):
         layout = self.layout
         layout.prop(self, "axis", expand=True)
+
+
+registry = [
+    FULCRUM_OT_locate_vertex,
+    FULCRUM_OT_locate_vertices,
+    FULCRUM_OT_vert_group_2_col,
+    FULCRUM_OT_duplicates_to_instances,
+    FULCRUM_OT_obj_backup,
+    FULCRUM_OT_edit_light_power,
+    FULCRUM_OT_reduce_materials,
+    FULCRUM_OT_octane_set_id,
+    FULCRUM_OT_zoom,
+    FULCRUM_OT_mirror,
+]

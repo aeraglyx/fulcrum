@@ -498,3 +498,24 @@ class FULCRUM_PT_tracker(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         layout.operator("fulcrum.auto_marker_weight", icon="TRACKER")
+
+
+registry = [
+    FULCRUM_PT_fulcrum_3d,
+    FULCRUM_PT_ease_of_access,
+    FULCRUM_PT_camera,
+    FULCRUM_PT_camera_sub,
+    FULCRUM_PT_3d_stuff,
+    FULCRUM_PT_paint,
+    FULCRUM_PT_utility_3d,
+    FULCRUM_PT_fulcrum_node,
+    FULCRUM_PT_node_tools,
+    FULCRUM_PT_node_group,
+    FULCRUM_PT_compositor,
+    FULCRUM_PT_find_nodes,
+    FULCRUM_PT_optimization,
+    FULCRUM_PT_utility_node,
+    FULCRUM_PT_render,
+    FULCRUM_PT_data,
+    FULCRUM_PT_tracker,
+]

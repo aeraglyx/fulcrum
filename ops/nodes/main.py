@@ -416,3 +416,20 @@ class FULCRUM_OT_reset_gn_defaults(bpy.types.Operator):
         modif.show_viewport = True
 
         return {"FINISHED"}
+
+
+registry = [
+    FULCRUM_OT_hide_group_inputs,
+    FULCRUM_OT_remove_unused_group_inputs,
+    FULCRUM_OT_select_node_inputs,
+    FULCRUM_OT_select_node_dependencies,
+    FULCRUM_OT_select_group_inputs,
+    FULCRUM_OT_select_unused_nodes,
+    FULCRUM_OT_randomize_node_color,
+    FULCRUM_OT_add_todo_note,
+    FULCRUM_OT_tex_to_name,
+    FULCRUM_OT_set_node_color,
+    FULCRUM_OT_set_node_size,
+    FULCRUM_OT_set_gn_defaults,
+    FULCRUM_OT_reset_gn_defaults,
+]
