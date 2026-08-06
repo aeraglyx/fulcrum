@@ -27,20 +27,20 @@ class FULCRUM_OT_hide_group_inputs(bpy.types.Operator):
 class FULCRUM_OT_remove_unused_group_inputs(bpy.types.Operator):
     bl_idname = "fulcrum.remove_unused_group_inputs"
     bl_label = "Remove Unused Group Inputs"
-    bl_description = ""
+    bl_description = "Remove group input sockets that aren't linked to anything else"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
         nodes = context.space_data.edit_tree.nodes
         group = nodes.id_data
+        group_input_nodes = [node for node in nodes if node.type == "GROUP_INPUT"]
 
         used_input_ids = set()
-        for node in nodes:
-            if node.type == "GROUP_INPUT":
-                for socket in node.outputs:
-                    # TODO: socket.enabled etc
-                    if socket.is_linked:
-                        used_input_ids.add(socket.identifier)
+        for node in group_input_nodes:
+            for socket in node.outputs:
+                # TODO: socket.enabled etc
+                if socket.is_linked:
+                    used_input_ids.add(socket.identifier)
 
         all_input_ids = [
             i.identifier for i in group.interface.items_tree.values()
