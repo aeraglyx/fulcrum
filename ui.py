@@ -76,13 +76,13 @@ class FULCRUM_PT_render(bpy.types.Panel):
     bl_context = "render"
     COMPAT_ENGINES = {"CYCLES"}
     bl_label = "Fulcrum"
+    bl_options = {"DEFAULT_CLOSED"}
 
     def draw(self, context):
         layout = self.layout
-        row = layout.row()
-        row.operator("fulcrum.anim_time_limit", icon="RENDER_ANIMATION")
-        layout.operator("fulcrum.benchmark", icon="NONE")
-        # layout.operator("fulcrum.render_to_new_slot", icon='RENDER_RESULT')
+        col = layout.column(align=True)
+        col.operator("fulcrum.anim_time_limit", icon="MOD_TIME")
+        col.operator("fulcrum.benchmark", icon="SORTTIME")
 
 
 class FULCRUM_PT_data(bpy.types.Panel):
