@@ -2,6 +2,7 @@ import os
 import re
 
 import bpy
+from bpy_extras.io_utils import ImportHelper
 
 from ..functions import version_up
 
@@ -418,9 +419,6 @@ class FULCRUM_OT_set_render_passes(bpy.types.Operator):
         col.prop(self, "crypto_object")
 
 
-from bpy_extras.io_utils import ImportHelper
-
-
 class FULCRUM_OT_set_output_directory(bpy.types.Operator, ImportHelper):
     bl_idname = "fulcrum.set_output_directory"
     bl_label = "Set Output Directory"
@@ -491,7 +489,7 @@ class FULCRUM_OT_compositor_increment_version(bpy.types.Operator):
 class FULCRUM_OT_compositor_output_path_to_node_name(bpy.types.Operator):
     bl_idname = "fulcrum.compositor_output_path_to_node_name"
     bl_label = "Path to Node Name"
-    bl_description = "If the node path is 'X:/path/to/the/render_', this will name the node to 'render' for render beamer"
+    bl_description = "If the node path is '/path/to/render_', this will name the node to 'render' (useful for some render farms)"
     bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
@@ -579,7 +577,7 @@ class FULCRUM_OT_view_layers_to_muted_nodes(bpy.types.Operator):
             if node.name in view_layer_names:
                 node.mute = not view_layers.get(node.name).use
 
-        # TODO backtrack and find render layers?
+        # TODO: backtrack and find render layers?
 
         return {"FINISHED"}
 

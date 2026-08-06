@@ -3,6 +3,7 @@ import os
 
 import bpy
 import mathutils
+from bpy_extras.io_utils import ImportHelper
 
 
 def get_output_node(nodes):
@@ -149,9 +150,6 @@ class FULCRUM_OT_isometric_setup(bpy.types.Operator):
         col = layout.column(align=True)
         col.prop(self, "scale")
         col.prop(self, "distance")
-
-
-from bpy_extras.io_utils import ImportHelper
 
 
 class FULCRUM_OT_projection_setup(bpy.types.Operator, ImportHelper):

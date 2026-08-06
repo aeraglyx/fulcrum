@@ -1,6 +1,7 @@
 import bpy
-import math
 import mathutils
+
+import math
 import time
 import statistics
 

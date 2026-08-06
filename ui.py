@@ -246,14 +246,11 @@ class FULCRUM_PT_optimization(NodePanel, bpy.types.Panel):
         layout = self.layout
         props = context.scene.fulcrum
         row = layout.row()
-        row.operator("fulcrum.compare", icon="NONE")  # SORTTIME TIME TEMP
+        # SORTTIME TIME TEMP
+        row.operator("fulcrum.compare", icon="NONE")
         col = layout.column(align=True)
-        col.label(
-            text=f"Ratio: {props.result:.3f}", icon="SETTINGS"
-        )  # UV_SYNC_SELECT CONSTRAINT SETTINGS
-        col.label(
-            text=f"Confidence: {props.confidence*100:.0f}%", icon="RNDCURVE"
-        )  # INDIRECT_ONLY_ON RNDCURVE
+        col.label(text=f"Ratio: {props.result:.3f}", icon="SETTINGS")
+        col.label(text=f"Confidence: {props.confidence*100:.0f}%", icon="RNDCURVE")
 
 
 class FULCRUM_PT_utility_node(NodePanel, bpy.types.Panel):
