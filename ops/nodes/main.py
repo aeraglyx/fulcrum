@@ -11,6 +11,7 @@ class FULCRUM_OT_hide_group_inputs(bpy.types.Operator):
     bl_idname = "fulcrum.hide_group_inputs"
     bl_label = "Hide Group Inputs"
     bl_description = ""
+    bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
         # TODO: skip unused group input nodes
@@ -27,7 +28,7 @@ class FULCRUM_OT_remove_unused_group_inputs(bpy.types.Operator):
     bl_idname = "fulcrum.remove_unused_group_inputs"
     bl_label = "Remove Unused Group Inputs"
     bl_description = ""
-    bl_options = {"UNDO"}
+    bl_options = {"REGISTER", "UNDO"}
 
     def execute(self, context):
         nodes = context.space_data.edit_tree.nodes
@@ -242,6 +243,7 @@ class FULCRUM_OT_add_todo_note(bpy.types.Operator):
     bl_label = "Add Note"
     bl_description = ""
     bl_property = "text"
+    bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context):
@@ -332,6 +334,7 @@ class FULCRUM_OT_set_node_color(bpy.types.Operator):
     bl_idname = "fulcrum.set_node_color"
     bl_label = "Set Node Color"
     bl_description = "Set custom node color"
+    bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context):
@@ -357,7 +360,7 @@ class FULCRUM_OT_set_node_size(bpy.types.Operator):
     bl_idname = "fulcrum.set_node_size"
     bl_label = "Set Node Size"
     bl_description = ""
-    bl_options = {"UNDO"}
+    bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context):

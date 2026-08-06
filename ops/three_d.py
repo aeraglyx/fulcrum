@@ -120,6 +120,7 @@ class FULCRUM_OT_vert_group_2_col(bpy.types.Operator):
     bl_idname = "fulcrum.vert_group_2_col"
     bl_label = "Groups to Colors"
     bl_description = ""
+    bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context):
@@ -157,6 +158,7 @@ class FULCRUM_OT_duplicates_to_instances(bpy.types.Operator):
     bl_idname = "fulcrum.duplicates_to_instances"
     bl_label = "Duplicates to Instances"
     bl_description = "Find objects with with duplicate meshes, make them use the same instance of mesh and remove the redundant data"
+    bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context):
@@ -216,7 +218,7 @@ class FULCRUM_OT_obj_backup(bpy.types.Operator):
     bl_idname = "fulcrum.obj_backup"
     bl_label = "Backup Object"
     bl_description = ""
-    bl_options = {"UNDO"}
+    bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context):

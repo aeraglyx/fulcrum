@@ -394,6 +394,7 @@ class FULCRUM_OT_center_nodes(bpy.types.Operator):
     bl_idname = "fulcrum.center_nodes"
     bl_label = "Center Nodes"
     bl_description = ""
+    bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context):
@@ -428,6 +429,7 @@ class FULCRUM_OT_nodes_to_grid(bpy.types.Operator):
     bl_idname = "fulcrum.nodes_to_grid"
     bl_label = "Nodes to Grid"
     bl_description = ""
+    bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
     def poll(cls, context):

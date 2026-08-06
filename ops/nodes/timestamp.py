@@ -15,6 +15,7 @@ class FULCRUM_OT_node_timestamp(bpy.types.Operator):
     bl_idname = "fulcrum.node_timestamp"
     bl_label = "Timestamp Group"
     bl_description = "Append timestamp to the end of node group's description"
+    bl_options = {"REGISTER", "UNDO"}
 
     # FIXME: doesn't work in compositor?
     @classmethod
