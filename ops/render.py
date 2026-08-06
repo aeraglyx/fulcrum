@@ -643,6 +643,35 @@ class FULCRUM_OT_copy_passes(bpy.types.Operator):
         return {"FINISHED"}
 
 
+class FULCRUM_OT_render_markers(bpy.types.Operator):
+    bl_idname = "fulcrum.render_markers"
+    bl_label = "Render Markers"
+    bl_description = "Same as manually rendering marker frames in this scene"
+
+    def execute(self, context):
+        scene = context.scene
+        frame_orig = scene.frame_current
+
+        markers = scene.timeline_markers
+        markers_sorted = sorted(markers, key=lambda x: x.frame)
+        for marker in markers_sorted:
+            scene.frame_current = marker.frame
+            bpy.ops.render.render()
+
+        scene.frame_current = frame_orig
+
+        return {"FINISHED"}
+
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)
+
+    def draw(self, context):
+        layout = self.layout
+        layout.label(text="Only compositor outputs will be saved.", icon="STATUS_INFO")
+        layout.label(text="Did you forget to toggle console?", icon="STATUS_INFO")
+
+
 registry = [
     FULCRUM_OT_anim_time_limit,
     FULCRUM_OT_render_to_new_slot,
@@ -654,4 +683,5 @@ registry = [
     FULCRUM_OT_view_layers_to_muted_nodes,
     FULCRUM_OT_remove_unused_output_sockets,
     FULCRUM_OT_copy_passes,
+    FULCRUM_OT_render_markers,
 ]

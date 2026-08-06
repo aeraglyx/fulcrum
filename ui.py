@@ -83,6 +83,7 @@ class FULCRUM_PT_render(bpy.types.Panel):
         col = layout.column(align=True)
         col.operator("fulcrum.anim_time_limit", icon="MOD_TIME")
         col.operator("fulcrum.benchmark", icon="SORTTIME")
+        col.operator("fulcrum.render_markers", icon="MARKER")
 
 
 class FULCRUM_PT_data(bpy.types.Panel):
