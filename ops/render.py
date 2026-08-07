@@ -433,6 +433,10 @@ class FULCRUM_OT_set_output_directory(bpy.types.Operator, ImportHelper):
 
     @classmethod
     def poll(cls, context):
+        if not hasattr(context, "space_data"):
+            return False
+        if not hasattr(context.space_data, "tree_type"):
+            return False
         if context.space_data.tree_type != "CompositorNodeTree":
             return False
         if not hasattr(context, "selected_nodes"):

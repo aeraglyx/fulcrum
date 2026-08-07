@@ -75,7 +75,11 @@ class FULCRUM_OT_locate_vertices(bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        return context.active_object and context.object.type == "MESH"
+        if not context.active_object:
+            return False
+        if not context.object:
+            return False
+        return context.object.type == "MESH"
 
     indices_str: bpy.props.StringProperty(
         name="Indices", default=""
