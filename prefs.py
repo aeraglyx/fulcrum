@@ -13,3 +13,6 @@ class FulcrumPreferences(bpy.types.AddonPreferences):
         layout = self.layout
         layout.prop(self, "experimental")
         layout.operator("fulcrum.update_fulcrum", text="Update", icon="FILE_REFRESH")
+
+
+registry = [FulcrumPreferences]

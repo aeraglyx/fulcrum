@@ -1,8 +1,8 @@
 import bpy
-import sys
 
-from .functions import get_addon_version
-from .ops.file_stuff import is_current_file_version
+from .common import FULCRUM_PT_meta, FULCRUM_PT_utility
+from ..ops.file_stuff import is_current_file_version
+from .. import __package__ as base_package
 
 
 # ---------------- TOPBAR ----------------
@@ -106,20 +106,15 @@ class PanelNodeEditor(bpy.types.Panel):
     bl_category = "Fulcrum"
 
 
-class FULCRUM_PT_fulcrum_node(PanelNodeEditor):
-    bl_label = f"FULCRUM {get_addon_version()}"
-    bl_options = {"DEFAULT_CLOSED"}
-
-    def draw(self, context):
-        layout = self.layout
-        layout.operator("fulcrum.update_fulcrum", text="Update", icon="FILE_REFRESH")
+class FULCRUM_PT_fulcrum_node(PanelNodeEditor, FULCRUM_PT_meta):
+    pass
 
 
 class FULCRUM_PT_node_tools(PanelNodeEditor):
     bl_label = "Node Tools"
 
     def draw(self, context):
-        experimental = context.preferences.addons[__package__].preferences.experimental
+        experimental = context.preferences.addons[base_package].preferences.experimental
         layout = self.layout
 
         col = layout.column(align=True)
@@ -253,32 +248,6 @@ class FULCRUM_PT_optimization(PanelNodeEditor):
         col.label(text=f"Confidence: {props.confidence*100:.0f}%", icon="RNDCURVE")
 
 
-class FULCRUM_PT_utility(bpy.types.Panel):
-    bl_label = "Utility"
-
-    def draw(self, context):
-        layout = self.layout
-
-        col = layout.column(align=True)
-        row = col.row(align=True)
-        row.operator("fulcrum.open_blend_file_dir", icon="FILE_BLEND")
-        row.operator("fulcrum.copy_path_to_clipboard", text="", icon="COPYDOWN")
-        col.operator("fulcrum.backup", icon="FILE_BACKUP")
-
-        col = layout.column(align=True)
-        col.operator("fulcrum.open_blender_user_dir", icon="FILE_SCRIPT")
-        col.operator("fulcrum.background_render_string", icon="SCRIPT")
-
-        col = layout.column(align=True)
-        col.operator(
-            "fulcrum.open_addon_preferences",
-            text="Addon Preferences",
-            icon="PREFERENCES",
-        )
-        if sys.platform == "win32":
-            col.operator("wm.console_toggle", icon="CONSOLE")
-
-
 class FULCRUM_PT_utility_node(PanelNodeEditor, FULCRUM_PT_utility):
     pass
 
@@ -291,13 +260,8 @@ class PanelView3D(bpy.types.Panel):
     bl_category = "Fulcrum"
 
 
-class FULCRUM_PT_fulcrum_3d(PanelView3D):
-    bl_label = f"FULCRUM {get_addon_version()}"
-    bl_options = {"DEFAULT_CLOSED"}
-
-    def draw(self, context):
-        layout = self.layout
-        layout.operator("fulcrum.update_fulcrum", text="Update", icon="FILE_REFRESH")
+class FULCRUM_PT_fulcrum_3d(PanelView3D, FULCRUM_PT_meta):
+    pass
 
 
 class FULCRUM_PT_ease_of_access(PanelView3D):
@@ -342,7 +306,7 @@ class FULCRUM_PT_3d_stuff(PanelView3D):
         col.operator("fulcrum.obj_backup", icon="DUPLICATE")
         col.operator("fulcrum.duplicates_to_instances", icon="MOD_INSTANCE")
 
-        if context.preferences.addons[__package__].preferences.experimental:
+        if context.preferences.addons[base_package].preferences.experimental:
             col = layout.column(align=True)
             col.operator("fulcrum.locate_vertex", icon="VERTEXSEL")
             col.operator("fulcrum.locate_vertices", icon="SNAP_VERTEX")
