@@ -30,6 +30,7 @@ class FULCRUM_OT_locate_vertex(bpy.types.Operator):
 
         if self.index < total_verts:  # len(verts)
             obj = context.active_object
+            assert obj
             bm = bmesh.from_edit_mesh(obj.data)
 
             for vert in bm.verts:
@@ -43,6 +44,7 @@ class FULCRUM_OT_locate_vertex(bpy.types.Operator):
             bmesh.update_edit_mesh(obj.data)
 
             location = obj.matrix_world @ vert_found.co
+            assert context.scene
             context.scene.cursor.location = location
 
             pos = [round(x, 2) for x in list(location)]
@@ -84,6 +86,7 @@ class FULCRUM_OT_locate_vertices(bpy.types.Operator):
         bpy.ops.object.mode_set(mode="EDIT")
 
         obj = context.active_object
+        assert obj
         bm = bmesh.from_edit_mesh(obj.data)
         verts = bm.verts
 
@@ -136,7 +139,7 @@ class FULCRUM_OT_vert_group_2_col(bpy.types.Operator):
             need_to_switch_back = True
 
         for group in groups:
-            # FIXME max 8 vert. colours
+            # FIXME: max 8 vertex colours
 
             col = colors.new()
             col.name = group.name
@@ -226,6 +229,7 @@ class FULCRUM_OT_obj_backup(bpy.types.Operator):
 
     def execute(self, context):
         obj_orig = context.active_object
+        assert obj_orig
         obj_copy = obj_orig.copy()
 
         obj_copy.data = obj_orig.data.copy()

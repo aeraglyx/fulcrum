@@ -293,19 +293,8 @@ class FULCRUM_OT_frame_range_from_cam(bpy.types.Operator):
 
     def execute(self, context):
         # TODO scene. frame_preview_start, end + use_preview_range
-        def get_cams(context):
-            cams = [obj for obj in context.selected_objects if obj.type == "CAMERA"]
-            if not cams:
-                cams = [context.scene.camera]
-            return cams
-
-        def get_cam_min_max(cam):
-            frame_min = int(cam.name.split("_")[-2])
-            frame_max = int(cam.name.split("_")[-1])
-            return frame_min, frame_max
 
         cams = get_cams(context)
-
         if len(cams) == 1:
             context.scene.camera = cams[0]
 
@@ -377,7 +366,7 @@ class FULCRUM_OT_markers_to_cameras(bpy.types.Operator):
 
         camera_markers = get_camera_markers()
         frames = [m.frame for m in camera_markers]
-        
+
         for marker in camera_markers:
             camera = marker.camera
             frame_start = marker.frame
@@ -389,10 +378,10 @@ class FULCRUM_OT_markers_to_cameras(bpy.types.Operator):
             else:
                 frame_end = frame_start + 100
             suffix += "_" + frame_to_string(frame_end)
-            
+
             camera.name = camera.name + suffix
-        
-        # TODO update normal cam names
+
+        # TODO: update normal cam names
 
         return {"FINISHED"}
 
@@ -410,7 +399,7 @@ class FULCRUM_OT_cameras_to_markers(bpy.types.Operator):
             for marker in markers:
                 if marker.camera == cam:
                     markers_to_delete.append(marker)
-            
+
             for marker in markers_to_delete:
                 markers.remove(marker)
 
@@ -426,7 +415,7 @@ class FULCRUM_OT_cameras_to_markers(bpy.types.Operator):
                 return {"CANCELLED"}
 
             delete_cam_markers(markers, cam)
-            
+
             marker_new = markers.new(cam.name, frame=min_cam)
             marker_new.camera = cam
 
@@ -515,7 +504,8 @@ class FULCRUM_OT_center_render_region(bpy.types.Operator):
 
         context.region.data.view_camera_offset[0] = 0.5 * x
         context.region.data.view_camera_offset[1] = 0.5 * y * 16 / 9
-        # BUG offset y is bugged in blender, idk
+        # BUG: offset y is bugged in blender, idk
+        # FIXME: aspect ratio
 
         return {"FINISHED"}
 
