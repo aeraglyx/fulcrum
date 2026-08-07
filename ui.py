@@ -100,13 +100,13 @@ class FULCRUM_PT_data(bpy.types.Panel):
 
 # ---------------- NODE EDITOR ----------------
 
-class NodePanel(bpy.types.Panel):
+class PanelNodeEditor(bpy.types.Panel):
     bl_space_type = "NODE_EDITOR"
     bl_region_type = "UI"
     bl_category = "Fulcrum"
 
 
-class FULCRUM_PT_fulcrum_node(NodePanel, bpy.types.Panel):
+class FULCRUM_PT_fulcrum_node(PanelNodeEditor):
     bl_label = f"FULCRUM {get_addon_version()}"
     bl_options = {"DEFAULT_CLOSED"}
 
@@ -115,7 +115,7 @@ class FULCRUM_PT_fulcrum_node(NodePanel, bpy.types.Panel):
         layout.operator("fulcrum.update_fulcrum", text="Update", icon="FILE_REFRESH")
 
 
-class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
+class FULCRUM_PT_node_tools(PanelNodeEditor):
     bl_label = "Node Tools"
 
     def draw(self, context):
@@ -174,7 +174,7 @@ class FULCRUM_PT_node_tools(NodePanel, bpy.types.Panel):
                 # TODO: data as well?
 
 
-class FULCRUM_PT_node_group(NodePanel, bpy.types.Panel):
+class FULCRUM_PT_node_group(PanelNodeEditor):
     bl_label = "Group"
 
     @classmethod
@@ -193,7 +193,7 @@ class FULCRUM_PT_node_group(NodePanel, bpy.types.Panel):
         )  # PANEL_CLOSE
 
 
-class FULCRUM_PT_compositor(NodePanel, bpy.types.Panel):
+class FULCRUM_PT_compositor(PanelNodeEditor):
     bl_label = "Compositor"
 
     @classmethod
@@ -219,7 +219,7 @@ class FULCRUM_PT_compositor(NodePanel, bpy.types.Panel):
         col.operator("fulcrum.prepare_for_render", icon="RESTRICT_RENDER_OFF")
 
 
-class FULCRUM_PT_find_nodes(NodePanel, bpy.types.Panel):
+class FULCRUM_PT_find_nodes(PanelNodeEditor):
     bl_label = "Find"
     bl_options = {"DEFAULT_CLOSED"}
 
@@ -234,7 +234,7 @@ class FULCRUM_PT_find_nodes(NodePanel, bpy.types.Panel):
         row.operator("fulcrum.select_unused_nodes", text="Unused")
 
 
-class FULCRUM_PT_optimization(NodePanel, bpy.types.Panel):
+class FULCRUM_PT_optimization(PanelNodeEditor):
     bl_label = "Optimization"
     bl_options = {"DEFAULT_CLOSED"}
 
@@ -279,19 +279,19 @@ class FULCRUM_PT_utility(bpy.types.Panel):
             col.operator("wm.console_toggle", icon="CONSOLE")
 
 
-class FULCRUM_PT_utility_node(NodePanel, FULCRUM_PT_utility):
+class FULCRUM_PT_utility_node(PanelNodeEditor, FULCRUM_PT_utility):
     pass
 
 
 # ---------------- VIEW 3D ----------------
 
-class View3DPanel(bpy.types.Panel):
+class PanelView3D(bpy.types.Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_category = "Fulcrum"
 
 
-class FULCRUM_PT_fulcrum_3d(View3DPanel, bpy.types.Panel):
+class FULCRUM_PT_fulcrum_3d(PanelView3D):
     bl_label = f"FULCRUM {get_addon_version()}"
     bl_options = {"DEFAULT_CLOSED"}
 
@@ -300,7 +300,7 @@ class FULCRUM_PT_fulcrum_3d(View3DPanel, bpy.types.Panel):
         layout.operator("fulcrum.update_fulcrum", text="Update", icon="FILE_REFRESH")
 
 
-class FULCRUM_PT_ease_of_access(View3DPanel, bpy.types.Panel):
+class FULCRUM_PT_ease_of_access(PanelView3D):
     bl_label = "Ease of Access"
 
     def draw(self, context):
@@ -312,7 +312,7 @@ class FULCRUM_PT_ease_of_access(View3DPanel, bpy.types.Panel):
         layout.prop(context.scene.view_settings, "exposure")
 
 
-class FULCRUM_PT_camera(View3DPanel, bpy.types.Panel):
+class FULCRUM_PT_camera(PanelView3D):
     bl_idname = "FULCRUM_PT_camera"
     bl_label = "Camera"
 
@@ -327,7 +327,7 @@ class FULCRUM_PT_camera(View3DPanel, bpy.types.Panel):
         layout.prop(context.area.spaces.active, "lock_camera")
 
 
-class FULCRUM_PT_3d_stuff(View3DPanel, bpy.types.Panel):
+class FULCRUM_PT_3d_stuff(PanelView3D):
     bl_label = "Stuff"
     bl_options = {"DEFAULT_CLOSED"}
 
@@ -349,7 +349,7 @@ class FULCRUM_PT_3d_stuff(View3DPanel, bpy.types.Panel):
             col.operator("fulcrum.center_render_region", icon="BORDERMOVE")
 
 
-class FULCRUM_PT_camera_sub(View3DPanel, bpy.types.Panel):
+class FULCRUM_PT_camera_sub(PanelView3D):
     bl_parent_id = "FULCRUM_PT_camera"
     bl_label = "Extra"
     bl_options = {"DEFAULT_CLOSED"}
@@ -378,7 +378,7 @@ class FULCRUM_PT_camera_sub(View3DPanel, bpy.types.Panel):
         col.operator("fulcrum.set_cam_scale", icon="DRIVER_DISTANCE")
 
 
-class FULCRUM_PT_3d_axis_selection(View3DPanel, bpy.types.Panel):
+class FULCRUM_PT_3d_axis_selection(PanelView3D):
     # FIXME
     bl_label = "Axis Selection"
     bl_options = {"DEFAULT_CLOSED"}
@@ -418,7 +418,7 @@ class FULCRUM_PT_3d_axis_selection(View3DPanel, bpy.types.Panel):
         )
 
 
-class FULCRUM_PT_paint(View3DPanel, bpy.types.Panel):
+class FULCRUM_PT_paint(PanelView3D):
     bl_label = "Paint"
 
     @classmethod
@@ -457,7 +457,7 @@ class FULCRUM_PT_paint(View3DPanel, bpy.types.Panel):
             props.weight = 1.0
 
 
-class FULCRUM_PT_utility_3d(View3DPanel, FULCRUM_PT_utility):
+class FULCRUM_PT_utility_3d(PanelView3D, FULCRUM_PT_utility):
     pass
 
 
