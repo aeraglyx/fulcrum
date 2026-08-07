@@ -350,7 +350,7 @@ class FULCRUM_OT_set_node_color(bpy.types.Operator):
     def execute(self, context):
         nodes = context.selected_nodes
         for node in nodes:
-            node.use_custom_color = self.reset
+            node.use_custom_color = not self.reset
             node.color = self.color
 
         return {"FINISHED"}

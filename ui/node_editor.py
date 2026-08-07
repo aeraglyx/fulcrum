@@ -38,6 +38,7 @@ class FULCRUM_PT_node_tools(PanelNodeEditor):
         for i in [9, 1, 2, 3, 4, 5, 6, 7]:
             color_entry = row.operator("fulcrum.set_node_color", text=" ", icon=f"STRIP_COLOR_0{i}")
             color_entry.color = color_dict[i]
+            color_entry.reset = False
             # TODO: use strip colors from theme?
 
         col = layout.column(align=True)
