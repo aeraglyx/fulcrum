@@ -3,7 +3,7 @@ import bpy
 from . import ops, ui, prefs, props
 
 from .keymap import register_keymaps, unregister_keymaps
-from .ui.main import (
+from .ui.menus_and_headers import (
     register_menus_and_headers,
     unregister_menus_and_headers,
 )
